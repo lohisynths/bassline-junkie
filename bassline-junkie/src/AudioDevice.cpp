@@ -369,7 +369,6 @@ int AudioDevice::play(std::array<int32_t, 512> &arr)
 		{
 			auto adr = chn + offset * channels;
 			data[chn] = (((int32_t *) my_areas[chn].addr) + adr);
-			//std::cout << "before "<< adr << std::endl;
 		}
 
 
@@ -377,9 +376,7 @@ int AudioDevice::play(std::array<int32_t, 512> &arr)
 
 		for (unsigned int i = 0; i < size; i++)
 		{
-			//int32_t res = frames[i];
-			int32_t res = arr[i];	//sine.tick() * maxval;
-
+			int32_t res = arr[i];
 			for (unsigned int chn = 0; chn < channels; chn++)
 			{
 				auto out = data[chn];
