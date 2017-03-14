@@ -6,46 +6,24 @@
 // Description : libasound + libstk C++ Hello World
 //============================================================================
 
-
-#include "AudioDevice.h"
-
-
-
-#include <iostream>
-#include <algorithm>
 #include <signal.h>
 
-
-
+#include "AudioDevice.h"
 #include <stk/SineWave.h>
 
+AudioDevice device;
+stk::SineWave sine;
+std::array<int,512> array;
 
-AudioDevice* device;
-
-//
+static bool play=true;
 
 
-static bool done=false;
+
 static void finish(int ignore)
 {
 	printf("finish finish finish finish finish finish\n");
-	done = true;
+	play = false;
 }
-
-
-#include "PerformanceCounter.h"
-
-PerformanceCounter cpu;
-
-#include <unistd.h>
-
-std::array<int,512> array;
-
-
-
-
-#include <stk/SineWave.h>
-stk::SineWave sine;
 
 
 
@@ -54,25 +32,18 @@ int main()
 	signal(SIGINT, finish);
 
 	stk::Stk::setSampleRate(44100);
-
-	device = new AudioDevice;
-
-
 	sine.setFrequency(440);
 
-
-	std::array<int32_t, 512> tmp_data;
-
-
-	while (!done)
+	while (play)
 	{
-		if(device->aval())
+		if(device.aval())
 		{
-			for (unsigned int i = 0; i < tmp_data.size(); i++)
-				tmp_data[i] = sine.tick() * maxval;
+			for (unsigned int i = 0; i < array.size(); i++)
+				array[i] = sine.tick() * maxval;
 
-			device->play(tmp_data); // while loop inside
+			device.play(array); // while loop inside
 		}
+
 	}
 
 	return 0;

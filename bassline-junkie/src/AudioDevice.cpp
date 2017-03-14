@@ -7,31 +7,8 @@
 
 #include "AudioDevice.h"
 
-
-void setscheduler(void)
-{
-	struct sched_param sched_param;
-
-	if (sched_getparam(0, &sched_param) < 0) {
-		printf("Scheduler getparam failed...\n");
-		return;
-	}
-	sched_param.sched_priority = sched_get_priority_max(SCHED_RR);
-	if (!sched_setscheduler(0, SCHED_RR, &sched_param)) {
-		printf("Scheduler set to Round Robin with priority %i...\n", sched_param.sched_priority);
-		fflush(stdout);
-		return;
-	}
-	printf("!!!Scheduler set to Round Robin with priority %i FAILED!!!\n", sched_param.sched_priority);
-}
-
-
-
-
-
 AudioDevice::AudioDevice()
 {
-
 	handle = NULL;
 	samples = NULL;
 	areas = NULL;
@@ -45,16 +22,12 @@ AudioDevice::AudioDevice()
 	verbose = 1; /* verbose flag */
 	resample = 0; /* enable alsa-lib resampling */
 	period_event = 0; /* produce poll event after each period */
-	buffer_size = 0;
-	period_size = 0;
+	period_size = 512;
+	buffer_size = period_size * 2;
+
 	output = NULL;
-	period_time = 0;
-
-
 
 	setup();
-
-	//setscheduler();
 }
 
 
@@ -187,11 +160,11 @@ int AudioDevice::set_hwparams(snd_pcm_t *handle, snd_pcm_hw_params_t *params,
     /* set the buffer time */
 
 
-
+    size = buffer_size;
     //    err = snd_pcm_hw_params_set_buffer_time_near(handle, params, &buffer_time, &dir);
-    err = snd_pcm_hw_params_set_buffer_size(handle, params, buffer_sizeaaa);
+    err = snd_pcm_hw_params_set_buffer_size(handle, params, size);
     if (err < 0) {
-            printf("Unable to set buffer time %i for playback: %s\n", buffer_time, snd_strerror(err));
+            printf("Unable to set buffer time %ld for playback: %s\n", size, snd_strerror(err));
             return err;
     }
     err = snd_pcm_hw_params_get_buffer_size(params, &size);
@@ -199,15 +172,25 @@ int AudioDevice::set_hwparams(snd_pcm_t *handle, snd_pcm_hw_params_t *params,
             printf("Unable to get buffer size for playback: %s\n", snd_strerror(err));
             return err;
     }
-    buffer_size = size;
-
-
-    err = snd_pcm_hw_params_set_period_size(handle, params, period_sizeaaa, 0);
-    if (err < 0) {
-    	printf("Unable to set period size %i for playback: %s\n", period_time, snd_strerror(err));
-        return err;
+    if(size != (snd_pcm_uframes_t)buffer_size)
+    {
+    	printf("Unable to get buffer size for playback: %s\n", snd_strerror(err));
+    	return err;
     }
 
+   // buffer_size = size;
+
+    size = period_size;
+    err = snd_pcm_hw_params_set_period_size(handle, params, size, 0);
+    if (err < 0) {
+    	printf("Unable to set period size %ld for playback: %s\n", period_size, snd_strerror(err));
+        return err;
+    }
+    if(size != (snd_pcm_uframes_t)period_size)
+    {
+    	printf("Unable to get buffer size for playback: %s\n", snd_strerror(err));
+    	return err;
+    }
 
 //    /* set the period time */
 //    err = snd_pcm_hw_params_set_period_time_near(handle, params, &period_time, &dir);
@@ -339,7 +322,7 @@ int xrun_recovery(snd_pcm_t *handle, int err)
 static int err, first = 1;
 
 
-int AudioDevice::play(std::array<int32_t, 512> &arr)
+void AudioDevice::play(std::array<int32_t, 512> &arr)
 {
 	snd_pcm_uframes_t size = period_size;
 

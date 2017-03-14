@@ -51,7 +51,7 @@ public:
 	int prepare_mmap();
 
 	int aval();
-	int play(std::array<int32_t, 512> &arr);
+	void play(std::array<int32_t, 512> &arr);
 
 
 	snd_pcm_t *handle;
@@ -66,7 +66,6 @@ private:
 	snd_pcm_format_t format;
 	unsigned int rate;
 	unsigned int channels;
-	unsigned int period_time;
 	int verbose;
 	int resample;
 	int period_event;
@@ -74,17 +73,7 @@ private:
 	snd_pcm_sframes_t buffer_size;
 	snd_pcm_sframes_t period_size;
 
-	snd_pcm_uframes_t period_sizeaaa = 512;
-
-
 	snd_output_t *output;
-
-	snd_pcm_uframes_t buffer_sizeaaa = period_sizeaaa*2;
-
-
-
-	unsigned int buffer_time = 500000;               /* ring buffer length in us */
-
 
 };
 

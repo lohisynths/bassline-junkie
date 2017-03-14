@@ -67,8 +67,8 @@ void PerformanceCounter::read()
 		myfile << from_start << " " << overal_time_ms << " " << cpu_load <<  std::endl;
 
 
-		auto overal_time_ms2 = std::chrono::duration_cast<
-				std::chrono::milliseconds>(overal_diff).count();
+//		auto overal_time_ms2 = std::chrono::duration_cast<
+//				std::chrono::milliseconds>(overal_diff).count();
 //		std::cout << overal_time_ms2 << std::endl;
 	}
 }
