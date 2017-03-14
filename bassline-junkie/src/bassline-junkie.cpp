@@ -28,7 +28,8 @@ int main()
 	signal(SIGINT, finish);
 
 	Plot plot("ciabejek", 0, 1, Plot::transfer::scroll);
-	stick_this_thread_to_core(1);
+	stick_this_thread_to_core(0);
+	//set_pthread_params();
 	synth gracz;
 	gracz.init();
 

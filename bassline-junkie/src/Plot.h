@@ -56,8 +56,8 @@ public:
 					new std::thread(
 							[&]()
 							{
-								stick_this_thread_to_core(3);
-								set_pthread_params();
+								stick_this_thread_to_core(1);
+								//set_pthread_params();
 								getinfo();
 
 								PrintThread
@@ -66,7 +66,7 @@ public:
 								while(1)
 								{
 									proces();
-									std::this_thread::sleep_for( std::chrono::duration<double, std::milli>(150) );
+									std::this_thread::sleep_for( std::chrono::duration<double, std::milli>(30) );
 								}
 							});
 		}
