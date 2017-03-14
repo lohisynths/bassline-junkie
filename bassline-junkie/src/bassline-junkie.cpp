@@ -39,7 +39,14 @@ PerformanceCounter cpu;
 
 #include <unistd.h>
 
-std::array<double,512> array;
+std::array<int,512> array;
+
+
+
+
+#include <stk/SineWave.h>
+stk::SineWave sine;
+
 
 
 int main()
@@ -51,15 +58,21 @@ int main()
 	device = new AudioDevice;
 
 
+	sine.setFrequency(440);
 
+
+	std::array<int32_t, 512> tmp_data;
 
 
 	while (!done)
 	{
-//		for(int i=0; i<array.size();i++)
-//			array[i] = sine.tick();
+		if(device->aval())
+		{
+			for (unsigned int i = 0; i < tmp_data.size(); i++)
+				tmp_data[i] = sine.tick() * maxval;
 
-		device->play(array);
+			device->play(tmp_data); // while loop inside
+		}
 	}
 
 	return 0;

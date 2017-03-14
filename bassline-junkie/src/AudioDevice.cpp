@@ -26,18 +26,11 @@ void setscheduler(void)
 }
 
 
-#include <stk/SineWave.h>
 
-
-stk::SineWave sine;
 
 
 AudioDevice::AudioDevice()
 {
-
-
-	sine.setFrequency(440);
-
 
 	handle = NULL;
 	samples = NULL;
@@ -343,9 +336,93 @@ int xrun_recovery(snd_pcm_t *handle, int err)
 
 
 
-int AudioDevice::play(std::array<double, 512> &arr)
+static int err, first = 1;
+
+
+int AudioDevice::play(std::array<int32_t, 512> &arr)
 {
-	static int err, first = 1;
+	snd_pcm_uframes_t size = period_size;
+
+	while (size > 0)
+	{
+		snd_pcm_uframes_t frames = size;
+		snd_pcm_uframes_t offset;
+		const snd_pcm_channel_area_t *my_areas;
+
+		int err = snd_pcm_mmap_begin(handle, &my_areas, &offset, &frames);
+
+		if (err < 0)
+		{
+			printf("snd_pcm_mmap_begin\n");
+
+			if ((err = xrun_recovery(handle, err)) < 0)
+			{
+				printf("MMAP begin avail error: %s\n", snd_strerror(err));
+				exit(EXIT_FAILURE);
+			}
+			first = 1;
+		}
+
+		int32_t *data[channels];
+
+		for (unsigned int chn = 0; chn < channels; chn++)
+		{
+			auto adr = chn + offset * channels;
+			data[chn] = (((int32_t *) my_areas[chn].addr) + adr);
+			//std::cout << "before "<< adr << std::endl;
+		}
+
+
+
+
+		for (unsigned int i = 0; i < size; i++)
+		{
+			//int32_t res = frames[i];
+			int32_t res = arr[i];	//sine.tick() * maxval;
+
+			for (unsigned int chn = 0; chn < channels; chn++)
+			{
+				auto out = data[chn];
+				if (chn == 0)
+				{
+					*out = res;
+				}
+				else
+				{
+					*out = res;
+				}
+				data[chn] += channels;
+			}
+		}
+
+
+
+
+
+
+
+
+		snd_pcm_sframes_t commitres = snd_pcm_mmap_commit(handle, offset,
+				frames);
+		if (commitres < 0 || (snd_pcm_uframes_t) commitres != frames)
+		{
+			printf("snd_pcm_mmap_commit\n");
+			if ((err = xrun_recovery(handle,
+					commitres >= 0 ? -EPIPE : commitres)) < 0)
+			{
+				printf("MMAP commit error: %s\n", snd_strerror(err));
+				exit(EXIT_FAILURE);
+			}
+			first = 1;
+		}
+		size -= frames;
+		//if (size != 0)
+		//	std::cout << " size -= frames beware -_- " << size << std::endl;
+	}
+}
+
+int AudioDevice::aval()
+{
 	snd_pcm_state_t state = snd_pcm_state(handle);
 	if (state == SND_PCM_STATE_XRUN)
 	{
@@ -412,89 +489,7 @@ int AudioDevice::play(std::array<double, 512> &arr)
 		}
 		return 0;
 	}
-	snd_pcm_uframes_t size = period_size;
-	while (size > 0)
-	{
-		snd_pcm_uframes_t frames = size;
-		snd_pcm_uframes_t offset;
-		const snd_pcm_channel_area_t *my_areas;
 
-		err = snd_pcm_mmap_begin(handle, &my_areas, &offset, &frames);
-
-		if (err < 0)
-		{
-			printf("snd_pcm_mmap_begin\n");
-
-			if ((err = xrun_recovery(handle, err)) < 0)
-			{
-				printf("MMAP begin avail error: %s\n", snd_strerror(err));
-				exit(EXIT_FAILURE);
-			}
-			first = 1;
-		}
-
-		int32_t *data[channels];
-
-		for (unsigned int chn = 0; chn < channels; chn++)
-		{
-			auto adr = chn + offset * channels;
-			data[chn] = (((int32_t *) my_areas[chn].addr) + adr);
-			std::cout << "before "<< adr << std::endl;
-		}
-
-
-//		data[0] = (((int32_t *) my_areas[0].addr) + 0);
-//		data[1] = (((int32_t *) my_areas[1].addr) + 1);
-
-		for (unsigned int i = 0; i < size; i++)
-		{
-			//int32_t res = frames[i];
-			int32_t res  = sine.tick() * maxval;
-
-
-			for (unsigned int chn = 0; chn < channels; chn++)
-			{
-				auto out = data[chn];
-				if (chn == 0)
-				{
-					*out = res;
-				}
-				else
-				{
-					*out = res;
-				}
-				data[chn] += channels;
-			}
-		}
-
-
-
-	//tick(data, channels, size);
-
-
-
-
-
-
-
-
-
-		snd_pcm_sframes_t commitres = snd_pcm_mmap_commit(handle, offset,
-				frames);
-		if (commitres < 0 || (snd_pcm_uframes_t) commitres != frames)
-		{
-			printf("snd_pcm_mmap_commit\n");
-			if ((err = xrun_recovery(handle,
-					commitres >= 0 ? -EPIPE : commitres)) < 0)
-			{
-				printf("MMAP commit error: %s\n", snd_strerror(err));
-				exit(EXIT_FAILURE);
-			}
-			first = 1;
-		}
-		size -= frames;
-		std::cout << size << std::endl;
-	}
 	return 1;
 
 }

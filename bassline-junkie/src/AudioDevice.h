@@ -50,7 +50,8 @@ public:
 
 	int prepare_mmap();
 
-	int play(std::array<double, 512> &arr);
+	int aval();
+	int play(std::array<int32_t, 512> &arr);
 
 
 	snd_pcm_t *handle;
