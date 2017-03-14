@@ -9,15 +9,13 @@
 #include <signal.h>
 
 #include "AudioDevice.h"
-#include <stk/SineWave.h>
+#include "synth.h"
+#include "Plot.h"
 
 AudioDevice device;
-stk::SineWave sine;
-std::array<int,512> array;
+std::array<int, 512> array;
 
-static bool play=true;
-
-
+static bool play = true;
 
 static void finish(int ignore)
 {
@@ -25,23 +23,29 @@ static void finish(int ignore)
 	play = false;
 }
 
-
-
 int main()
 {
 	signal(SIGINT, finish);
 
-	stk::Stk::setSampleRate(44100);
-	sine.setFrequency(440);
+	Plot plot("ciabejek", 0, 1, Plot::transfer::scroll);
+	stick_this_thread_to_core(1);
+	synth gracz;
+	gracz.init();
 
 	while (play)
 	{
-		if(device.aval())
+		if (device.aval())
 		{
-			for (unsigned int i = 0; i < array.size(); i++)
-				array[i] = sine.tick() * maxval;
+			auto ciabejek_start = std::chrono::steady_clock::now();
+
+			gracz.process(array);
 
 			device.play(array); // while loop inside
+
+			std::chrono::duration<double, std::milli> fp_ms =
+					std::chrono::steady_clock::now() - ciabejek_start;
+
+			plot.update(fp_ms.count());
 		}
 
 	}

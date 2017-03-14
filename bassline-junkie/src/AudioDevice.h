@@ -12,16 +12,6 @@
 #include <string>
 #include <array>
 
-
-
-
-
-
-//
-const unsigned int format_bits = 32; //snd_pcm_format_width(*m_format);
-const unsigned int maxval = (1U << (format_bits - 1U)) - 1U;
-
-
 extern void tick(int32_t **data, unsigned int channels, unsigned int count);
 
 class AudioDevice
@@ -47,20 +37,16 @@ public:
 	unsigned int get_channels();
 	unsigned int get_sample_rate();
 
-
 	int prepare_mmap();
 
 	int aval();
 	void play(std::array<int32_t, 512> &arr);
-
 
 	snd_pcm_t *handle;
 	signed short *samples;
 	snd_pcm_channel_area_t *areas;
 
 private:
-
-
 
 	std::string device;
 	snd_pcm_format_t format;
