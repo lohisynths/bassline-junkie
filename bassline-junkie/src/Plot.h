@@ -7,7 +7,7 @@
 
 #ifndef PLOT_H_
 #define PLOT_H_
-#define GNUPLOT_ENABLE_PTY
+#undef GNUPLOT_ENABLE_PTY
 
 #include <thread>
 #include <mutex>
@@ -20,6 +20,38 @@
 
 #define maximum_count 512
 
+class smooth_cpp
+{
+public:
+	smooth_cpp() :
+			filter(0.5), smoothed(-1)
+	{
+	}
+
+	void set_filter_value(double input)
+	{
+		if (input > 1)
+			input = .99;
+		else if (input <= 0)
+			input = 0;
+
+		filter = input;
+	}
+
+	double process(double input)
+	{
+		if (smoothed < 0.)
+			smoothed = input;
+
+		smoothed = (input * (1. - filter)) + (smoothed * filter);
+		return smoothed;
+	}
+
+private:
+	double filter;
+	double smoothed;
+};
+
 class Plot
 {
 public:
@@ -30,9 +62,11 @@ public:
 
 	Plot(char const * _name, double _scale_y_min, double _scale_y_max,
 			transfer _metod) :
-			name(_name), scale_y_min(_scale_y_min), scale_y_max(_scale_y_max), metod(
-					_metod)
+			name(_name), metod(_metod), scale_y_min(_scale_y_min), scale_y_max(
+					_scale_y_max)
 	{
+		smooth.set_filter_value(0.3);
+
 		for (size_t i = 0; i < maximum_count; i++)
 		{
 			plot.push_front(std::make_pair(1 - (i / maximum_count), 0));
@@ -53,22 +87,18 @@ public:
 			gp << "]\n";
 
 			t =
-					new std::thread(
-							[&]()
+					new std::thread([&]()
+					{
+						stick_this_thread_to_core(1);
+						//set_pthread_params();
+							getinfo();
+
+							while(1)
 							{
-								stick_this_thread_to_core(1);
-								//set_pthread_params();
-								getinfo();
-
-								PrintThread
-								{}<< " worked function\n";
-
-								while(1)
-								{
-									proces();
-									std::this_thread::sleep_for( std::chrono::duration<double, std::milli>(30) );
-								}
-							});
+								proces();
+								std::this_thread::sleep_for( std::chrono::duration<double, std::milli>(10) );
+							}
+						});
 		}
 		else
 		{
@@ -88,12 +118,13 @@ public:
 		}
 	}
 
-	bool update(double input)
+	void update(double input)
 	{
-		value.store(input);
+		auto lolo = smooth.process(input);
+		value.store(lolo);
 	}
 
-	bool upload(const std::array<double, 512> &input)
+	void upload(const std::array<double, 512> &input)
 	{
 		// Don't forget to put "\n" at the end of each line!
 
@@ -131,26 +162,24 @@ public:
 
 		gp.flush();
 
-//		gp.getMouse(mx, my, mb, "Left click to aim arrows, right click to exit.");
-//		printf("You pressed mouse button %d at x=%f y=%f\n", mb, mx, my);
-//		if(mb < 0) printf("The gnuplot window was closed.\n");
-
 		return mb < 0;
-
 	}
 
 private:
+
+	char const *name;
 	transfer metod;
-	std::mutex m;
+	double scale_y_min, scale_y_max;
 
 	std::thread *t;
-	char const *name;
-	double scale_y_min, scale_y_max;
+	std::mutex m;
 	std::atomic<double> value;
 
 	bool mb = true;
 	Gnuplot gp;
 	std::deque<std::pair<double, double> > plot;
+
+	smooth_cpp smooth;
 
 };
 

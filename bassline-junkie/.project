@@ -3,6 +3,7 @@
 	<name>bassline-junkie</name>
 	<comment></comment>
 	<projects>
+		<project>stk</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

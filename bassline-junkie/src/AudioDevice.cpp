@@ -15,7 +15,7 @@ AudioDevice::AudioDevice()
 
 	device = "hw:PCH,0"; /* playback device */
 	format = SND_PCM_FORMAT_S32; /* sample format */
-	rate = 48000; /* stream rate */
+	rate = 44100; /* stream rate */
 	channels = 2; /* count of channels */
 	//desired_buffer_size = 1024; /* desired buffer size */
 	//desired_period_count = 2;

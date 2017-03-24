@@ -9,24 +9,21 @@
 
 synth::synth()
 {
-	// TODO Auto-generated constructor stub
+	osc_freq = 100;
+	flt_freq = 500;
+	flt_res = 0.75;
 
+	filter.setCutoff(flt_freq);
+	filter.setRes(flt_res);
 }
 
 synth::~synth()
 {
-	// TODO Auto-generated destructor stub
+
 }
 
-void synth::process(std::array<int, 512> &input)
+void synth::init(double freq)
 {
-	for (unsigned int i = 0; i < input.size(); i++)
-		input[i] = sine.tick() * maxval;
-}
-
-void synth::init()
-{
-	stk::Stk::setSampleRate(44100);
-	sine.setFrequency(440);
-
+	osc_freq = freq;
+	osc.setFrequency(osc_freq);
 }

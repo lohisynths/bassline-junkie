@@ -7,13 +7,21 @@
 //============================================================================
 
 #include <signal.h>
+#include "stk/FileWvOut.h"
 
 #include "AudioDevice.h"
 #include "synth.h"
-#include "Plot.h"
+#include "cpucounter.h"
+#include "wavwriter.h"
+
+const size_t voices_count = 5;
 
 AudioDevice device;
-std::array<int, 512> array;
+wav_writer wav_out;
+cpu_counter licznik;
+
+std::array<synth, voices_count> voices;
+std::array<int, 512> output;
 
 static bool play = true;
 
@@ -26,30 +34,57 @@ static void finish(int ignore)
 int main()
 {
 	signal(SIGINT, finish);
-
-	Plot plot("ciabejek", 0, 1, Plot::transfer::scroll);
 	stick_this_thread_to_core(0);
-	//set_pthread_params();
-	synth gracz;
-	gracz.init();
+	set_pthread_params();
+
+	stk::Stk::setSampleRate(44100);
+
+	for (auto &voice : voices)
+	{
+		auto elo = std::distance(voices.begin(), &voice);
+		voice.init(50 + elo * 50);
+	}
 
 	while (play)
 	{
 		if (device.aval())
 		{
-			auto ciabejek_start = std::chrono::steady_clock::now();
+			// start time reporting
+			licznik.start();
 
-			gracz.process(array);
+			// clear output buffer
+			std::fill(std::begin(output), std::end(output), 0);
 
-			device.play(array); // while loop inside
+			// proces new samples
+			for (auto &voice : voices)
+			{
+				voice.process();
+			}
 
-			std::chrono::duration<double, std::milli> fp_ms =
-					std::chrono::steady_clock::now() - ciabejek_start;
+			// fill output buffer with data
+			for (auto &voice : voices)
+			{
+				auto &voice_data = voice.get_array();
 
-			plot.update(fp_ms.count());
+				std::transform(voice_data.begin(), voice_data.end(),
+						voice_data.begin(),
+						std::bind1st(std::multiplies<double>(),
+								1. / voices_count));
+
+				std::transform(output.begin(), output.end(), voice_data.begin(),
+						output.begin(), std::plus<int>());
+			}
+
+			// send buffer to soundcard
+			device.play(output); // while loop inside
+
+			// stop time reporting
+			licznik.stop();
+
+			// write buffer to file
+			wav_out.tick(output);
+
 		}
-
 	}
-
 	return 0;
 }

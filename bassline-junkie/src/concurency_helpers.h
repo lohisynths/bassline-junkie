@@ -13,27 +13,25 @@
  * Exemple of use:
  *    PrintThread{} << "Hello world!" << std::endl;
  */
-class PrintThread: public std::ostringstream
-{
-public:
-	PrintThread() = default;
-
-	~PrintThread()
-	{
-		std::lock_guard<std::mutex> guard(_mutexPrint);
-		std::cout << this->str();
-	}
-
-private:
-	static std::mutex _mutexPrint;
-};
-
-std::mutex PrintThread::_mutexPrint
-{ };
-
+//class PrintThread: public std::ostringstream
+//{
+//public:
+//	PrintThread() = default;
+//
+//	~PrintThread()
+//	{
+//		std::lock_guard<std::mutex> guard(_mutexPrint);
+//		std::cout << this->str();
+//	}
+//
+//private:
+//	static std::mutex _mutexPrint;
+//};
+//
+//std::mutex PrintThread::_mutexPrint
+//{ };
 //////////////////////////////////////////////////////////////////////////////////
-
-int stick_this_thread_to_core(int core_id)
+static int stick_this_thread_to_core(int core_id)
 {
 	int num_cores = sysconf(_SC_NPROCESSORS_ONLN);
 	if (core_id < 0 || core_id >= num_cores)
@@ -49,8 +47,7 @@ int stick_this_thread_to_core(int core_id)
 
 //////////////////////////////////////////////////////////////////////////////////
 
-static
-void set_pthread_params()
+static void set_pthread_params()
 {
 	int policy = SCHED_RR;
 	int priority = sched_get_priority_max(SCHED_RR);
