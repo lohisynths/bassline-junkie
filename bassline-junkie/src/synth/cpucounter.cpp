@@ -9,7 +9,9 @@
 
 cpu_counter::cpu_counter()
 {
-	plot = new Plot("ciabejek", 0, 15, Plot::transfer::scroll);
+	plot = 	new Plot("ciabejek", 0, 20, Plot::transfer::scroll);
+
+
 }
 
 cpu_counter::~cpu_counter()

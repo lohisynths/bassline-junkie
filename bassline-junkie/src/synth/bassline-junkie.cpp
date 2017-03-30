@@ -6,6 +6,8 @@
 // Description : libasound + libstk C++ Hello World
 //============================================================================
 
+#include <future>
+
 #include <signal.h>
 #include "stk/FileWvOut.h"
 
@@ -14,7 +16,7 @@
 #include "cpucounter.h"
 #include "wavwriter.h"
 
-const size_t voices_count = 5;
+const size_t voices_count = 4;
 
 AudioDevice device;
 wav_writer wav_out;
@@ -31,10 +33,12 @@ static void finish(int ignore)
 	play = false;
 }
 
+#include "tbb/tbb.h"
+
 int main()
 {
 	signal(SIGINT, finish);
-	stick_this_thread_to_core(0);
+	stick_this_thread_to_core(4);
 	set_pthread_params();
 
 	stk::Stk::setSampleRate(44100);
@@ -52,14 +56,73 @@ int main()
 			// start time reporting
 			licznik.start();
 
+
+			std::promise<void> t1_ready_promise;
+			std::promise<void> t2_ready_promise;
+			std::promise<void> ready_promise;
+
+			std::shared_future<void> ready_future(ready_promise.get_future());
+
+
+
+
 			// clear output buffer
 			std::fill(std::begin(output), std::end(output), 0);
 
-			// proces new samples
-			for (auto &voice : voices)
+
+
+
+			auto fun1 = [&]()
 			{
-				voice.process();
-			}
+				stick_this_thread_to_core(4);
+				t1_ready_promise.set_value();
+				ready_future.wait(); // waits for the signal from main()
+
+				voices[0].process();
+				voices[1].process();
+			};
+
+
+			auto fun2 = [&]()
+			{
+				stick_this_thread_to_core(5);
+				t2_ready_promise.set_value();
+				ready_future.wait(); // waits for the signal from main()
+
+				voices[2].process();
+				voices[3].process();
+			};
+
+
+			auto result1 = std::async(std::launch::async, fun1);
+			auto result2 = std::async(std::launch::async, fun2);
+
+
+			// wait for the threads to become ready
+			t1_ready_promise.get_future().wait();
+			t2_ready_promise.get_future().wait();
+			// signal the threads to go
+			ready_promise.set_value();
+
+			result1.get();
+			result2.get();
+
+
+
+			// proces new samples
+//			for (auto &voice : voices)
+//			{
+//				voice.process();
+//			}
+
+
+//			tbb::parallel_for(
+//					size_t(0), voices_count, size_t(1), [=](size_t i)
+//					{
+//						voices[i].process();
+//					}
+//			);
+
 
 			// fill output buffer with data
 			for (auto &voice : voices)

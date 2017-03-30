@@ -10,8 +10,8 @@
 synth::synth()
 {
 	osc_freq = 100;
-	flt_freq = 500;
-	flt_res = 0.75;
+	flt_freq = 1000;
+	flt_res = 0.0;
 
 	filter.setCutoff(flt_freq);
 	filter.setRes(flt_res);

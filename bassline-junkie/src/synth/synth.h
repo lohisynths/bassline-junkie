@@ -32,7 +32,7 @@ public:
 	{
 		for (auto &arr : array)
 		{
-			auto max_iter = 20;
+			auto max_iter = 70;
 			auto lolo = osc.tick();
 			for (int i = 0; i < max_iter; i++)
 			{

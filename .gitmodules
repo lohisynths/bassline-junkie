@@ -3,3 +3,9 @@
 	url = https://github.com/lohisynths/stk.git
 	branch = x86
 	update = rebase
+[submodule "benchmark"]
+	path = benchmark
+	url = https://github.com/google/benchmark.git
+[submodule "Plot"]
+	path = Plot
+	url = https://github.com/lohisynths/Plot.git
