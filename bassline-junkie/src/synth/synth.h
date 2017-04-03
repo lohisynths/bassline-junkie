@@ -9,9 +9,9 @@
 #define SYNTH_H_
 
 #include <array>
-#include <stk/SineWave.h>
+#include <SineWave.h>
 #include <cmath>
-#include "synth/MoogFilter.h"
+#include "MoogFilter.h"
 
 const unsigned int format_bits = 32; //snd_pcm_format_width(*m_format);
 const unsigned int maxval = (1U << (format_bits - 1U)) - 1U;
@@ -32,7 +32,7 @@ public:
 	{
 		for (auto &arr : array)
 		{
-			auto max_iter = 70;
+			auto max_iter = 20;
 			auto lolo = osc.tick();
 			for (int i = 0; i < max_iter; i++)
 			{

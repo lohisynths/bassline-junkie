@@ -9,7 +9,7 @@
 #include <future>
 
 #include <signal.h>
-#include "stk/FileWvOut.h"
+#include "FileWvOut.h"
 
 #include "AudioDevice.h"
 #include "synth.h"
@@ -17,13 +17,6 @@
 #include "wavwriter.h"
 
 const size_t voices_count = 4;
-
-AudioDevice device;
-wav_writer wav_out;
-cpu_counter licznik;
-
-std::array<synth, voices_count> voices;
-std::array<int, 512> output;
 
 static bool play = true;
 
@@ -42,6 +35,13 @@ int main()
 	set_pthread_params();
 
 	stk::Stk::setSampleRate(44100);
+
+	AudioDevice device;
+	wav_writer wav_out;
+	cpu_counter licznik;
+
+	std::array<synth, voices_count> voices;
+	std::array<int, 512> output;
 
 	for (auto &voice : voices)
 	{
@@ -74,7 +74,7 @@ int main()
 
 			auto fun1 = [&]()
 			{
-				stick_this_thread_to_core(4);
+				stick_this_thread_to_core(5);
 				t1_ready_promise.set_value();
 				ready_future.wait(); // waits for the signal from main()
 
@@ -85,7 +85,7 @@ int main()
 
 			auto fun2 = [&]()
 			{
-				stick_this_thread_to_core(5);
+				stick_this_thread_to_core(6);
 				t2_ready_promise.set_value();
 				ready_future.wait(); // waits for the signal from main()
 

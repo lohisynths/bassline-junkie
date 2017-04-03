@@ -9,7 +9,7 @@
 #define WAVWRITER_H_
 
 #include <array>
-#include "stk/FileWvOut.h"
+#include "FileWvOut.h"
 
 class wav_writer
 {
