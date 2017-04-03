@@ -9,7 +9,7 @@
 #define SYNTH_H_
 
 #include <array>
-#include <SineWave.h>
+#include <BlitSaw.h>
 #include <cmath>
 #include "MoogFilter.h"
 
@@ -57,7 +57,7 @@ public:
 	void init(double freq);
 
 private:
-	stk::SineWave osc;
+	stk::BlitSaw osc;
 	MoogFilter filter;
 
 	double osc_freq;
