@@ -4,32 +4,20 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
-../src/synth/AudioDevice.cpp \
-../src/synth/MoogFilter.cpp \
-../src/synth/bassline-junkie.cpp \
-../src/synth/cpucounter.cpp \
-../src/synth/synth.cpp \
-../src/synth/wavwriter.cpp 
+../src/synth/engines/sharedfutures.cpp \
+../src/synth/engines/sharedfutures_sleep.cpp 
 
 OBJS += \
-./src/synth/AudioDevice.o \
-./src/synth/MoogFilter.o \
-./src/synth/bassline-junkie.o \
-./src/synth/cpucounter.o \
-./src/synth/synth.o \
-./src/synth/wavwriter.o 
+./src/synth/engines/sharedfutures.o \
+./src/synth/engines/sharedfutures_sleep.o 
 
 CPP_DEPS += \
-./src/synth/AudioDevice.d \
-./src/synth/MoogFilter.d \
-./src/synth/bassline-junkie.d \
-./src/synth/cpucounter.d \
-./src/synth/synth.d \
-./src/synth/wavwriter.d 
+./src/synth/engines/sharedfutures.d \
+./src/synth/engines/sharedfutures_sleep.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
-src/synth/%.o: ../src/synth/%.cpp
+src/synth/engines/%.o: ../src/synth/engines/%.cpp
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C++ Compiler'
 	g++ -std=c++1y -I../../stk/include -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"

@@ -31,6 +31,8 @@
 //std::mutex PrintThread::_mutexPrint
 //{ };
 //////////////////////////////////////////////////////////////////////////////////
+#include <unistd.h> //_SC_NPROCESSORS_ONLN
+
 static int stick_this_thread_to_core(int core_id)
 {
 	int num_cores = sysconf(_SC_NPROCESSORS_ONLN);
@@ -46,11 +48,12 @@ static int stick_this_thread_to_core(int core_id)
 }
 
 //////////////////////////////////////////////////////////////////////////////////
+#include <iostream>
 
 static void set_pthread_params()
 {
-	int policy = SCHED_RR;
-	int priority = sched_get_priority_max(SCHED_RR);
+	int policy = SCHED_FIFO;
+	int priority = sched_get_priority_max(policy);
 
 	sched_param sch_params;
 	sch_params.sched_priority = priority;

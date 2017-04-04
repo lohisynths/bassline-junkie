@@ -4,5 +4,5 @@
 
 USER_OBJS :=
 
-LIBS := -ltbb -lbenchmark -lstk
+LIBS := -lbenchmark -lstk
 

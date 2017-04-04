@@ -8,6 +8,7 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include src/synth/engines/subdir.mk
 -include src/synth/subdir.mk
 -include subdir.mk
 -include objects.mk
@@ -44,7 +45,7 @@ all: bassline-junkie
 bassline-junkie: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	clang++ -L../../Plot/libs -L../../stk/src -pthread -o "bassline-junkie" $(OBJS) $(USER_OBJS) $(LIBS)
+	g++ -L../../stk/src -pthread -o "bassline-junkie" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

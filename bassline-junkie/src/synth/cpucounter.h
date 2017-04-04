@@ -9,7 +9,6 @@
 #define CPUCOUNTER_H_
 
 #include <chrono>
-#include "Plot.h"
 
 class cpu_counter
 {
@@ -18,11 +17,10 @@ public:
 	virtual ~cpu_counter();
 
 	void start();
-	void stop();
+	std::chrono::duration<double, std::milli> stop();
 
 private:
 	std::chrono::steady_clock::time_point start_time;
-	Plot *plot;
 
 };
 

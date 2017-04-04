@@ -6,7 +6,6 @@
 // Description : libasound + libstk C++ Hello World
 //============================================================================
 
-#include <future>
 
 #include <signal.h>
 #include "FileWvOut.h"
@@ -15,8 +14,9 @@
 #include "synth.h"
 #include "cpucounter.h"
 #include "wavwriter.h"
+#include "concurency_helpers.h"
+#include <fstream>
 
-const size_t voices_count = 4;
 
 static bool play = true;
 
@@ -28,16 +28,31 @@ static void finish(int ignore)
 
 #include "tbb/tbb.h"
 
+
+const unsigned int iter = 1000;
+
+#include <sys/mman.h>
+
+#include "engines/sharedfutures_sleep.h"
+#include "engines/sharedfutures.h"
+
+
 int main()
 {
+	shared_futures_sleep silnik;
+
+	mlockall(MCL_FUTURE | MCL_CURRENT);
+
+
 	signal(SIGINT, finish);
-	stick_this_thread_to_core(4);
+	stick_this_thread_to_core(3);
 	set_pthread_params();
+
 
 	stk::Stk::setSampleRate(44100);
 
 	AudioDevice device;
-	wav_writer wav_out;
+	//wav_writer wav_out;
 	cpu_counter licznik;
 
 	std::array<synth, voices_count> voices;
@@ -49,70 +64,30 @@ int main()
 		voice.init(50 + elo * 50);
 	}
 
-	while (play)
+
+	std::vector<double> times;
+	times.reserve(iter);
+
+	while ( play )
 	{
 		if (device.aval())
 		{
-			// start time reporting
+			// start reporting time
 			licznik.start();
-
-
-			std::promise<void> t1_ready_promise;
-			std::promise<void> t2_ready_promise;
-			std::promise<void> ready_promise;
-
-			std::shared_future<void> ready_future(ready_promise.get_future());
-
-
-
 
 			// clear output buffer
 			std::fill(std::begin(output), std::end(output), 0);
 
 
-
-
-			auto fun1 = [&]()
-			{
-				stick_this_thread_to_core(5);
-				t1_ready_promise.set_value();
-				ready_future.wait(); // waits for the signal from main()
-
-				voices[0].process();
-				voices[1].process();
-			};
-
-
-			auto fun2 = [&]()
-			{
-				stick_this_thread_to_core(6);
-				t2_ready_promise.set_value();
-				ready_future.wait(); // waits for the signal from main()
-
-				voices[2].process();
-				voices[3].process();
-			};
-
-
-			auto result1 = std::async(std::launch::async, fun1);
-			auto result2 = std::async(std::launch::async, fun2);
-
-
-			// wait for the threads to become ready
-			t1_ready_promise.get_future().wait();
-			t2_ready_promise.get_future().wait();
-			// signal the threads to go
-			ready_promise.set_value();
-
-			result1.get();
-			result2.get();
+			silnik.process(voices);
 
 
 
 			// proces new samples
 //			for (auto &voice : voices)
 //			{
-//				voice.process();
+//			voices[0].process();
+//			voices[1].process();
 //			}
 
 
@@ -141,13 +116,41 @@ int main()
 			// send buffer to soundcard
 			device.play(output); // while loop inside
 
+
+
+
+			static unsigned int i = 0;
+
 			// stop time reporting
-			licznik.stop();
+			auto duration = licznik.stop().count();
+			if(i>100)
+				times.push_back(duration);
+
+
 
 			// write buffer to file
-			wav_out.tick(output);
+			// wav_out.tick(output);
+
+
+			i++;
+			if(i>iter)
+				play = false;
+
 
 		}
+
+
+
 	}
+
+
+
+	auto data = reinterpret_cast<char *>(times.data());
+	auto data_size = sizeof(times.at(0)) * times.size();
+
+	std::ofstream outfile_m("data.bin", std::ios::binary);
+
+	outfile_m.write(data, data_size);
+
 	return 0;
 }

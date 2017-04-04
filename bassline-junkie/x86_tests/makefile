@@ -44,7 +44,7 @@ all: bassline-junkie
 bassline-junkie: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	clang++ -L"/home/alax/git/bassline-junkie/Plot/libs" -L../../stk/src -pthread -o "bassline-junkie" $(OBJS) $(USER_OBJS) $(LIBS)
+	g++ -L../../stk/src -pthread -o "bassline-junkie" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

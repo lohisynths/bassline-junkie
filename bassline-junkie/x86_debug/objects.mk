@@ -4,5 +4,5 @@
 
 USER_OBJS :=
 
-LIBS := -lasound -lrap -ltbb -lstk
+LIBS := -lasound -ltbb -lstk
 
