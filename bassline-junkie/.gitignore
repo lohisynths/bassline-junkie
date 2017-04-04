@@ -1,13 +1,5 @@
-/Debug/
-/Release/
 /hellosine.wav
 
-
-/tests_build/bassline-junkie
-/tests_build/src
-
-/x86_debug/bassline-junkie
-/x86_debug/src
-
-/x86_release/bassline-junkie
-/x86_release/src
+/**/*.o
+/**/*.d
+/**/bassline-junkie
