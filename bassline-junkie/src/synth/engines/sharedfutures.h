@@ -14,7 +14,7 @@
 
 #include <future>
 
-class shared_futures {
+class shared_futures : public Engine {
 public:
 	shared_futures();
 	virtual ~shared_futures();

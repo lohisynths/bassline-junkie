@@ -33,6 +33,8 @@
 //////////////////////////////////////////////////////////////////////////////////
 #include <unistd.h> //_SC_NPROCESSORS_ONLN
 
+#include <iostream>
+
 static int stick_this_thread_to_core(int core_id)
 {
 	int num_cores = sysconf(_SC_NPROCESSORS_ONLN);
@@ -48,7 +50,6 @@ static int stick_this_thread_to_core(int core_id)
 }
 
 //////////////////////////////////////////////////////////////////////////////////
-#include <iostream>
 
 static void set_pthread_params()
 {

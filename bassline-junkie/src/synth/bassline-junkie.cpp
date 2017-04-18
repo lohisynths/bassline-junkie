@@ -30,17 +30,18 @@ static void finish(int ignore)
 
 
 const unsigned int iter = 1000;
+const unsigned int start_threshold = 0;
 
 #include <sys/mman.h>
 
 #include "engines/sharedfutures_sleep.h"
 #include "engines/sharedfutures.h"
+#include "engines/serial_sleep.h"
 
+std::vector <std::tuple<Engine*, std::string> > silniki;
 
 int main()
 {
-	shared_futures_sleep silnik;
-
 	mlockall(MCL_FUTURE | MCL_CURRENT);
 
 
@@ -52,6 +53,11 @@ int main()
 	stk::Stk::setSampleRate(44100);
 
 	AudioDevice device;
+	
+	silniki.push_back(std::make_pair(new shared_futures,"shared_futures"));
+	silniki.push_back(std::make_pair(new shared_futures_sleep,"shared_futures_sleep"));
+	silniki.push_back(std::make_pair(new serial_sleep,"serial_sleep"));
+	
 	//wav_writer wav_out;
 	cpu_counter licznik;
 
@@ -68,89 +74,77 @@ int main()
 	std::vector<double> times;
 	times.reserve(iter);
 
-	while ( play )
+	for (auto &engine : silniki)
 	{
-		if (device.aval())
+		play = true;
+
+		auto silnik = std::get<0>(engine);
+
+		while ( play )
 		{
-			// start reporting time
-			licznik.start();
-
-			// clear output buffer
-			std::fill(std::begin(output), std::end(output), 0);
-
-
-			silnik.process(voices);
-
-
-
-			// proces new samples
-//			for (auto &voice : voices)
-//			{
-//			voices[0].process();
-//			voices[1].process();
-//			}
-
-
-//			tbb::parallel_for(
-//					size_t(0), voices_count, size_t(1), [=](size_t i)
-//					{
-//						voices[i].process();
-//					}
-//			);
-
-
-			// fill output buffer with data
-			for (auto &voice : voices)
+			if (device.aval())
 			{
-				auto &voice_data = voice.get_array();
+				// start reporting time
+				licznik.start();
+				// clear output buffer
+				std::fill(std::begin(output), std::end(output), 0);
+				// process data
+				silnik->process(voices);
 
-				std::transform(voice_data.begin(), voice_data.end(),
-						voice_data.begin(),
-						std::bind1st(std::multiplies<double>(),
-								1. / voices_count));
+	//			tbb::parallel_for(
+	//					size_t(0), voices_count, size_t(1), [=](size_t i)
+	//					{
+	//						voices[i].process();
+	//					}
+	//			);
 
-				std::transform(output.begin(), output.end(), voice_data.begin(),
-						output.begin(), std::plus<int>());
+
+				// fill output buffer with data
+				for (auto &voice : voices)
+				{
+					auto &voice_data = voice.get_array();
+
+					std::transform(voice_data.begin(), voice_data.end(),
+							voice_data.begin(),
+							std::bind1st(std::multiplies<double>(),
+									1. / voices_count));
+
+					std::transform(output.begin(), output.end(), voice_data.begin(),
+							output.begin(), std::plus<int>());
+				}
+
+				// send buffer to soundcard
+				device.play(output); // while loop inside
+
+				static unsigned int i = 0;
+
+				// stop time reporting
+				auto duration = licznik.stop().count();
+				if(i>start_threshold)
+					times.push_back(duration);
+
+				// write buffer to file
+				// wav_out.tick(output);
+
+				i++;
+				if(i>iter)
+				{
+					play = false;
+					i=0;
+
+					auto data = reinterpret_cast<char *>(times.data());
+					auto data_size = sizeof(times.at(0)) * times.size();
+
+					auto dupka = std::get<1>(engine);
+
+					dupka += ".bin";
+					std::cout << dupka << std::endl;
+					std::ofstream outfile_m(dupka, std::ios::binary);
+					outfile_m.write(data, data_size);
+					times.clear();
+				}
 			}
-
-			// send buffer to soundcard
-			device.play(output); // while loop inside
-
-
-
-
-			static unsigned int i = 0;
-
-			// stop time reporting
-			auto duration = licznik.stop().count();
-			if(i>100)
-				times.push_back(duration);
-
-
-
-			// write buffer to file
-			// wav_out.tick(output);
-
-
-			i++;
-			if(i>iter)
-				play = false;
-
-
 		}
-
-
-
 	}
-
-
-
-	auto data = reinterpret_cast<char *>(times.data());
-	auto data_size = sizeof(times.at(0)) * times.size();
-
-	std::ofstream outfile_m("data.bin", std::ios::binary);
-
-	outfile_m.write(data, data_size);
-
 	return 0;
 }

@@ -12,11 +12,12 @@
 
 const size_t voices_count = 4;
 
+static void DoNotOptimize(int const& value) {
+	asm volatile("" : : "g"(value) : "memory");
+}
+
 class Engine {
 public:
-	Engine();
-	virtual ~Engine() = 0;
-
 	virtual void process(std::array<synth, voices_count> &voices) = 0 ;
 };
 

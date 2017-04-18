@@ -8,16 +8,16 @@ autoreconf
 cd ..
 
 make clean -C stk
-make -j -C stk
+make -j4 lib -C stk
 
-make -j clean -C bassline-junkie/x86_debug
-make -j clean -C bassline-junkie/x86_release
-make -j clean -C bassline-junkie/x86_tests
+make -j4 clean -C bassline-junkie/x86_debug
+make -j4 clean -C bassline-junkie/x86_release
+make -j4 clean -C bassline-junkie/x86_tests
 
 
-make -j -C bassline-junkie/x86_debug
-make -j -C bassline-junkie/x86_release
-make -j -C bassline-junkie/x86_tests
+make -j4 -C bassline-junkie/x86_debug
+make -j4 -C bassline-junkie/x86_release
+make -j4 -C bassline-junkie/x86_tests
 
 
 

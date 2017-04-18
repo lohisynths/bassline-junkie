@@ -1,6 +1,9 @@
 #while [ 1 ]
 #do
-./x86_debug/bassline-junkie 
+rm *.bin 
+rm *.png
+sudo ./x86_debug/bassline-junkie 
+sudo chown alax:alax *.bin
 python plot.py
 #done
 

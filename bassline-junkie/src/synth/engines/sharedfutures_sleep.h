@@ -14,7 +14,7 @@
 
 #include <future>
 
-class shared_futures_sleep {
+class shared_futures_sleep : public Engine{
 public:
 	shared_futures_sleep();
 	virtual ~shared_futures_sleep();

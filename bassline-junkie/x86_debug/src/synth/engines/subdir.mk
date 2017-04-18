@@ -4,14 +4,17 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
+../src/synth/engines/serial_sleep.cpp \
 ../src/synth/engines/sharedfutures.cpp \
 ../src/synth/engines/sharedfutures_sleep.cpp 
 
 OBJS += \
+./src/synth/engines/serial_sleep.o \
 ./src/synth/engines/sharedfutures.o \
 ./src/synth/engines/sharedfutures_sleep.o 
 
 CPP_DEPS += \
+./src/synth/engines/serial_sleep.d \
 ./src/synth/engines/sharedfutures.d \
 ./src/synth/engines/sharedfutures_sleep.d 
 

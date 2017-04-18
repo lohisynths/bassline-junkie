@@ -18,10 +18,6 @@ shared_futures_sleep::~shared_futures_sleep() {
 std::vector<float> data;
 
 
-void DoNotOptimize(int const& value) {
-	asm volatile("" : : "g"(value) : "memory");
-}
-
 void shared_futures_sleep::process(std::array<synth, voices_count> &voices) {
 
 
