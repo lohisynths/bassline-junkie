@@ -29,7 +29,7 @@ void shared_futures_sleep::process(std::array<synth, voices_count> &voices) {
 
 	auto fun1 = [&]()
 	{
-		stick_this_thread_to_core(6);
+		stick_this_thread_to_core(councyrent_cores[1]);
 		t1_ready_promise.set_value();
 		ready_future.wait(); // waits for the signal from main()
 
@@ -39,7 +39,7 @@ void shared_futures_sleep::process(std::array<synth, voices_count> &voices) {
 
 	auto fun2 = [&]()
 	{
-		stick_this_thread_to_core(7);
+		stick_this_thread_to_core(councyrent_cores[2]);
 		t2_ready_promise.set_value();
 		ready_future.wait(); // waits for the signal from main()
 

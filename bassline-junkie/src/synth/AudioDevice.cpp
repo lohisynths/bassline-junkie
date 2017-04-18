@@ -14,8 +14,15 @@ AudioDevice::AudioDevice()
 	areas = NULL;
 
 	//device = "hw:HDMI,3"; /* playback device */
-	device = "hw:PCH,0"; /* playback device */
 	//device = "default"; /* playback device */
+
+#ifndef __arm__
+	device = "hw:PCH,0"; /* playback device */
+#else
+	device = "default"; /* playback device */
+#endif
+
+
 
 	format = SND_PCM_FORMAT_S32; /* sample format */
 	rate = 44100; /* stream rate */

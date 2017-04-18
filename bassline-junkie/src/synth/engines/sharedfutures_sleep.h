@@ -8,6 +8,7 @@
 #ifndef SRC_SYNTH_ENGINES_SHAREDFUTURES_SLEEP_H_
 #define SRC_SYNTH_ENGINES_SHAREDFUTURES_SLEEP_H_
 
+#include "../config.h"
 #include "Engine.h"
 #include "../concurency_helpers.h"
 

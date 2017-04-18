@@ -8,17 +8,31 @@
 
 
 #include <signal.h>
-#include "FileWvOut.h"
+#include <sys/mman.h>
+
+#include <fstream>
+#include <algorithm>
+
 
 #include "AudioDevice.h"
 #include "synth.h"
 #include "cpucounter.h"
 #include "wavwriter.h"
 #include "concurency_helpers.h"
-#include <fstream>
+
+#include "FileWvOut.h"
+
+#include "engines/sharedfutures_sleep.h"
+#include "engines/sharedfutures.h"
+#include "engines/serial_sleep.h"
+#include "engines/serial.h"
 
 
 static bool play = true;
+const unsigned int start_threshold = 100;
+const unsigned int iter = 1000 + start_threshold;
+std::vector <std::tuple<Engine*, std::string> > silniki;
+
 
 static void finish(int ignore)
 {
@@ -26,27 +40,13 @@ static void finish(int ignore)
 	play = false;
 }
 
-#include "tbb/tbb.h"
-
-
-const unsigned int iter = 1000;
-const unsigned int start_threshold = 0;
-
-#include <sys/mman.h>
-
-#include "engines/sharedfutures_sleep.h"
-#include "engines/sharedfutures.h"
-#include "engines/serial_sleep.h"
-
-std::vector <std::tuple<Engine*, std::string> > silniki;
 
 int main()
 {
 	mlockall(MCL_FUTURE | MCL_CURRENT);
 
-
 	signal(SIGINT, finish);
-	stick_this_thread_to_core(3);
+	stick_this_thread_to_core(councyrent_cores[0]);
 	set_pthread_params();
 
 
@@ -55,9 +55,10 @@ int main()
 	AudioDevice device;
 	
 	silniki.push_back(std::make_pair(new shared_futures,"shared_futures"));
+	silniki.push_back(std::make_pair(new serial,"serial"));
 	silniki.push_back(std::make_pair(new shared_futures_sleep,"shared_futures_sleep"));
 	silniki.push_back(std::make_pair(new serial_sleep,"serial_sleep"));
-	
+
 	//wav_writer wav_out;
 	cpu_counter licznik;
 
@@ -90,14 +91,6 @@ int main()
 				std::fill(std::begin(output), std::end(output), 0);
 				// process data
 				silnik->process(voices);
-
-	//			tbb::parallel_for(
-	//					size_t(0), voices_count, size_t(1), [=](size_t i)
-	//					{
-	//						voices[i].process();
-	//					}
-	//			);
-
 
 				// fill output buffer with data
 				for (auto &voice : voices)

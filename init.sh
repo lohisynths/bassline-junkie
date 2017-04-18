@@ -3,5 +3,9 @@ git submodule init
 git submodule update
 
 cd stk
-git checkout x86
 
+
+git checkout master
+autoreconf
+#./configure --enable-debug --with-alsa --disable-shared --enable-static
+./configure --with-alsa --disable-shared --enable-static

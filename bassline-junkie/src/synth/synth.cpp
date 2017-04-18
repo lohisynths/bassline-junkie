@@ -15,6 +15,7 @@ synth::synth()
 
 	filter.setCutoff(flt_freq);
 	filter.setRes(flt_res);
+	std::fill(std::begin(array), std::end(array), 0);
 }
 
 synth::~synth()
