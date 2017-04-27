@@ -9,11 +9,12 @@ import numpy as np
 
 import os
 
+folder = "plots/"
 
-for file in os.listdir("."):
+for file in os.listdir(folder):
     if file.endswith(".bin"):
     
-        array = np.fromfile(open(file, "r"), dtype=np.float64)
+        array = np.fromfile(open(folder + file, "r"), dtype=np.float64)
         
         
         
@@ -73,7 +74,25 @@ for file in os.listdir("."):
         filename = os.path.splitext(file)[0] + ".png"
         print( filename )
         
-        plt.savefig(filename)
+        plt.savefig(folder + filename)
+        plt.show()
+
         plt.cla()
         plt.clf()
-        #plt.show()
+
+import glob
+import shutil
+
+i = 0
+output_directory = folder + "/plot_" + str(i)
+
+while os.path.exists(output_directory):
+    i = i + 1
+    output_directory = folder + "/plot" + str(i)
+
+if not os.path.exists(output_directory):
+    os.makedirs(output_directory)
+
+for filename in glob.glob(os.path.join(folder, '*.*')):
+    shutil.copy(filename, output_directory)
+    os.remove(filename)
