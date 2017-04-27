@@ -21,4 +21,6 @@ make -j4 lib -C stk
 
 make -j4 clean -C bassline-junkie/arm_debug
 
+make -j4 -C bassline-junkie/arm_debug
+
 echo -e ${BGreen} 'build done' ${NC}
