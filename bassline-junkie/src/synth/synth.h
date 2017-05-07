@@ -10,8 +10,12 @@
 
 #include <array>
 #include <BlitSaw.h>
+
+#include "ADSR.h"
+
 #include <cmath>
 #include "MoogFilter.h"
+#include "MidiReceiver.h"
 
 const unsigned int format_bits = 32; //snd_pcm_format_width(*m_format);
 const unsigned int maxval = (1U << (format_bits - 1U)) - 1U;
@@ -28,41 +32,25 @@ public:
 		return array;
 	}
 
-	void process()
-	{
-		for (auto &arr : array)
-		{
-#ifndef __arm__
-			auto max_iter = 60;
-#else
-			auto max_iter = 2;
-#endif
-			auto lolo = osc.tick();
-			for (int i = 0; i < max_iter; i++)
-			{
-				osc.setFrequency(osc_freq);
-
-				filter.setCutoff(flt_freq);
-				filter.setRes(flt_res);
-				lolo = filter.process(lolo);
-				lolo = std::tanh(lolo);
-
-			}
-
-			if (lolo > 1)
-				lolo = 1;
-			else if (lolo < -1)
-				lolo = -1;
-
-			arr = lolo * maxval;
-		}
-	}
+	void process();
 
 	void init(double freq);
+
+
+	void message(MidiMessage *msg);
+
+	void noteOn(double freq, double vel);
+	void noteOff();
+
+
+
 
 private:
 	stk::BlitSaw osc;
 	MoogFilter filter;
+	stk::ADSR adsr;
+
+	double velocity;
 
 	double osc_freq;
 	double flt_freq;

@@ -55,9 +55,9 @@ int main()
 	AudioDevice device;
 	
 	silniki.push_back(std::make_pair(new shared_futures,"shared_futures"));
-	silniki.push_back(std::make_pair(new serial,"serial"));
-	silniki.push_back(std::make_pair(new shared_futures_sleep,"shared_futures_sleep"));
-	silniki.push_back(std::make_pair(new serial_sleep,"serial_sleep"));
+//	silniki.push_back(std::make_pair(new serial,"serial"));
+//	silniki.push_back(std::make_pair(new shared_futures_sleep,"shared_futures_sleep"));
+//	silniki.push_back(std::make_pair(new serial_sleep,"serial_sleep"));
 
 	//wav_writer wav_out;
 	cpu_counter licznik;
@@ -87,6 +87,7 @@ int main()
 			{
 				// start reporting time
 				licznik.start();
+				//silnik->updateMessages(voices);
 				// clear output buffer
 				std::fill(std::begin(output), std::end(output), 0);
 				// process data

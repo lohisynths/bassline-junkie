@@ -5,6 +5,7 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
 ../src/synth/AudioDevice.cpp \
+../src/synth/MidiReceiver.cpp \
 ../src/synth/MoogFilter.cpp \
 ../src/synth/bassline-junkie.cpp \
 ../src/synth/cpucounter.cpp \
@@ -13,6 +14,7 @@ CPP_SRCS += \
 
 OBJS += \
 ./src/synth/AudioDevice.o \
+./src/synth/MidiReceiver.o \
 ./src/synth/MoogFilter.o \
 ./src/synth/bassline-junkie.o \
 ./src/synth/cpucounter.o \
@@ -21,6 +23,7 @@ OBJS += \
 
 CPP_DEPS += \
 ./src/synth/AudioDevice.d \
+./src/synth/MidiReceiver.d \
 ./src/synth/MoogFilter.d \
 ./src/synth/bassline-junkie.d \
 ./src/synth/cpucounter.d \
@@ -32,7 +35,7 @@ CPP_DEPS += \
 src/synth/%.o: ../src/synth/%.cpp
 	@echo 'Building file: $<'
 	@echo 'Invoking: Cross G++ Compiler'
-	arm-linux-gnueabihf-g++ -std=c++1y -I../../stk/include -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"
+	arm-linux-gnueabihf-g++ -std=c++1y -I../../stk/include -O0 -mfpu=neon-vfpv4 -mfloat-abi=hard -funsafe-math-optimizations -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
