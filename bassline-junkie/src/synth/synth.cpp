@@ -61,7 +61,7 @@ void synth::process()
 #ifndef __arm__
 		auto max_iter = 60;
 #else
-		auto max_iter = 1;
+		auto max_iter = 5;
 #endif
 		auto output = osc.tick();
 		for (int i = 0; i < max_iter; i++)
