@@ -87,7 +87,8 @@ int main()
 			{
 				// start reporting time
 				licznik.start();
-				//silnik->updateMessages(voices);
+				for(int i = 0; i < 100; i++)
+					silnik->updateMessages(voices);
 				// clear output buffer
 				std::fill(std::begin(output), std::end(output), 0);
 				// process data

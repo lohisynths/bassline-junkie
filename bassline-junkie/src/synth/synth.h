@@ -41,6 +41,7 @@ public:
 
 	void noteOn(double freq, double vel);
 	void noteOff();
+	void controlCange(double param, double vel);
 
 
 

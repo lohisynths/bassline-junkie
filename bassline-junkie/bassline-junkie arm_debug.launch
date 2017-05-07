@@ -24,7 +24,7 @@
 <stringAttribute key="org.eclipse.cdt.launch.PROGRAM_NAME" value="arm_debug/bassline-junkie"/>
 <stringAttribute key="org.eclipse.cdt.launch.PROJECT_ATTR" value="bassline-junkie"/>
 <booleanAttribute key="org.eclipse.cdt.launch.PROJECT_BUILD_CONFIG_AUTO_ATTR" value="true"/>
-<stringAttribute key="org.eclipse.cdt.launch.PROJECT_BUILD_CONFIG_ID_ATTR" value="cdt.managedbuild.config.gnu.exe.debug.55035353.1736885731"/>
+<stringAttribute key="org.eclipse.cdt.launch.PROJECT_BUILD_CONFIG_ID_ATTR" value=""/>
 <booleanAttribute key="org.eclipse.cdt.launch.remote.RemoteCDSFDebuggerTab.DEFAULTS_SET" value="true"/>
 <stringAttribute key="org.eclipse.debug.core.ATTR_GDBSERVER_COMMAND" value="gdbserver"/>
 <stringAttribute key="org.eclipse.debug.core.ATTR_GDBSERVER_OPTIONS" value=""/>

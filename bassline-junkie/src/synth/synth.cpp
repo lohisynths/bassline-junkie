@@ -29,11 +29,10 @@ static const double Midi2Pitch[129] = {
 
 void synth::init(double freq)
 {
-	adsr.setSustainLevel(std::numeric_limits<double>::min());
-	adsr.setAttackRate(0.);
-	adsr.setDecayRate(0.0);
-	adsr.setSustainLevel(0.75);
-	adsr.setReleaseRate(0.00);
+	adsr.setAttackTime(0.0001);
+	adsr.setDecayTime(0.1);
+	adsr.setSustainLevel(1);
+	adsr.setReleaseTime(0.1);
 
 	osc_freq = freq;
 	osc.setFrequency(osc_freq);
@@ -75,7 +74,7 @@ void synth::process()
 			//output = std::tanh(output);
 		}
 
-		output *= adsr.	tick() * velocity;
+		output *= adsr.tick() * velocity;
 
 		if (output > 1)
 			output = 1;
@@ -97,6 +96,7 @@ void synth::message(MidiMessage *msg)
 		switch (msg->m_type)
 		{
 		case MidiMessage::Type::CC:
+			controlCange(msg->m_val_1,msg->m_val_2);
 			std::cout << "MidiMessage::Type::CC"; // prints "1"
 			break;       // and exits the switchNOTE_ON
 		case MidiMessage::Type::NOTE_ON:
@@ -125,3 +125,7 @@ void synth::noteOff()
 	adsr.keyOff();
 }
 
+void synth::controlCange(double param, double vel)
+{
+
+}
