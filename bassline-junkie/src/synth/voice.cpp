@@ -92,14 +92,10 @@ void Voice::message(MidiMessage *msg)
 		{
 		case MidiMessage::Type::CC:
 			controlCange(msg->m_val_1,msg->m_val_2);
-			//std::cout << "MidiMessage::Type::CC: " << +msg->m_val_1 << std::endl; // prints "1"
 			break;       // and exits the switchNOTE_ON
 		case MidiMessage::Type::NOTE_ON:
-			if(msg->m_val_2 != 0 )
-			{
-				noteOn(msg->m_val_1,msg->m_val_2);
-				break;       // and exits the switchNOTE_ON
-			}
+			noteOn(msg->m_val_1,msg->m_val_2);
+			break;
 		case MidiMessage::Type::NOTE_OFF:
 			noteOff();
 			break;       // and exits the switchNOTE_ON
