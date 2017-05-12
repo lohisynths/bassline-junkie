@@ -11,8 +11,8 @@
 #include "../voice.h"
 #include "../config.h"
 
-
-static void DoNotOptimize(int const& value) {
+static void DoNotOptimize(int const& value)
+{
 	asm volatile("" : : "g"(value) : "memory");
 }
 
@@ -59,12 +59,14 @@ public:
 	void updateMessages(std::array<Voice, voices_count> &voices)
 	{
 		auto msg = messager.getMessage();
-		if(msg)
+		if (msg)
 		{
+
 			if (msg->m_type != MidiMessage::NO_MESSAGE)
 			{
 				switch (msg->m_type)
 				{
+
 				case MidiMessage::Type::NOTE_ON:
 				{
 					if (msg->m_val_2 != 0)
