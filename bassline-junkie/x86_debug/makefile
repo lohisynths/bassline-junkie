@@ -8,7 +8,9 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include src/synth/utils/subdir.mk
 -include src/synth/engines/subdir.mk
+-include src/synth/dsp/subdir.mk
 -include src/synth/subdir.mk
 -include subdir.mk
 -include objects.mk

@@ -8,80 +8,82 @@
 #ifndef SRC_SYNTH_ENGINE_H_
 #define SRC_SYNTH_ENGINE_H_
 
-#include "../synth.h"
+#include "../voice.h"
+#include "../config.h"
 
-const size_t voices_count = 4;
 
 static void DoNotOptimize(int const& value) {
 	asm volatile("" : : "g"(value) : "memory");
 }
 
-#include "../MidiReceiver.h"
+#include "../utils/MidiReceiver.h"
 #include <vector>
 #include <algorithm>
-
-const size_t max_voices = 4;
+#include "../config.h"
 
 class Engine
 {
 public:
-	Engine()
-	{
-		free_cores.push_back(0);
-		free_cores.push_back(1);
-		free_cores.push_back(2);
-		free_cores.push_back(3);
-	}
+	virtual std::array<uint32_t, 512> &process(std::array<Voice, voices_count> &voices) = 0;
 
-	virtual void process(std::array<synth, voices_count> &voices) = 0;
-
-
-	void updateMessages(std::array<synth, voices_count> &voices)
+	void updateMessages(std::array<Voice, voices_count> &voices)
 	{
 		auto msg = messager.getMessage();
 		if(msg)
 		{
-			//msg->print();
-
 			if (msg->m_type == MidiMessage::NOTE_ON)
 			{
-				if (notes.size() < max_voices)
+				bool noteOff=false;
+
+				for(auto &note : notes )
 				{
-					auto core = free_cores.back();
-					free_cores.pop_back();
+					if(note.first.m_val_1 == msg->m_val_1)
+					{
+						// midi: note off == note on , velocity =0
+						if(note.second == 0)
+						{
+							note.first.m_type = MidiMessage::NOTE_OFF;
+							noteOff=true;
+						}
+						else
+						{
+							// if note is already playing, do nothing
+							noteOff=true;
+						}
+					}
+				}
 
-					notes.push_back(std::make_pair(*msg, core));
+				if(!noteOff)
+				{
+					if (notes.size() < voices_count)
+					{
+						auto core = free_cores.back();
+						free_cores.pop_back();
 
-					auto &note = notes.back().first;
-					auto core_nr = notes.back().second;
+						notes.push_back(std::make_pair(*msg, core));
 
-					voices[core_nr].message(&note);
+						auto &note = notes.back().first;
+						auto core_nr = notes.back().second;
 
-				//	std::cout << "core " << core_nr << " bussy of total " << notes.size() << " voices\n";
-
+						voices[core_nr].message(&note);
+					}
 				}
 			}
-			else if (msg->m_type == MidiMessage::NOTE_OFF)
+
+
+			if (msg->m_type == MidiMessage::NOTE_OFF)
 			{
 				for (size_t i=0;i < notes.size();i++)
 				{
 					auto &note = notes[i].first;
-					auto core_nr = notes[i].second;
-
 					if(note.m_val_1 == msg->m_val_1)
 					{
-				//		std::cout << "core " << core_nr << " free of total " << notes.size() << " voices\n";
-
 						note.m_type = MidiMessage::NO_MESSAGE;
 					}
 				}
-
-	//			notes.erase(std::remove_if(notes.begin(), notes.end(), [](auto &msg)
-	//			{	return msg.first.m_type == MidiMessage::NO_MESSAGE;}), notes.end());
-
-				//std::cout << "notes size " << notes.size() << "\n";
 			}
-			else
+
+			if(msg->m_type == MidiMessage::NOTE_ON && msg->m_type == MidiMessage::NOTE_OFF )
 			{
 				msg->print();
 
@@ -92,6 +94,8 @@ public:
 			}
 		}
 
+		// clean messages
+		// TODO: implement without dynamic allocation + smarter release
 		for (size_t i=0;i < notes.size();i++)
 		{
 			auto &note = notes[i].first;
@@ -99,25 +103,14 @@ public:
 
 			if (note.m_type == MidiMessage::NO_MESSAGE)
 			{
-				note.time++;
-				if(note.time > 0)
-				{
-					voices[core].noteOff();
-					notes.erase(notes.begin() + i);
-					free_cores.push_back(core);
-				//	std::cout << "core " << core << " freed of total " << notes.size() << " voices\n";
-
-					//std::cout << +note.m_val_1 << " " << +note.m_type << " " << core << std::endl;
-					break;
-				}
+				voices[core].noteOff();
+				notes.erase(notes.begin() + i);
+				free_cores.push_back(core);
 			}
 		}
 	}
 
-
-
 	MidiReceiver messager;
-
 	std::vector<std::pair<MidiMessage, int>> notes;
 	std::vector<int> free_cores;
 
