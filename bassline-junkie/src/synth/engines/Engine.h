@@ -45,15 +45,31 @@ public:
 
 	void noteOn(MidiMessage* msg, std::array<Voice, voices_count> &voices)
 	{
-		auto core = free_cores.back();
-		free_cores.pop_back();
 
-		notes.push_back(std::make_pair(*msg, core));
+		if (msg->m_val_2 != 0)
+		{
+			if (notes.size() < voices_count)
+			{
+				//noteOn(msg, voices);
 
-		auto &note = notes.back().first;
-		auto core_nr = notes.back().second;
+				auto core = free_cores.back();
+				free_cores.pop_back();
 
-		voices[core_nr].message(&note);
+				notes.push_back(std::make_pair(*msg, core));
+
+				auto &note = notes.back().first;
+				auto core_nr = notes.back().second;
+
+				voices[core_nr].message(&note);
+
+			}
+		}
+		else
+		{
+			noteOff(msg, voices);
+		}
+
+
 	}
 
 	void updateMessages(std::array<Voice, voices_count> &voices)
@@ -69,17 +85,8 @@ public:
 
 				case MidiMessage::Type::NOTE_ON:
 				{
-					if (msg->m_val_2 != 0)
-					{
-						if (notes.size() < voices_count)
-						{
-							noteOn(msg, voices);
-						}
-					}
-					else
-					{
-						noteOff(msg, voices);
-					}
+					noteOn(msg, voices);
+
 					break;
 				}
 
