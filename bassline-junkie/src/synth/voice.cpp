@@ -123,13 +123,17 @@ void Voice::controlCange(uint8_t param, uint8_t val)
 	switch (param)
 	{
 	case 1:
-		flt_res = val * divider;
-		break;
-	case 7:
+	{
 		auto out = val * divider;
-		out = out * 10000.;
+		out = out * 500.;
 		out = out + 50.;
 		flt_freq = out;
+	}
+		break;
+	case 7:
+	{
+		flt_res = val * divider;
+	}
 		break;
 	}
 

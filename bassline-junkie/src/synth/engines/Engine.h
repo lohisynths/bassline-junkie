@@ -96,6 +96,10 @@ public:
 
 					break;       // and exits the switchNOTE_ON
 				}
+				case MidiMessage::Type::NO_MESSAGE:
+					break;       // and exits the switchNOTE_ON
+
+
 				};
 			}
 		}
