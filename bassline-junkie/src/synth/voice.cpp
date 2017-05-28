@@ -32,10 +32,16 @@ const double divider = 1. / 127.;
 
 void Voice::init(double freq)
 {
-	adsr.setAttackTime(0.0001);
-	adsr.setDecayTime(0.1);
-	adsr.setSustainLevel(1);
-	adsr.setReleaseTime(0.1);
+	amp_adsr.setAttackTime(0.0001);
+	amp_adsr.setDecayTime(0.1);
+	amp_adsr.setSustainLevel(1);
+	amp_adsr.setReleaseTime(0.1);
+
+
+	filter_adsr.setAttackTime(0.0001);
+	filter_adsr.setDecayTime(0.8);
+	filter_adsr.setSustainLevel(0.1);
+	filter_adsr.setReleaseTime(0.1);
 
 	osc_freq = freq;
 	osc.setFrequency(osc_freq);
@@ -49,6 +55,8 @@ Voice::Voice()
 
 	filter.setCutoff(flt_freq);
 	filter.setRes(flt_res);
+	filter_adsr_range = 1000;
+	
 	std::fill(std::begin(array), std::end(array), 0);
 
 
@@ -67,12 +75,16 @@ void Voice::process()
 	for (auto &sample : array)
 	{
 		osc.setFrequency(osc_freq);
-		filter.setCutoff(flt_freq);
+
+
+
+		auto filter_frequency = flt_freq + filter_adsr.tick() * filter_adsr_range;
+		filter.setCutoff(filter_frequency);
 		filter.setRes(flt_res);
 
 		auto output = osc.tick();
 		output = filter.process(output);
-		output *= adsr.tick() * velocity;
+		output *= amp_adsr.tick() * velocity;
 
 		if (output > 1)
 			output = 1;
@@ -114,12 +126,14 @@ void Voice::noteOn(double freq, double vel)
 {
 	velocity = vel * divider;
 	osc_freq = Midi2Pitch[(int)freq];
-	adsr.keyOn();
+	amp_adsr.keyOn();
+	filter_adsr.keyOn();
 }
 
 void Voice::noteOff()
 {
-	adsr.keyOff();
+	amp_adsr.keyOff();
+	filter_adsr.keyOff();
 }
 
 void Voice::controlCange(uint8_t param, uint8_t val)

@@ -51,12 +51,17 @@ private:
 
 	stk::BlitSaw osc;
 	MoogFilter filter;
-	stk::ADSR adsr;
+	stk::ADSR filter_adsr;
+
+	double filter_adsr_range;
+
+	stk::ADSR amp_adsr;
 
 	double velocity;
 
 	double osc_freq;
 	double flt_freq;
+
 	double flt_res;
 	std::array<double	, 512> array;
 };
