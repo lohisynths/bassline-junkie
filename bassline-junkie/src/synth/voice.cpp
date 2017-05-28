@@ -50,12 +50,17 @@ Voice::Voice()
 	filter.setCutoff(flt_freq);
 	filter.setRes(flt_res);
 	std::fill(std::begin(array), std::end(array), 0);
+
+
+
 }
 
 Voice::~Voice()
 {
 
 }
+
+
 
 void Voice::process()
 {
@@ -125,7 +130,7 @@ void Voice::controlCange(uint8_t param, uint8_t val)
 	case 1:
 	{
 		auto out = val * divider;
-		out = out * 500.;
+		out = out * 5000.;
 		out = out + 50.;
 		flt_freq = out;
 	}

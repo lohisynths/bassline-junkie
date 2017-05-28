@@ -4,17 +4,17 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
-../src/synth/engines/ConditionalVar.cpp 
+../src/synth/dsp/MoogFilter.cpp 
 
 OBJS += \
-./src/synth/engines/ConditionalVar.o 
+./src/synth/dsp/MoogFilter.o 
 
 CPP_DEPS += \
-./src/synth/engines/ConditionalVar.d 
+./src/synth/dsp/MoogFilter.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
-src/synth/engines/%.o: ../src/synth/engines/%.cpp
+src/synth/dsp/%.o: ../src/synth/dsp/%.cpp
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C++ Compiler'
 	g++ -std=c++1y -I../../stk/include -O3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"

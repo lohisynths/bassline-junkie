@@ -10,6 +10,7 @@
 
 #include <array>
 #include <BlitSaw.h>
+#include <FileLoop.h>
 
 #include "ADSR.h"
 
@@ -46,6 +47,8 @@ public:
 
 
 private:
+	//stk::FileLoop *waves_;
+
 	stk::BlitSaw osc;
 	MoogFilter filter;
 	stk::ADSR adsr;

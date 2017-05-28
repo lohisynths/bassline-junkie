@@ -30,7 +30,7 @@ private:
 	std::vector<double> times;
 
 	const unsigned int start_threshold = 100;
-	const unsigned int iter = 10000 + start_threshold;
+	const unsigned int iter = 1000 + start_threshold;
 };
 
 #endif /* CPUCOUNTER_H_ */
