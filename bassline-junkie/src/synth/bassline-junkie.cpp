@@ -7,33 +7,13 @@
 //============================================================================
 #include <signal.h>
 #include <sys/mman.h>
-
 #include <algorithm>
-
 
 #include "utils/AudioDevice.h"
 #include "utils/cpucounter.h"
 #include "utils/wavwriter.h"
 #include "utils/concurency_helpers.h"
-
-#include "FileWvOut.h"
-
 #include "engines/conditional_variable.h"
-#include "config.h"
-#include "voice.h"
-
-
-
-static bool play = true;
-
-
-
-static void finish(int ignore)
-{
-	printf("finish finish finish finish finish finish\n");
-	play = false;
-}
-
 
 int main()
 {
@@ -53,9 +33,7 @@ int main()
 	std::array<Voice, voices_count> voices;
 	ConditionalVarEngine engine(voices);
 
-
 	play = true;
-
 
 	while ( play )
 	{
