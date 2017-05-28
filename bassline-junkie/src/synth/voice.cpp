@@ -72,7 +72,6 @@ void Voice::process()
 
 		auto output = osc.tick();
 		output = filter.process(output);
-		output = std::tanh(output);
 		output *= adsr.tick() * velocity;
 
 		if (output > 1)

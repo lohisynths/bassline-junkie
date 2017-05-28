@@ -5,7 +5,7 @@ from http://www.musicdsp.org/showone.php?id=24 */
 
 MoogFilter::MoogFilter()
 {
-	fs=44100;
+	fs=1./44100.;
 	init();
 }
 MoogFilter::~MoogFilter() { }
@@ -19,7 +19,7 @@ void MoogFilter::init()
 
 void MoogFilter::calc()
 {
-	double f = (cutoff+cutoff) / fs;
+	double f = (cutoff+cutoff) * fs;
 	//[0 - 1]
 	p=f*(1.8f-0.8f*f);
 	k=p+p-1.f;
