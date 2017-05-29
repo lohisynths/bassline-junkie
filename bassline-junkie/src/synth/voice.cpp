@@ -52,9 +52,9 @@ void Voice::process()
 		filter.setRes(flt_res);
 
 		auto output = osc.tick();
-		//output = filter.process(output);
+		output = filter.process(output);
 
-		output *=  amp_mod_matrix.main ;//* adsr[2].tick();
+		output *=  amp_mod_matrix.main * adsr[2].tick() * 2.; // stk::adsr gives 0-0.5 lol
 
 		sample = output;
 	}

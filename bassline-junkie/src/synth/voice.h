@@ -9,7 +9,7 @@
 #define SYNTH_H_
 
 #include <array>
-#include <SineWave.h>
+#include <BlitSaw.h>
 #include <FileLoop.h>
 
 #include "ADSR.h"
@@ -64,7 +64,7 @@ public:
 private:
 	//stk::FileLoop *waves_;
 
-	stk::SineWave osc;
+	stk::BlitSaw osc;
 	MoogFilter filter;
 
 	stk::ADSR adsr[3];

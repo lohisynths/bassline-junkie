@@ -27,7 +27,7 @@ int main()
 
 	AudioDevice device;
 	
-	//wav_writer wav_out;
+	wav_writer wav_out;
 	cpu_counter licznik;
 
 	std::array<Voice, voices_count> voices;
@@ -48,7 +48,7 @@ int main()
 			device.play(output); // while loop inside
 			// stop time reporting
 			// write buffer to file
-			// wav_out.tick(output);
+			 wav_out.tick(output);
 			}
 
 			if(!licznik.update())
