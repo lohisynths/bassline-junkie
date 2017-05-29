@@ -17,7 +17,7 @@ public:
 	wav_writer();
 	virtual ~wav_writer();
 
-	void tick(std::array<int, 512> &output);
+	void tick(std::array<unsigned int, 512> &output);
 
 private:
 	stk::FileWvOut wave_output;

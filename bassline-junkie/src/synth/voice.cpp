@@ -7,60 +7,30 @@
 
 #include "voice.h"
 
-//! A static table of equal-tempered MIDI to frequency (Hz) values.
-static const double Midi2Pitch[129] = {
-  8.176, 8.662, 9.177, 9.723, 10.301, 10.913, 11.562, 12.25,
-  12.978, 13.75, 14.568, 15.434, 16.352, 17.324, 18.354, 19.445,
-  20.602, 21.827, 23.125, 24.50, 25.957, 27.50, 29.135, 30.868,
-  32.703, 34.648, 36.708, 38.891, 41.203, 43.654, 46.249, 49.0,
-  51.913, 55.0, 58.271, 61.735, 65.406, 69.296, 73.416, 77.782,
-  82.407, 87.307, 92.499, 97.999, 103.826, 110.0, 116.541, 123.471,
-  130.813, 138.591, 146.832, 155.563, 164.814, 174.614, 184.997, 195.998,
-  207.652, 220.0, 233.082, 246.942, 261.626, 277.183, 293.665, 311.127,
-  329.628, 349.228, 369.994, 391.995, 415.305, 440.0, 466.164, 493.883,
-  523.251, 554.365, 587.33, 622.254, 659.255, 698.456, 739.989, 783.991,
-  830.609, 880.0, 932.328, 987.767, 1046.502, 1108.731, 1174.659, 1244.508,
-  1318.51, 1396.913, 1479.978, 1567.982, 1661.219, 1760.0, 1864.655, 1975.533,
-  2093.005, 2217.461, 2349.318, 2489.016, 2637.02, 2793.826, 2959.955, 3135.963,
-  3322.438, 3520.0, 3729.31, 3951.066, 4186.009, 4434.922, 4698.636, 4978.032,
-  5274.041, 5587.652, 5919.911, 6271.927, 6644.875, 7040.0, 7458.62, 7902.133,
-  8372.018, 8869.844, 9397.273, 9956.063, 10548.082, 11175.303, 11839.822, 12543.854,
-  13289.75};
-
 const double divider = 1. / 127.;
+
 
 
 void Voice::init(double freq)
 {
-	amp_adsr.setAttackTime(0.0001);
-	amp_adsr.setDecayTime(0.1);
-	amp_adsr.setSustainLevel(1);
-	amp_adsr.setReleaseTime(0.1);
+	adsr[2].setAttackTime(0.01);
+	adsr[2].setDecayTime(0.1);
+	adsr[2].setSustainLevel(1);
+	adsr[2].setReleaseTime(0.1);
 
-
-	filter_adsr.setAttackTime(0.0001);
-	filter_adsr.setDecayTime(0.8);
-	filter_adsr.setSustainLevel(0.1);
-	filter_adsr.setReleaseTime(0.1);
-
-	osc_freq = freq;
-	osc.setFrequency(osc_freq);
+	osc1_mod_matrix.main = freq;
 }
 Voice::Voice()
 {
-	velocity = 0;
-	osc_freq = 100;
-	flt_freq = 10000;
-	flt_res = 0.0;
+	amp_mod_matrix.main = 0;
 
-	filter.setCutoff(flt_freq);
-	filter.setRes(flt_res);
-	filter_adsr_range = 1000;
+	osc1_mod_matrix.main = 100;
+
+	flt_mod_matrix.main = 10000;
+
+	flt_res = 0.0;
 	
 	std::fill(std::begin(array), std::end(array), 0);
-
-
-
 }
 
 Voice::~Voice()
@@ -68,28 +38,23 @@ Voice::~Voice()
 
 }
 
-
-
 void Voice::process()
 {
 	for (auto &sample : array)
 	{
-		osc.setFrequency(osc_freq);
+		stk::StkFloat osc1_freq = osc1_mod_matrix.main;
 
+		stk::StkFloat frequency = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (osc1_freq - 57.0) / 12.0 );
 
+		osc.setFrequency(frequency);
 
-		auto filter_frequency = flt_freq + filter_adsr.tick() * filter_adsr_range;
-		filter.setCutoff(filter_frequency);
+		filter.setCutoff(flt_mod_matrix.main);
 		filter.setRes(flt_res);
 
 		auto output = osc.tick();
-		output = filter.process(output);
-		output *= amp_adsr.tick() * velocity;
+		//output = filter.process(output);
 
-		if (output > 1)
-			output = 1;
-		else if (output < -1)
-			output = -1;
+		output *=  amp_mod_matrix.main ;//* adsr[2].tick();
 
 		sample = output;
 	}
@@ -97,8 +62,7 @@ void Voice::process()
 
 void Voice::message(MidiMessage *msg)
 {
-	msg->print();;
-
+	//msg->print();
 
 	if (msg->m_type != MidiMessage::NO_MESSAGE)
 	{
@@ -118,41 +82,36 @@ void Voice::message(MidiMessage *msg)
 
 		};
 	}
-
-
 }
 
-void Voice::noteOn(double freq, double vel)
+void Voice::noteOn(double note, double vel)
 {
-	velocity = vel * divider;
-	osc_freq = Midi2Pitch[(int)freq];
-	amp_adsr.keyOn();
-	filter_adsr.keyOn();
+	osc1_mod_matrix.main = note;
+	amp_mod_matrix.main = vel * divider;
+	adsr[2].keyOn();
 }
 
 void Voice::noteOff()
 {
-	amp_adsr.keyOff();
-	filter_adsr.keyOff();
+	adsr[2].keyOff();
 }
 
 void Voice::controlCange(uint8_t param, uint8_t val)
 {
 	switch (param)
 	{
-	case 1:
+	case 96:
 	{
 		auto out = val * divider;
 		out = out * 5000.;
 		out = out + 50.;
-		flt_freq = out;
+		flt_mod_matrix.main = out;
 	}
 		break;
-	case 7:
+	case 97:
 	{
 		flt_res = val * divider;
 	}
 		break;
 	}
-
 }

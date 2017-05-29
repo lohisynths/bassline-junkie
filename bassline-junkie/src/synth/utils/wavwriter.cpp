@@ -9,7 +9,7 @@
 
 wav_writer::wav_writer()
 {
-	wave_output.openFile("/home/alax/hellosine.wav", 1, stk::FileWrite::FILE_WAV,
+	wave_output.openFile("/home/pi/bassline.wav", 1, stk::FileWrite::FILE_WAV,
 			stk::Stk::STK_SINT32);
 	wave_output.printErrors(true);
 	lolo.resize(512, 1);
@@ -23,16 +23,21 @@ wav_writer::~wav_writer()
 
 const unsigned int format_bits = 32; //snd_pcm_format_width(*m_format);
 const unsigned int maxval = (1U << (format_bits - 1U)) - 1U;
+#include <algorithm>
 
-void wav_writer::tick(std::array<int, 512> &output)
+std::array<stk::StkFloat, 512> tmp;
+void wav_writer::tick(std::array<unsigned int, 512> &output)
 {
-
 	for (auto &sample : output)
 	{
 		auto elo = std::distance(output.begin(), &sample);
 
-		double czesc = (double) sample / (double) maxval;
-		lolo[elo] = czesc;
+		uint32_t piesek = sample;
+		piesek -= maxval + 1;
+
+		double czesc = 	(double)piesek / (double)maxval;//(double) sample / (double) maxval;
+
+		lolo[elo] = czesc - 1.;
 	}
 
 	wave_output.tick(lolo);

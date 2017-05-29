@@ -9,7 +9,7 @@
 #define SYNTH_H_
 
 #include <array>
-#include <BlitSaw.h>
+#include <SineWave.h>
 #include <FileLoop.h>
 
 #include "ADSR.h"
@@ -22,6 +22,18 @@
 
 class Voice
 {
+	struct mod_matrix
+	{
+		stk::StkFloat main;
+		stk::StkFloat adsr1_amt;
+		stk::StkFloat adsr2_amt;
+		stk::StkFloat adsr3_amt;
+
+		stk::StkFloat lfo1_amt;
+		stk::StkFloat lfo2_amt;
+		stk::StkFloat lfo3_amt;
+	};
+
 public:
 	Voice();
 
@@ -39,31 +51,27 @@ public:
 
 	void message(MidiMessage *msg);
 
-	void noteOn(double freq, double vel);
+	void noteOn(double note, double vel);
 	void noteOff();
 	void controlCange(uint8_t param, uint8_t val);
 
 
+	mod_matrix osc1_mod_matrix={};
+	mod_matrix amp_mod_matrix={};
+	mod_matrix flt_mod_matrix={};
 
 
 private:
 	//stk::FileLoop *waves_;
 
-	stk::BlitSaw osc;
+	stk::SineWave osc;
 	MoogFilter filter;
-	stk::ADSR filter_adsr;
 
-	double filter_adsr_range;
+	stk::ADSR adsr[3];
 
-	stk::ADSR amp_adsr;
-
-	double velocity;
-
-	double osc_freq;
-	double flt_freq;
 
 	double flt_res;
-	std::array<double	, 512> array;
+	std::array<double, 512> array;
 };
 
 #endif /* SYNTH_H_ */
