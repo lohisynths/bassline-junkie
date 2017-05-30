@@ -10,11 +10,11 @@
 
 #include <array>
 #include <BlitSaw.h>
+#include <BlitSquare.h>
 #include <FileLoop.h>
 
 #include "ADSR.h"
 
-#include <cmath>
 #include "dsp/MoogFilter.h"
 #include "utils/MidiReceiver.h"
 
@@ -56,18 +56,20 @@ public:
 	void controlCange(uint8_t param, uint8_t val);
 
 
-	mod_matrix osc1_mod_matrix={};
-	mod_matrix amp_mod_matrix={};
-	mod_matrix flt_mod_matrix={};
+	mod_matrix osc1_mod_matrix={0};
+	mod_matrix amp_mod_matrix={0};
+	mod_matrix flt_mod_matrix={0};
 
 
 private:
 	//stk::FileLoop *waves_;
 
 	stk::BlitSaw osc;
+	stk::BlitSquare osc2;
+
 	MoogFilter filter;
 
-	stk::ADSR adsr[3];
+	std::array<stk::ADSR, 3> adsr;
 
 
 	double flt_res;

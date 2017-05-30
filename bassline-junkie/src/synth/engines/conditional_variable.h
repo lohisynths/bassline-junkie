@@ -42,17 +42,31 @@ public:
 
 		// reset buffer
 		std::fill(std::begin(output), std::end(output), 0);
+		std::fill(std::begin(output_float), std::end(output_float), 0);
 		// fill output buffer with data
 		for (auto &voice : voices)
 		{
 			auto &voice_data = voice.get_array();
 
-			std::transform(voice_data.begin(), voice_data.end(),
-					voice_data.begin(),
-					std::bind1st(std::multiplies<double>(),maxval*0.6));
-			std::transform(output.begin(), output.end(), voice_data.begin(),
-					output.begin(), std::plus<int>());
+			std::transform(output_float.begin(), output_float.end(), voice_data.begin(),
+					output_float.begin(), std::plus<double>());
 		}
+		std::for_each(std::begin(output_float), std::end(output_float),
+				[] (double &element)
+				{
+					for(int i=0;i<100;i++);
+						element = atan(element) * 2./M_PI;
+					if(element > 1)
+						std::cout<<"clip > 1\n";
+					if(element < -1)
+						std::cout<<"clip < -1\n";
+				});
+
+		std::transform(output_float.begin(), output_float.end(),
+				output_float.begin(),	std::bind1st(std::multiplies<double>(),maxval));
+
+	    std::copy(output_float.begin(), output_float.end(), output.begin() );
+
 		return output;
 	}
 
@@ -61,5 +75,6 @@ private:
 	std::vector<ConditionalVar*> cores;
 	std::array<Voice, voices_count> &m_voices;
 	std::array<uint32_t, 512> output;
+	std::array<stk::StkFloat, 512> output_float;
 
 };
