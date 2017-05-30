@@ -38,22 +38,43 @@ Voice::~Voice()
 
 }
 
+const stk::StkFloat osc_env_range = 12 * 2;
+
 void Voice::process()
 {
 	for (auto &sample : array)
 	{
-		stk::StkFloat osc1_freq = osc1_mod_matrix.main;
-		osc1_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (osc1_freq - 57.0) / 12.0 );
-		osc.setFrequency(osc1_freq);
 
+		stk::StkFloat adsr0tick = adsr[0].tick();
+		stk::StkFloat adsr1tick = adsr[1].tick();
+		stk::StkFloat adsr2tick = adsr[2].tick();
+
+
+		stk::StkFloat osc1_freq = osc1_mod_matrix.main;
+
+		osc1_mod_matrix.adsr2_amt = 1;
+
+		osc1_freq += adsr0tick * osc1_mod_matrix.adsr0_amt * osc_env_range;
+		osc1_freq += adsr1tick * osc1_mod_matrix.adsr1_amt * osc_env_range;
+		osc1_freq += adsr2tick * osc1_mod_matrix.adsr2_amt * osc_env_range;
+
+
+		osc1_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (osc1_freq - 57.0) / 12.0 );
 
 		stk::StkFloat flt_freq = flt_mod_matrix.main;
 		flt_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (flt_freq - 57.0) / 12.0 );
-		filter.setCutoff(flt_freq);
 
+
+
+		osc.setFrequency(osc1_freq);
+
+		filter.setCutoff(flt_freq);
 		filter.setRes(flt_res);
 
-		auto output = osc.tick();
+
+		stk::StkFloat output = osc.tick();
+
+
 		output = filter.process(output);
 
 		output *= adsr[2].tick() * 2.; // stk::adsr gives 0-0.5 lol
@@ -104,6 +125,35 @@ void Voice::controlCange(uint8_t param, uint8_t val)
 {
 	switch (param)
 	{
+
+
+
+	case 9:
+	{
+		adsr[2].setAttackTime(val*divider);
+	}
+	break;
+	case 10:
+	{
+		adsr[2].setDecayTime(val*divider);
+	}
+	break;
+	case 11:
+	{
+		adsr[2].setSustainLevel(val*divider);
+	}
+	break;
+	case 12:
+	{
+		adsr[2].setReleaseTime(val*divider);
+	}
+	break;
+
+
+
+
+
+
 	case 96:
 	{
 		flt_mod_matrix.main = val;

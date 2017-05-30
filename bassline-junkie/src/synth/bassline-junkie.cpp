@@ -40,7 +40,7 @@ int main()
 		if (device.aval())
 		{
 			// start reporting time
-			licznik.start();
+			// licznik.start();
 			{
 			// process data
 			auto output = engine.process(voices);
@@ -48,11 +48,11 @@ int main()
 			device.play(output); // while loop inside
 			// stop time reporting
 			// write buffer to file
-			 wav_out.tick(output);
+			// wav_out.tick(output);
 			}
 
-			if(!licznik.update())
-				play=false;
+			// if(!licznik.update())
+				;// play=false;
 		}
 	}
 	return 0;

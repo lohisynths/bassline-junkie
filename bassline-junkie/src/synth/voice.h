@@ -25,9 +25,9 @@ class Voice
 	struct mod_matrix
 	{
 		stk::StkFloat main;
+		stk::StkFloat adsr0_amt;
 		stk::StkFloat adsr1_amt;
 		stk::StkFloat adsr2_amt;
-		stk::StkFloat adsr3_amt;
 
 		stk::StkFloat lfo1_amt;
 		stk::StkFloat lfo2_amt;
