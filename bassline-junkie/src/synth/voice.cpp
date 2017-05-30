@@ -24,9 +24,9 @@ Voice::Voice()
 {
 	amp_mod_matrix.main = 0;
 
-	osc1_mod_matrix.main = 100;
+	osc1_mod_matrix.main = 64;
 
-	flt_mod_matrix.main = 10000;
+	flt_mod_matrix.main = 64;
 
 	flt_res = 0.0;
 	
@@ -43,18 +43,22 @@ void Voice::process()
 	for (auto &sample : array)
 	{
 		stk::StkFloat osc1_freq = osc1_mod_matrix.main;
+		osc1_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (osc1_freq - 57.0) / 12.0 );
+		osc.setFrequency(osc1_freq);
 
-		stk::StkFloat frequency = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (osc1_freq - 57.0) / 12.0 );
 
-		osc.setFrequency(frequency);
+		stk::StkFloat flt_freq = flt_mod_matrix.main;
+		flt_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (flt_freq - 57.0) / 12.0 );
+		filter.setCutoff(flt_freq);
 
-		filter.setCutoff(flt_mod_matrix.main);
 		filter.setRes(flt_res);
 
 		auto output = osc.tick();
 		output = filter.process(output);
 
-		output *=  amp_mod_matrix.main * adsr[2].tick() * 2.; // stk::adsr gives 0-0.5 lol
+		output *= adsr[2].tick() * 2.; // stk::adsr gives 0-0.5 lol
+
+		output *= amp_mod_matrix.main; // velocity
 
 		sample = output;
 	}
@@ -62,7 +66,7 @@ void Voice::process()
 
 void Voice::message(MidiMessage *msg)
 {
-	//msg->print();
+	msg->print();
 
 	if (msg->m_type != MidiMessage::NO_MESSAGE)
 	{
@@ -102,10 +106,7 @@ void Voice::controlCange(uint8_t param, uint8_t val)
 	{
 	case 96:
 	{
-		auto out = val * divider;
-		out = out * 5000.;
-		out = out + 50.;
-		flt_mod_matrix.main = out;
+		flt_mod_matrix.main = val;
 	}
 		break;
 	case 97:
