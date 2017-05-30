@@ -17,9 +17,9 @@ class ConditionalVarEngine : public Engine {
 public:
 	ConditionalVarEngine(std::array<Voice, voices_count> &voices) : m_voices(voices)
 	{
+		// ConditionalVar(vector of voices, first cpu, number of first voice, number of voices to process
 		cores.push_back( new ConditionalVar(m_voices, 2,0,3) );
 		cores.push_back( new ConditionalVar(m_voices, 3,3,3) );
-		//cores.push_back( new ConditionalVar(m_voices, 3,4,2) );
 
 		free_cores.push_back(0);
 		free_cores.push_back(1);
