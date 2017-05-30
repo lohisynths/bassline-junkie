@@ -85,10 +85,14 @@ public:
 
 				case MidiMessage::Type::NOTE_ON:
 				{
-					noteOn(msg, voices);
-
-					break;
-				}
+					if(msg->m_val_2!=0)
+					{
+						noteOn(msg, voices);
+						break;
+					}
+					else
+						msg->m_type=MidiMessage::Type::NOTE_OFF;
+				} // ignore warning NoteOn with vel 0 = NoteOff
 
 				case MidiMessage::Type::NOTE_OFF:
 				{
