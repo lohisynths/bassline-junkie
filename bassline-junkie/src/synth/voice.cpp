@@ -73,21 +73,26 @@ void Voice::process()
 
 		flt_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (flt_freq - 57.0) / 12.0 );
 
-		if(flt_freq > 20000)flt_freq = 20000.;
-		///////////////////////////// OSCILLATORS
+		if(flt_freq > 20000)flt_freq = 20000.; //moogfliter bug when input out out fangeTODO:
+		///////////////////////////// FILTERS
 		/////////////////////////////////////////////////////////////////////////////
 
 
 		osc.setFrequency(osc1_freq);
-		osc2.setFrequency(osc1_freq);
+		osc2.setFrequency(osc1_freq+1);
 
 		filter.setCutoff(flt_freq);
 		filter.setRes(flt_res);
 
 
-		stk::StkFloat output = osc.tick();
+		stk::StkFloat output = osc.tick() * 0.5;
 
-		output += osc2.tick();
+		output += osc2.tick() * 0.5;
+
+		if(output > 1)
+			std::cout<<"osc clip > 1\n";
+		if(output < -1)
+			std::cout<<"osc clip < -1\n";
 
 		output = filter.process(output);
 

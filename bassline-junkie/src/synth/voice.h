@@ -65,7 +65,7 @@ private:
 	//stk::FileLoop *waves_;
 
 	stk::BlitSaw osc;
-	stk::BlitSquare osc2;
+	stk::BlitSaw osc2;
 
 	MoogFilter filter;
 
