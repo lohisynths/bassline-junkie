@@ -41,41 +41,6 @@ Voice::~Voice()
 const stk::StkFloat env_range_in_notes = 12 * 2;
 
 
-struct sralinka
-{
-	inline stk::StkFloat operator()()
-	{
-		check_clipping(data, __FILE__, __LINE__);
-		return data;
-	}
-
-	void operator<<(stk::StkFloat in)
-	{
-		check_clipping(data, __FILE__, __LINE__);
-		data=in;
-	}
-	inline stk::StkFloat operator=(stk::StkFloat in)
-	{
-		check_clipping(data, __FILE__, __LINE__);
-		data=in;
-		return data;
-	}
-
-	void operator+=(stk::StkFloat in)
-	{
-		check_clipping(data, __FILE__, __LINE__);
-		data+=in;
-	}
-
-	void operator*=(stk::StkFloat in)
-	{
-		check_clipping(data, __FILE__, __LINE__);
-		data*=in;
-	}
-	
-	stk::StkFloat data;
-};
-
 void Voice::process()
 {
 	for (auto &sample : array)
