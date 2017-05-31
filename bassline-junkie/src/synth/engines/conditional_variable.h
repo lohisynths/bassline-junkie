@@ -51,16 +51,11 @@ public:
 			std::transform(output_float.begin(), output_float.end(), voice_data.begin(),
 					output_float.begin(), std::plus<double>());
 		}
-		std::for_each(std::begin(output_float), std::end(output_float),
-				[] (double &element)
-				{
-					for(int i=0;i<100;i++);
-						element = atan(element) * 2./M_PI;
-					if(element > 1)
-						std::cout<<"clip > 1\n";
-					if(element < -1)
-						std::cout<<"clip < -1\n";
-				});
+
+		std::transform(output_float.begin(), output_float.end(),
+				output_float.begin(),	std::bind1st(std::multiplies<double>(),0.5));
+
+		check_clipping(output_float, __FILE__, __LINE__);
 
 		std::transform(output_float.begin(), output_float.end(),
 				output_float.begin(),	std::bind1st(std::multiplies<double>(),maxval));

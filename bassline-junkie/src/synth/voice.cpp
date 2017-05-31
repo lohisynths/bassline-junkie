@@ -40,6 +40,42 @@ Voice::~Voice()
 
 const stk::StkFloat env_range_in_notes = 12 * 2;
 
+
+struct sralinka
+{
+	inline stk::StkFloat operator()()
+	{
+		check_clipping(data, __FILE__, __LINE__);
+		return data;
+	}
+
+	void operator<<(stk::StkFloat in)
+	{
+		check_clipping(data, __FILE__, __LINE__);
+		data=in;
+	}
+	inline stk::StkFloat operator=(stk::StkFloat in)
+	{
+		check_clipping(data, __FILE__, __LINE__);
+		data=in;
+		return data;
+	}
+
+	void operator+=(stk::StkFloat in)
+	{
+		check_clipping(data, __FILE__, __LINE__);
+		data+=in;
+	}
+
+	void operator*=(stk::StkFloat in)
+	{
+		check_clipping(data, __FILE__, __LINE__);
+		data*=in;
+	}
+	
+	stk::StkFloat data;
+};
+
 void Voice::process()
 {
 	for (auto &sample : array)
@@ -85,22 +121,18 @@ void Voice::process()
 		filter.setRes(flt_res);
 
 
-		stk::StkFloat output = osc.tick() * 0.5;
+		sralinka output;
+		output = osc.tick();
+		output += osc2.tick();
 
-		output += osc2.tick() * 0.5;
-
-		if(output > 1)
-			std::cout<<"osc clip > 1\n";
-		if(output < -1)
-			std::cout<<"osc clip < -1\n";
-
-		output = filter.process(output);
+		output = filter.process( output() );
 
 		output *= adsr[2].tick() * 2.; // stk::adsr gives 0-0.5 lol
 
 		output *= amp_mod_matrix.main; // velocity
 
-		sample = output;
+
+		sample = output();
 	}
 }
 
