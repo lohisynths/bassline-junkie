@@ -99,7 +99,7 @@ void Voice::process()
 		auto adsr_tick = adsr[2].tick();
 
 
-		writer.process(adsr_tick);
+		//writer.process(adsr_tick);
 
 		output *= adsr_tick;
 
