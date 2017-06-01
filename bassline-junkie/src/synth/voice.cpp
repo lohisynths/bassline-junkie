@@ -15,18 +15,20 @@ void Voice::init(double freq)
 {
 	for(auto &ads : adsr)
 	{
-		ads.setAllTimes(0.01,0.1,1,0.1);
+		ads.setAllTimes(0.1,0.1,1,0.1);
 	}
 
-	osc1_mod_matrix.main = freq;
+	osc_mod_matrix.main = freq;
 }
 Voice::Voice()
 {
+	osc2_detune = 0;
+
 	amp_mod_matrix.main = 0;
 
-	osc1_mod_matrix.main = 64;
+	osc_mod_matrix.main = 64;
 
-	flt_mod_matrix.main = 64;
+	flt_mod_matrix.main = 96;
 
 	flt_res = 0.0;
 	
@@ -40,6 +42,8 @@ Voice::~Voice()
 
 const stk::StkFloat env_range_in_notes = 12 * 2;
 
+#include "utils/array_writer.h"
+ArrayWriter writer;
 
 void Voice::process()
 {
@@ -52,14 +56,14 @@ void Voice::process()
 
 		/////////////////////////////////////////////////////////////////////////////
 		///////////////////////////// OSCILLATORS
-		stk::StkFloat osc1_freq = osc1_mod_matrix.main;
+		stk::StkFloat osc_freq = osc_mod_matrix.main;
 
-		osc1_freq += adsr0tick * osc1_mod_matrix.adsr0_amt * env_range_in_notes;
-		osc1_freq += adsr1tick * osc1_mod_matrix.adsr1_amt * env_range_in_notes;
-		osc1_freq += adsr2tick * osc1_mod_matrix.adsr2_amt * env_range_in_notes;
+		osc_freq += adsr0tick * osc_mod_matrix.adsr0_amt * env_range_in_notes;
+		osc_freq += adsr1tick * osc_mod_matrix.adsr1_amt * env_range_in_notes;
+		osc_freq += adsr2tick * osc_mod_matrix.adsr2_amt * env_range_in_notes;
 
 
-		osc1_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (osc1_freq - 57.0) / 12.0 );
+		osc_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (osc_freq - 57.0) / 12.0 );
 		///////////////////////////// OSCILLATORS
 		/////////////////////////////////////////////////////////////////////////////
 
@@ -74,30 +78,34 @@ void Voice::process()
 
 		flt_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (flt_freq - 57.0) / 12.0 );
 
-		if(flt_freq > 20000)flt_freq = 20000.; //moogfliter bug when input out out fangeTODO:
+		if(flt_freq > 6000)flt_freq = 6000.; //moogfliter fixed upper limit to avoid aliasing
 		///////////////////////////// FILTERS
 		/////////////////////////////////////////////////////////////////////////////
 
 
-		osc.setFrequency(osc1_freq);
-		osc2.setFrequency(osc1_freq+1);
+		osc.setFrequency(osc_freq);
+		osc2.setFrequency(osc_freq+osc2_detune);
 
 		filter.setCutoff(flt_freq);
 		filter.setRes(flt_res);
 
 
 		sralinka output;
-		output = osc.tick();
-		output += osc2.tick();
+		output = osc.tick() * 0.5;
+		output += osc2.tick() * 0.5;
 
-		output = filter.process( output() );
+		output = filter.process( output );
 
-		output *= adsr[2].tick() * 2.; // stk::adsr gives 0-0.5 lol
+		auto adsr_tick = adsr[2].tick();
+
+
+		writer.process(adsr_tick);
+
+		output *= adsr_tick;
 
 		output *= amp_mod_matrix.main; // velocity
 
-
-		sample = output();
+		sample = output;
 	}
 }
 
@@ -127,7 +135,7 @@ void Voice::message(MidiMessage *msg)
 
 void Voice::noteOn(double note, double vel)
 {
-	osc1_mod_matrix.main = note;
+	osc_mod_matrix.main = note;
 	amp_mod_matrix.main = vel * divider;
 	for(auto &ads : adsr)
 		ads.keyOn();
@@ -139,12 +147,13 @@ void Voice::noteOff()
 		ads.keyOff();
 }
 
-void Voice::controlCange(uint8_t param, uint8_t val)
+void Voice::controlCange(uint8_t param, uint8_t value)
 {
+	stk::StkFloat val=value;
 	if(param < 13)
 		if(param > 0)
 			if(val==0)
-				val=1; // fix for ADSR not handling 0
+				val=0.01*127.; // fix for ADSR not handling 0
 
 	switch (param)
 	{
@@ -232,7 +241,7 @@ void Voice::controlCange(uint8_t param, uint8_t val)
 
 	case 96+16:
 	{
-		osc1_mod_matrix.adsr0_amt = val * divider;
+		osc_mod_matrix.adsr0_amt = val * divider;
 	}
 		break;
 

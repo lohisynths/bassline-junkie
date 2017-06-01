@@ -29,34 +29,34 @@ inline void check_clipping(std::array<stk::StkFloat, 512> input, const char* fun
 
 struct sralinka
 {
-	inline stk::StkFloat operator()()
-	{
+    operator stk::StkFloat()
+    {
 		check_clipping(data, __FILE__, __LINE__);
-		return data;
-	}
+    	return data;
+    }
 
 	void operator<<(stk::StkFloat in)
 	{
-		check_clipping(data, __FILE__, __LINE__);
 		data=in;
+		check_clipping(data, __FILE__, __LINE__);
 	}
-	inline stk::StkFloat operator=(stk::StkFloat in)
+	 stk::StkFloat operator=(stk::StkFloat in)
 	{
-		check_clipping(data, __FILE__, __LINE__);
 		data=in;
+		check_clipping(data, __FILE__, __LINE__);
 		return data;
 	}
 
 	void operator+=(stk::StkFloat in)
 	{
-		check_clipping(data, __FILE__, __LINE__);
 		data+=in;
+		check_clipping(data, __FILE__, __LINE__);
 	}
 
 	void operator*=(stk::StkFloat in)
 	{
-		check_clipping(data, __FILE__, __LINE__);
 		data*=in;
+		check_clipping(data, __FILE__, __LINE__);
 	}
 
 	stk::StkFloat data;

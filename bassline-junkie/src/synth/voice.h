@@ -11,7 +11,7 @@
 #include <array>
 #include <BlitSaw.h>
 #include <BlitSquare.h>
-#include <FileLoop.h>
+#include <SineWave.h>
 
 #include "ADSR.h"
 
@@ -53,13 +53,15 @@ public:
 
 	void noteOn(double note, double vel);
 	void noteOff();
-	void controlCange(uint8_t param, uint8_t val);
+	void controlCange(uint8_t param, uint8_t value);
 
 
-	mod_matrix osc1_mod_matrix={0};
+	mod_matrix osc_mod_matrix={0};
 	mod_matrix amp_mod_matrix={0};
 	mod_matrix flt_mod_matrix={0};
 
+	double flt_res;
+	double osc2_detune;
 
 private:
 	//stk::FileLoop *waves_;
@@ -71,8 +73,6 @@ private:
 
 	std::array<stk::ADSR, 3> adsr;
 
-
-	double flt_res;
 	std::array<double, 512> array;
 };
 
