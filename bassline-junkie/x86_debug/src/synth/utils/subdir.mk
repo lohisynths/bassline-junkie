@@ -6,18 +6,21 @@
 CPP_SRCS += \
 ../src/synth/utils/AudioDevice.cpp \
 ../src/synth/utils/MidiReceiver.cpp \
+../src/synth/utils/array_writer.cpp \
 ../src/synth/utils/cpucounter.cpp \
 ../src/synth/utils/wavwriter.cpp 
 
 OBJS += \
 ./src/synth/utils/AudioDevice.o \
 ./src/synth/utils/MidiReceiver.o \
+./src/synth/utils/array_writer.o \
 ./src/synth/utils/cpucounter.o \
 ./src/synth/utils/wavwriter.o 
 
 CPP_DEPS += \
 ./src/synth/utils/AudioDevice.d \
 ./src/synth/utils/MidiReceiver.d \
+./src/synth/utils/array_writer.d \
 ./src/synth/utils/cpucounter.d \
 ./src/synth/utils/wavwriter.d 
 

@@ -25,6 +25,5 @@ CPP_DEPS :=
 SUBDIRS := \
 src/synth \
 src/synth/dsp \
-src/synth/engines \
 src/synth/utils \
 
