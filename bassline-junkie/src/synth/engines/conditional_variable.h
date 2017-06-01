@@ -47,20 +47,30 @@ public:
 		for (auto &voice : voices)
 		{
 			auto &voice_data = voice.get_array();
+			auto ciabej = [](double &output, double &input){ output += input; return output;};
+			std::transform(output_float.begin(), output_float.end(), voice_data.begin(),output_float.begin(),ciabej);
 
-			std::transform(output_float.begin(), output_float.end(), voice_data.begin(),
-					output_float.begin(), std::plus<double>());
 		}
 
-		std::transform(output_float.begin(), output_float.end(),
-				output_float.begin(),	std::bind1st(std::multiplies<double>(),0.5));
+		auto ciabej =
+				[](uint32_t &output, double &input)
+				{
+					//input *= 0.3;
+//
+//					if (input > 0)
+//						input = 1 - exp(-input);
+//					else
+//						input = -1 + exp(input);
 
-		check_clipping(output_float, __FILE__, __LINE__);
+					//writer.process(input);
 
-		std::transform(output_float.begin(), output_float.end(),
-				output_float.begin(),	std::bind1st(std::multiplies<double>(),maxval));
+					//input = atan(input) * 2/M_PI;
+					output = (input+1) * maxval;
+					output += maxval;
+					return output;
+				};
 
-	    std::copy(output_float.begin(), output_float.end(), output.begin() );
+		std::transform(output.begin(), output.end(), output_float.begin(),output.begin(),ciabej);
 
 		return output;
 	}
