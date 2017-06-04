@@ -13,22 +13,29 @@ const double divider = 1. / 127.;
 
 void Voice::init(double freq)
 {
-	for(auto &ads : adsr)
+	for(auto &ads : env)
 	{
 		ads.setAllTimes(0.1,0.1,1,0.1);
 	}
 
-	osc_mod_matrix.main = freq;
+	osc_tune = freq;
 }
 Voice::Voice()
 {
-	osc2_detune = 0;
+	osc_tune = 64;
+	flt_tune = 64;
+
+
+	osc2_detune = 10;
 
 	amp_mod_matrix.main = 0;
 
-	osc_mod_matrix.main = 64;
 
-	flt_mod_matrix.main = 96;
+
+
+	flt_mod_matrix.main = 0.5; // octave switcher
+	osc_mod_matrix.main = 0.5; // octave switcher
+
 
 	flt_res = 0.0;
 	
@@ -50,17 +57,20 @@ void Voice::process()
 	for (auto &sample : array)
 	{
 
-		stk::StkFloat adsr0tick = adsr[0].tick();
-		stk::StkFloat adsr1tick = adsr[1].tick();
-		stk::StkFloat adsr2tick = adsr[2].tick();
+		stk::StkFloat adsr0tick = env[0].tick();
+		stk::StkFloat adsr1tick = env[1].tick();
+		stk::StkFloat adsr2tick = env[2].tick();
 
 		/////////////////////////////////////////////////////////////////////////////
 		///////////////////////////// OSCILLATORS
-		stk::StkFloat osc_freq = osc_mod_matrix.main;
+		static const stk::StkFloat elko = 128. / 26.; // 4,923076923 * 12 = 5 octaves /    -2 center pitch
+		auto ciabejek = (uint_fast8_t(osc_mod_matrix.main * elko)- 2) * 12;
 
-		osc_freq += adsr0tick * osc_mod_matrix.adsr0_amt * env_range_in_notes;
-		osc_freq += adsr1tick * osc_mod_matrix.adsr1_amt * env_range_in_notes;
-		osc_freq += adsr2tick * osc_mod_matrix.adsr2_amt * env_range_in_notes;
+		stk::StkFloat osc_freq = osc_tune + ciabejek;
+
+		osc_freq += adsr0tick * osc_mod_matrix.env0_amt * env_range_in_notes;
+		osc_freq += adsr1tick * osc_mod_matrix.env1_amt * env_range_in_notes;
+		osc_freq += adsr2tick * osc_mod_matrix.env2_amt * env_range_in_notes;
 
 
 		osc_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (osc_freq - 57.0) / 12.0 );
@@ -70,11 +80,13 @@ void Voice::process()
 
 		/////////////////////////////////////////////////////////////////////////////
 		///////////////////////////// FILTERS
-		stk::StkFloat flt_freq = flt_mod_matrix.main;
+		ciabejek = (uint_fast8_t(flt_mod_matrix.main * elko)- 2) * 12;
 
-		flt_freq += adsr0tick * flt_mod_matrix.adsr0_amt * env_range_in_notes;
-		flt_freq += adsr1tick * flt_mod_matrix.adsr1_amt * env_range_in_notes;
-		flt_freq += adsr2tick * flt_mod_matrix.adsr2_amt * env_range_in_notes;
+		stk::StkFloat flt_freq = flt_tune + ciabejek;
+
+		flt_freq += adsr0tick * flt_mod_matrix.env0_amt * env_range_in_notes;
+		flt_freq += adsr1tick * flt_mod_matrix.env1_amt * env_range_in_notes;
+		flt_freq += adsr2tick * flt_mod_matrix.env2_amt * env_range_in_notes;
 
 		flt_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (flt_freq - 57.0) / 12.0 );
 
@@ -96,7 +108,7 @@ void Voice::process()
 
 		output = filter.process( output );
 
-		auto adsr_tick = adsr[2].tick();
+		auto adsr_tick = env[2].tick();
 
 
 		//writer.process(adsr_tick);
@@ -135,17 +147,22 @@ void Voice::message(MidiMessage *msg)
 
 void Voice::noteOn(double note, double vel)
 {
-	osc_mod_matrix.main = note;
+	osc_tune = note;
 	amp_mod_matrix.main = vel * divider;
-	for(auto &ads : adsr)
+	for(auto &ads : env)
 		ads.keyOn();
 }
 
 void Voice::noteOff()
 {
-	for(auto &ads : adsr)
+	for(auto &ads : env)
 		ads.keyOff();
 }
+
+#define ENV_OFFSET 0
+#define OSC_MOD_OFFSET  16
+#define FLT_MOD_OFFSET  32
+
 
 void Voice::controlCange(uint8_t param, uint8_t value)
 {
@@ -158,68 +175,68 @@ void Voice::controlCange(uint8_t param, uint8_t value)
 	switch (param)
 	{
 	/// glupota
-	case 1:
+	case 0 + ENV_OFFSET:
 	{
-		adsr[0].setAttackTime(val*divider);
+		env[0].setAttackTime(val*divider);
 	}
 	break;
-	case 2:
+	case 1 + ENV_OFFSET:
 	{
-		adsr[0].setDecayTime(val*divider);
+		env[0].setDecayTime(val*divider);
 	}
 	break;
-	case 3:
+	case 2 + ENV_OFFSET:
 	{
-		adsr[0].setSustainLevel(val*divider);
+		env[0].setSustainLevel(val*divider);
 	}
 	break;
-	case 4:
+	case 3 + ENV_OFFSET:
 	{
-		adsr[0].setReleaseTime(val*divider);
-	}
-	break;
-
-
-	case 5:
-	{
-		adsr[1].setAttackTime(val*divider);
-	}
-	break;
-	case 6:
-	{
-		adsr[1].setDecayTime(val*divider);
-	}
-	break;
-	case 7:
-	{
-		adsr[1].setSustainLevel(val*divider);
-	}
-	break;
-	case 8:
-	{
-		adsr[1].setReleaseTime(val*divider);
+		env[0].setReleaseTime(val*divider);
 	}
 	break;
 
 
-	case 9:
+	case 4 + ENV_OFFSET:
 	{
-		adsr[2].setAttackTime(val*divider);
+		env[1].setAttackTime(val*divider);
 	}
 	break;
-	case 10:
+	case 5 + ENV_OFFSET:
 	{
-		adsr[2].setDecayTime(val*divider);
+		env[1].setDecayTime(val*divider);
 	}
 	break;
-	case 11:
+	case 6 + ENV_OFFSET:
 	{
-		adsr[2].setSustainLevel(val*divider);
+		env[1].setSustainLevel(val*divider);
 	}
 	break;
-	case 12:
+	case 7 + ENV_OFFSET:
 	{
-		adsr[2].setReleaseTime(val*divider);
+		env[1].setReleaseTime(val*divider);
+	}
+	break;
+
+
+	case 8 + ENV_OFFSET:
+	{
+		env[2].setAttackTime(val*divider);
+	}
+	break;
+	case 9 + ENV_OFFSET:
+	{
+		env[2].setDecayTime(val*divider);
+	}
+	break;
+	case 10 + ENV_OFFSET:
+	{
+		env[2].setSustainLevel(val*divider);
+	}
+	break;
+	case 11 + ENV_OFFSET:
+	{
+		env[2].setReleaseTime(val*divider);
 	}
 	break;
 	/// *glupota
@@ -227,12 +244,101 @@ void Voice::controlCange(uint8_t param, uint8_t value)
 
 
 
-
+	
+	case 0 + OSC_MOD_OFFSET:
+	{
+		osc_mod_matrix.main = val*divider;
+	}
+	break;
+	case 1 + OSC_MOD_OFFSET:
+	{
+		osc_mod_matrix.env0_amt = val*divider;
+	}
+	break;
+	case 2 + OSC_MOD_OFFSET:
+	{
+		osc_mod_matrix.env1_amt = val*divider;
+	}
+	break;
+	case 3 + OSC_MOD_OFFSET:
+	{
+		osc_mod_matrix.env2_amt = val*divider;
+	}
+	break;
+	case 4 + OSC_MOD_OFFSET:
+	{
+		osc_mod_matrix.lfo0_amt = val*divider;
+	}
+	break;
+	case 5 + OSC_MOD_OFFSET:
+	{
+		osc_mod_matrix.lfo1_amt = val*divider;
+	}
+	break;
+	case 6 + OSC_MOD_OFFSET:
+	{
+		osc_mod_matrix.lfo2_amt = val*divider;
+	}
+	break;
+	case 7 + OSC_MOD_OFFSET:
+	{
+		;
+	}
+	break;
+	
+	
+	
+	
+	case 0 + FLT_MOD_OFFSET:
+	{
+		flt_mod_matrix.main = val*divider;
+	}
+	break;
+	case 1 + FLT_MOD_OFFSET:
+	{
+		flt_mod_matrix.env0_amt = val*divider;
+	}
+	break;
+	case 2 + FLT_MOD_OFFSET:
+	{
+		flt_mod_matrix.env1_amt = val*divider;
+	}
+	break;
+	case 3 + FLT_MOD_OFFSET:
+	{
+		flt_mod_matrix.env2_amt = val*divider;
+	}
+	break;
+	case 4 + FLT_MOD_OFFSET:
+	{
+		flt_mod_matrix.lfo0_amt = val*divider;
+	}
+	break;
+	case 5 + FLT_MOD_OFFSET:
+	{
+		flt_mod_matrix.lfo0_amt = val*divider;
+	}
+	break;
+	case 6 + FLT_MOD_OFFSET:
+	{
+		flt_mod_matrix.lfo1_amt = val*divider;
+	}
+	break;
+	case 7 + FLT_MOD_OFFSET:
+	{
+		;
+	}
+	break;
+	
+	
+	
 	case 96:
 	{
-		flt_mod_matrix.main = val;
+		flt_tune = val;
 	}
 		break;
+
+
 	case 97:
 	{
 		flt_res = val * divider;
@@ -241,14 +347,14 @@ void Voice::controlCange(uint8_t param, uint8_t value)
 
 	case 96+16:
 	{
-		osc_mod_matrix.adsr0_amt = val * divider;
+		osc_mod_matrix.env0_amt = val * divider;
 	}
 		break;
 
 
 	case 97+16:
 	{
-		flt_mod_matrix.adsr1_amt = val * divider;
+		flt_mod_matrix.env1_amt = val * divider;
 	}
 		break;
 

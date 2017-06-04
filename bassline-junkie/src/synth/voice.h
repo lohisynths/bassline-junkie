@@ -25,13 +25,13 @@ class Voice
 	struct mod_matrix
 	{
 		stk::StkFloat main;
-		stk::StkFloat adsr0_amt;
-		stk::StkFloat adsr1_amt;
-		stk::StkFloat adsr2_amt;
+		stk::StkFloat env0_amt;
+		stk::StkFloat env1_amt;
+		stk::StkFloat env2_amt;
 
+		stk::StkFloat lfo0_amt;
 		stk::StkFloat lfo1_amt;
 		stk::StkFloat lfo2_amt;
-		stk::StkFloat lfo3_amt;
 	};
 
 public:
@@ -57,10 +57,15 @@ public:
 
 
 	mod_matrix osc_mod_matrix={0};
-	mod_matrix amp_mod_matrix={0};
 	mod_matrix flt_mod_matrix={0};
 
+	mod_matrix amp_mod_matrix={0};
+
+
+	double flt_tune;
 	double flt_res;
+
+	double osc_tune;
 	double osc2_detune;
 
 private:
@@ -71,7 +76,7 @@ private:
 
 	MoogFilter filter;
 
-	std::array<stk::ADSR, 3> adsr;
+	std::array<stk::ADSR, 3> env;
 
 	std::array<double, 512> array;
 };
