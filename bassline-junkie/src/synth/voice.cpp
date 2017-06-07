@@ -61,6 +61,10 @@ void Voice::process()
 		stk::StkFloat adsr1tick = env[1].tick();
 		stk::StkFloat adsr2tick = env[2].tick();
 
+		stk::StkFloat lfo0tick = lfo[0].tick();
+		stk::StkFloat lfo1tick = lfo[1].tick();
+		stk::StkFloat lfo2tick = lfo[2].tick();
+
 		/////////////////////////////////////////////////////////////////////////////
 		///////////////////////////// OSCILLATORS
 		static const stk::StkFloat elko = 128. / 26.; // 4,923076923 * 12 = 5 octaves /    -2 center pitch
@@ -72,6 +76,9 @@ void Voice::process()
 		osc_freq += adsr1tick * osc_mod_matrix.env1_amt * env_range_in_notes;
 		osc_freq += adsr2tick * osc_mod_matrix.env2_amt * env_range_in_notes;
 
+		osc_freq += lfo0tick * osc_mod_matrix.lfo0_amt * env_range_in_notes;
+		osc_freq += lfo1tick * osc_mod_matrix.lfo1_amt * env_range_in_notes;
+		osc_freq += lfo2tick * osc_mod_matrix.lfo2_amt * env_range_in_notes;
 
 		osc_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (osc_freq - 57.0) / 12.0 );
 		///////////////////////////// OSCILLATORS
@@ -87,6 +94,10 @@ void Voice::process()
 		flt_freq += adsr0tick * flt_mod_matrix.env0_amt * env_range_in_notes;
 		flt_freq += adsr1tick * flt_mod_matrix.env1_amt * env_range_in_notes;
 		flt_freq += adsr2tick * flt_mod_matrix.env2_amt * env_range_in_notes;
+
+		flt_freq += lfo0tick * flt_mod_matrix.lfo0_amt * env_range_in_notes;
+		flt_freq += lfo1tick * flt_mod_matrix.lfo1_amt * env_range_in_notes;
+		flt_freq += lfo2tick * flt_mod_matrix.lfo2_amt * env_range_in_notes;
 
 		flt_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (flt_freq - 57.0) / 12.0 );
 
@@ -162,6 +173,7 @@ void Voice::noteOff()
 #define ENV_OFFSET 0
 #define OSC_MOD_OFFSET  16
 #define FLT_MOD_OFFSET  32
+#define LFO_OFFSET 48
 
 
 void Voice::controlCange(uint8_t param, uint8_t value)
@@ -174,6 +186,40 @@ void Voice::controlCange(uint8_t param, uint8_t value)
 
 	switch (param)
 	{
+	/// syf
+
+	case 0 + LFO_OFFSET:
+	{
+		lfo[0].setShape(val*divider*4);
+	}
+	break;
+	case 1 + LFO_OFFSET:
+	{
+		lfo[0].setFrequency( (val*divider * 10.) + 0.0001);
+	}
+	break;
+	case 2 + LFO_OFFSET:
+	{
+		lfo[1].setShape(val*divider*4);
+	}
+	break;
+	case 3 + LFO_OFFSET:
+	{
+		lfo[1].setFrequency( (val*divider * 10.) + 0.0001);
+	}
+	break;
+	case 4 + LFO_OFFSET:
+	{
+		lfo[2].setShape(val*divider*4);
+	}
+	break;
+	case 5 + LFO_OFFSET:
+	{
+		lfo[2].setFrequency( (val*divider * 10.) + 0.0001);
+	}
+	break;
+
+
 	/// glupota
 	case 0 + ENV_OFFSET:
 	{
@@ -316,12 +362,12 @@ void Voice::controlCange(uint8_t param, uint8_t value)
 	break;
 	case 5 + FLT_MOD_OFFSET:
 	{
-		flt_mod_matrix.lfo0_amt = val*divider;
+		flt_mod_matrix.lfo1_amt = val*divider;
 	}
 	break;
 	case 6 + FLT_MOD_OFFSET:
 	{
-		flt_mod_matrix.lfo1_amt = val*divider;
+		flt_mod_matrix.lfo2_amt = val*divider;
 	}
 	break;
 	case 7 + FLT_MOD_OFFSET:

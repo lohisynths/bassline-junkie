@@ -25,5 +25,6 @@ CPP_DEPS :=
 SUBDIRS := \
 src/synth \
 src/synth/dsp \
+src/synth/dsp/PolyBLEPOscillator \
 src/synth/utils \
 
