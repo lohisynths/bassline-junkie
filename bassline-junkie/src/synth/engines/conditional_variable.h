@@ -47,13 +47,13 @@ public:
 		for (auto &voice : voices)
 		{
 			auto &voice_data = voice.get_array();
-			auto ciabej = [](double &output, double &input){ output += input; return output;};
+			auto ciabej = [](stk::StkFloat &output, stk::StkFloat &input){ output += input; return output;};
 			std::transform(output_float.begin(), output_float.end(), voice_data.begin(),output_float.begin(),ciabej);
 
 		}
 
 		auto ciabej =
-				[](uint32_t &output, double &input)
+				[](uint32_t &output, stk::StkFloat &input)
 				{
 					//input *= 0.3;
 //

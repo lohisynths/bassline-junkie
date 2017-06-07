@@ -7,11 +7,11 @@
 
 #include "voice.h"
 
-const double divider = 1. / 127.;
+const stk::StkFloat divider = 1. / 127.;
 
 
 
-void Voice::init(double freq)
+void Voice::init(stk::StkFloat freq)
 {
 	for(auto &ads : env)
 	{
@@ -145,7 +145,7 @@ void Voice::message(MidiMessage *msg)
 	}
 }
 
-void Voice::noteOn(double note, double vel)
+void Voice::noteOn(stk::StkFloat note, stk::StkFloat vel)
 {
 	osc_tune = note;
 	amp_mod_matrix.main = vel * divider;

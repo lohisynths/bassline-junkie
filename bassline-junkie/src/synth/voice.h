@@ -39,19 +39,19 @@ public:
 
 	virtual ~Voice();
 
-	std::array<double, 512>& get_array()
+	std::array<stk::StkFloat, 512>& get_array()
 	{
 		return array;
 	}
 
 	void process();
 
-	void init(double freq);
+	void init(stk::StkFloat freq);
 
 
 	void message(MidiMessage *msg);
 
-	void noteOn(double note, double vel);
+	void noteOn(stk::StkFloat note, stk::StkFloat vel);
 	void noteOff();
 	void controlCange(uint8_t param, uint8_t value);
 
@@ -62,11 +62,11 @@ public:
 	mod_matrix amp_mod_matrix={0};
 
 
-	double flt_tune;
-	double flt_res;
+	stk::StkFloat flt_tune;
+	stk::StkFloat flt_res;
 
-	double osc_tune;
-	double osc2_detune;
+	stk::StkFloat osc_tune;
+	stk::StkFloat osc2_detune;
 
 private:
 	//stk::FileLoop *waves_;
@@ -78,7 +78,7 @@ private:
 
 	std::array<stk::ADSR, 3> env;
 
-	std::array<double, 512> array;
+	std::array<stk::StkFloat, 512> array;
 };
 
 #endif /* SYNTH_H_ */

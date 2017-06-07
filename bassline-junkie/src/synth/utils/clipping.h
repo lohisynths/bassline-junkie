@@ -21,7 +21,7 @@ inline void check_clipping(double input, const char* function, int line)
 inline void check_clipping(std::array<stk::StkFloat, 512> input, const char* function, int line)
 {
 	std::for_each(std::begin(input), std::end(input),
-	[&] (double &element)
+	[&] (stk::StkFloat &element)
 	{
 		check_clipping(element, function, line);
 	});
