@@ -19,24 +19,18 @@
 #ifndef ADRS_h
 #define ADRS_h
 
-#include "Stk.h"
-
-class ADSR_ {
+#include <Stk.h>
+class ADSR {
 public:
-	ADSR_();
-	~ADSR_(void);
-	stk::StkFloat tick(void);
+	ADSR(void);
+	~ADSR(void);
+	stk::StkFloat process(void);
     stk::StkFloat getOutput(void);
     int getState(void);
 	void gate(int on);
-
-	void keyOn() {gate(1);} ;
-	void keyOff() {gate(0);} ;
-
-
-    void setAttackTime(stk::StkFloat rate);
-    void setDecayTime(stk::StkFloat rate);
-    void setReleaseTime(stk::StkFloat rate);
+    void setAttackRate(stk::StkFloat rate);
+    void setDecayRate(stk::StkFloat rate);
+    void setReleaseRate(stk::StkFloat rate);
 	void setSustainLevel(stk::StkFloat level);
     void setTargetRatioA(stk::StkFloat targetRatio);
     void setTargetRatioDR(stk::StkFloat targetRatio);
@@ -51,9 +45,8 @@ public:
     };
 
 protected:
-	int m_sampleRate;
-	stk::StkFloat m_maxTime;
-
+    stk::StkFloat sample_rate;
+	stk::StkFloat max_time;
 	int state;
 	stk::StkFloat output;
 	stk::StkFloat attackRate;
@@ -72,7 +65,7 @@ protected:
     stk::StkFloat calcCoef(stk::StkFloat rate, stk::StkFloat targetRatio);
 };
 
-inline stk::StkFloat ADSR_::tick() {
+inline stk::StkFloat ADSR::process() {
 	switch (state) {
         case env_idle:
             break;
@@ -102,23 +95,23 @@ inline stk::StkFloat ADSR_::tick() {
 	return output;
 }
 
-inline void ADSR_::gate(int gate) {
+inline void ADSR::gate(int gate) {
 	if (gate)
 		state = env_attack;
 	else if (state != env_idle)
         state = env_release;
 }
 
-inline int ADSR_::getState() {
+inline int ADSR::getState() {
     return state;
 }
 
-inline void ADSR_::reset() {
+inline void ADSR::reset() {
     state = env_idle;
     output = 0.0;
 }
 
-inline stk::StkFloat ADSR_::getOutput() {
+inline stk::StkFloat ADSR::getOutput() {
 	return output;
 }
 

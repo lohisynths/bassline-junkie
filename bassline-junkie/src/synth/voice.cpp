@@ -15,7 +15,7 @@ Voice::Voice()
 	flt_tune = 64;
 
 
-	osc2_detune = 0.01;
+	osc2_detune = 0.;
 
 	amp_mod_matrix.main = 0;
 
@@ -46,9 +46,9 @@ void Voice::process()
 	for (auto &sample : array)
 	{
 
-		stk::StkFloat adsr0tick = env[0].tick();
-		stk::StkFloat adsr1tick = env[1].tick();
-		stk::StkFloat adsr2tick = env[2].tick();
+		stk::StkFloat adsr0tick = env[0].process();
+		stk::StkFloat adsr1tick = env[1].process();
+		stk::StkFloat adsr2tick = env[2].process();
 
 		stk::StkFloat lfo0tick = lfo[0].tick();
 		stk::StkFloat lfo1tick = lfo[1].tick();
@@ -97,23 +97,23 @@ void Voice::process()
 
 		osc.setFrequency(osc_freq);
 		osc2.setFrequency(osc_freq+osc2_detune);
+		osc3.setFrequency(osc_freq+osc2_detune);
 
 		filter.setCutoff(flt_freq);
 		filter.setRes(flt_res);
 
 
 		sralinka output;
-		output = osc.tick() * 0.5;
-		output += osc2.tick() * 0.5;
+		output = osc.tick() * 0.3;
+		output += osc2.tick() * 0.3;
+		output += osc3.tick() * 0.3;
 
 		output = filter.process( output );
-
-		auto adsr_tick = env[2].tick();
 
 
 		//writer.process(adsr_tick);
 
-		output *= adsr_tick;
+		output *= adsr2tick;
 
 		output *= amp_mod_matrix.main; // velocity
 
@@ -150,13 +150,13 @@ void Voice::noteOn(stk::StkFloat note, stk::StkFloat vel)
 	osc_tune = note;
 	amp_mod_matrix.main = vel * divider;
 	for(auto &ads : env)
-		ads.keyOn();
+		ads.gate(1);
 }
 
 void Voice::noteOff()
 {
 	for(auto &ads : env)
-		ads.keyOff();
+		ads.gate(0);
 }
 
 #define ENV_OFFSET 0
@@ -212,12 +212,12 @@ void Voice::controlCange(uint8_t param, uint8_t value)
 	/// glupota
 	case 0 + ENV_OFFSET:
 	{
-		env[0].setAttackTime(val*divider);
+		env[0].setAttackRate(val*divider);
 	}
 	break;
 	case 1 + ENV_OFFSET:
 	{
-		env[0].setDecayTime(val*divider);
+		env[0].setDecayRate(val*divider);
 	}
 	break;
 	case 2 + ENV_OFFSET:
@@ -227,19 +227,19 @@ void Voice::controlCange(uint8_t param, uint8_t value)
 	break;
 	case 3 + ENV_OFFSET:
 	{
-		env[0].setReleaseTime(val*divider);
+		env[0].setReleaseRate(val*divider);
 	}
 	break;
 
 
 	case 4 + ENV_OFFSET:
 	{
-		env[1].setAttackTime(val*divider);
+		env[1].setAttackRate(val*divider);
 	}
 	break;
 	case 5 + ENV_OFFSET:
 	{
-		env[1].setDecayTime(val*divider);
+		env[1].setDecayRate(val*divider);
 	}
 	break;
 	case 6 + ENV_OFFSET:
@@ -249,19 +249,19 @@ void Voice::controlCange(uint8_t param, uint8_t value)
 	break;
 	case 7 + ENV_OFFSET:
 	{
-		env[1].setReleaseTime(val*divider);
+		env[1].setReleaseRate(val*divider);
 	}
 	break;
 
 
 	case 8 + ENV_OFFSET:
 	{
-		env[2].setAttackTime(val*divider);
+		env[2].setAttackRate(val*divider);
 	}
 	break;
 	case 9 + ENV_OFFSET:
 	{
-		env[2].setDecayTime(val*divider);
+		env[2].setDecayRate(val*divider);
 	}
 	break;
 	case 10 + ENV_OFFSET:
@@ -271,7 +271,7 @@ void Voice::controlCange(uint8_t param, uint8_t value)
 	break;
 	case 11 + ENV_OFFSET:
 	{
-		env[2].setReleaseTime(val*divider);
+		env[2].setReleaseRate(val*divider);
 	}
 	break;
 	/// *glupota

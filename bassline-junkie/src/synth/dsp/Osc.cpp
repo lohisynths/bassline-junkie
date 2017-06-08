@@ -7,7 +7,7 @@
 
 #include "Osc.h"
 
-Osc::Osc() : m_osc_ctrl( waves_level{0.5,0.5,0.5,0.5} )
+Osc::Osc() : m_osc_ctrl( waves_level{0,1,0,0} )
 {
 }
 
@@ -24,9 +24,7 @@ StkFloat Osc::tick()
 
 	StkFloat div =  m_osc_ctrl.sin_level+m_osc_ctrl.saw_level+m_osc_ctrl.sqr_level+m_osc_ctrl.rnd_level;
 	if(div<1) div=1;
-
 	output /= div;
-	output *= 0.9;
 
 	return output ;
 }

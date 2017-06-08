@@ -13,7 +13,7 @@
 #include <BlitSquare.h>
 #include <SineWave.h>
 
-#include "dsp/ADSR/ADSR_.h"
+#include "dsp/ADSR/ADSR.h"
 #include "dsp/Lfo.h"
 #include "dsp/Osc.h"
 
@@ -77,7 +77,7 @@ private:
 	std::array<Lfo, 3> lfo;
 
 
-	std::array<ADSR_, 3> env;
+	std::array<ADSR, 3> env;
 
 	std::array<stk::StkFloat, 512> array;
 };
