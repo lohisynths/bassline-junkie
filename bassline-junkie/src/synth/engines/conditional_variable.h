@@ -18,8 +18,9 @@ public:
 	ConditionalVarEngine(std::array<Voice, voices_count> &voices) : m_voices(voices)
 	{
 		// ConditionalVar(vector of voices, first cpu, number of first voice, number of voices to process
-		cores.push_back( new ConditionalVar(m_voices, 2,0,3) );
-		cores.push_back( new ConditionalVar(m_voices, 3,3,3) );
+		cores.push_back( new ConditionalVar(m_voices, 1,0,2) );
+		cores.push_back( new ConditionalVar(m_voices, 2,2,3) );
+		cores.push_back( new ConditionalVar(m_voices, 3,5,3) );
 
 		free_cores.push_back(0);
 		free_cores.push_back(1);
@@ -27,6 +28,8 @@ public:
 		free_cores.push_back(3);
 		free_cores.push_back(4);
 		free_cores.push_back(5);
+		free_cores.push_back(6);
+		free_cores.push_back(7);
 	}
 
 	std::array<uint32_t, 512> &process(std::array<Voice, voices_count> &voices)

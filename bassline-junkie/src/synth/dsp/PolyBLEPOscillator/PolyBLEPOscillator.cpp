@@ -37,6 +37,7 @@ stk::StkFloat PolyBLEPOscillator::nextSample() {
     } else if (mOscillatorMode == OSCILLATOR_MODE_SAW) {
         value = naiveWaveformForMode(OSCILLATOR_MODE_SAW);
         value -= poly_blep(t);
+        value *= -1.;
     } else {
         value = naiveWaveformForMode(OSCILLATOR_MODE_SQUARE);
         value += poly_blep(t);

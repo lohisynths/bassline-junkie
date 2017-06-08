@@ -13,8 +13,7 @@
 #include <BlitSquare.h>
 #include <SineWave.h>
 
-#include "ADSR.h"
-
+#include "dsp/ADSR/ADSR_.h"
 #include "dsp/Lfo.h"
 #include "dsp/MoogFilter.h"
 #include "utils/MidiReceiver.h"
@@ -47,9 +46,6 @@ public:
 
 	void process();
 
-	void init(stk::StkFloat freq);
-
-
 	void message(MidiMessage *msg);
 
 	void noteOn(stk::StkFloat note, stk::StkFloat vel);
@@ -79,7 +75,7 @@ private:
 	std::array<Lfo, 3> lfo;
 
 
-	std::array<stk::ADSR, 3> env;
+	std::array<ADSR_, 3> env;
 
 	std::array<stk::StkFloat, 512> array;
 };

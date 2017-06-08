@@ -9,6 +9,8 @@ RM := rm -rf
 # All of the sources participating in the build are defined here
 -include sources.mk
 -include src/synth/utils/subdir.mk
+-include src/synth/dsp/PolyBLEPOscillator/subdir.mk
+-include src/synth/dsp/ADSR/subdir.mk
 -include src/synth/dsp/subdir.mk
 -include src/synth/subdir.mk
 -include subdir.mk

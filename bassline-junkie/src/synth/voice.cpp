@@ -9,24 +9,13 @@
 
 const stk::StkFloat divider = 1. / 127.;
 
-
-
-void Voice::init(stk::StkFloat freq)
-{
-	for(auto &ads : env)
-	{
-		ads.setAllTimes(0.1,0.1,1,0.1);
-	}
-
-	osc_tune = freq;
-}
 Voice::Voice()
 {
 	osc_tune = 64;
 	flt_tune = 64;
 
 
-	osc2_detune = 10;
+	osc2_detune = 0.01;
 
 	amp_mod_matrix.main = 0;
 
@@ -182,7 +171,7 @@ void Voice::controlCange(uint8_t param, uint8_t value)
 	if(param < 13)
 		if(param > 0)
 			if(val==0)
-				val=0.01*127.; // fix for ADSR not handling 0
+				val=0.001*127.; // avoid pops and clicks
 
 	switch (param)
 	{
