@@ -71,6 +71,7 @@ private:
 	//stk::FileLoop *waves_;
 	Osc osc;
 	Osc osc2;
+	Osc osc3;
 
 	MoogFilter filter;
 
