@@ -15,6 +15,8 @@
 
 #include "dsp/ADSR/ADSR_.h"
 #include "dsp/Lfo.h"
+#include "dsp/Osc.h"
+
 #include "dsp/MoogFilter.h"
 #include "utils/MidiReceiver.h"
 #include "utils/clipping.h"
@@ -67,8 +69,8 @@ public:
 
 private:
 	//stk::FileLoop *waves_;
-	stk::BlitSaw osc;
-	stk::BlitSaw osc2;
+	Osc osc;
+	Osc osc2;
 
 	MoogFilter filter;
 
