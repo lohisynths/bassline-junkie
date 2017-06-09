@@ -55,7 +55,7 @@ public:
 	void controlCange(uint8_t param, uint8_t value);
 
 
-	mod_matrix osc_mod_matrix={0};
+	std::array<mod_matrix, 1> osc_mod_matrix;
 	mod_matrix flt_mod_matrix={0};
 
 	mod_matrix amp_mod_matrix={0};
@@ -70,16 +70,11 @@ public:
 
 
 private:
-	//stk::FileLoop *waves_;
-	Osc osc;
-	Osc osc2;
-	Osc osc3;
 
 	MoogFilter filter;
 
+	std::array<Osc, 3> osc;
 	std::array<Lfo, 3> lfo;
-
-
 	std::array<ADSR, 3> env;
 
 	std::array<stk::StkFloat, 512> array;

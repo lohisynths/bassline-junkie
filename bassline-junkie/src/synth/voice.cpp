@@ -24,7 +24,7 @@ Voice::Voice()
 
 
 	flt_mod_matrix.main = 0.5; // octave switcher
-	osc_mod_matrix.main = 0.5; // octave switcher
+	osc_mod_matrix[0].main = 0.5; // octave switcher
 
 
 	flt_res = 0.0;
@@ -59,17 +59,17 @@ void Voice::process()
 		/////////////////////////////////////////////////////////////////////////////
 		///////////////////////////// OSCILLATORS
 		static const stk::StkFloat elko = 128. / 26.; // 4,923076923 * 12 = 5 octaves /    -2 center pitch
-		auto ciabejek = (uint_fast8_t(osc_mod_matrix.main * elko)- 2) * 12;
+		auto ciabejek = (uint_fast8_t(osc_mod_matrix[0].main * elko)- 2) * 12;
 
 		stk::StkFloat osc_freq = osc_tune + ciabejek;
 
-		osc_freq += adsr0tick * osc_mod_matrix.env0_amt * env_range_in_notes;
-		osc_freq += adsr1tick * osc_mod_matrix.env1_amt * env_range_in_notes;
-		osc_freq += adsr2tick * osc_mod_matrix.env2_amt * env_range_in_notes;
+		osc_freq += adsr0tick * osc_mod_matrix[0].env0_amt * env_range_in_notes;
+		osc_freq += adsr1tick * osc_mod_matrix[0].env1_amt * env_range_in_notes;
+		osc_freq += adsr2tick * osc_mod_matrix[0].env2_amt * env_range_in_notes;
 
-		osc_freq += lfo0tick * osc_mod_matrix.lfo0_amt * lfo_range_in_notes;
-		osc_freq += lfo1tick * osc_mod_matrix.lfo1_amt * lfo_range_in_notes;
-		osc_freq += lfo2tick * osc_mod_matrix.lfo2_amt * lfo_range_in_notes;
+		osc_freq += lfo0tick * osc_mod_matrix[0].lfo0_amt * lfo_range_in_notes;
+		osc_freq += lfo1tick * osc_mod_matrix[0].lfo1_amt * lfo_range_in_notes;
+		osc_freq += lfo2tick * osc_mod_matrix[0].lfo2_amt * lfo_range_in_notes;
 
 		osc_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (osc_freq - 57.0) / 12.0 );
 		///////////////////////////// OSCILLATORS
@@ -97,18 +97,18 @@ void Voice::process()
 		/////////////////////////////////////////////////////////////////////////////
 
 
-		osc.setFrequency(osc_freq);
-		osc2.setFrequency(osc_freq+osc2_detune);
-		osc3.setFrequency(osc_freq+osc3_detune);
+		for(auto &wave : osc)
+			wave.setFrequency(osc_freq);
+
 
 		filter.setCutoff(flt_freq);
 		filter.setRes(flt_res);
 
-
 		sralinka output;
-		output = osc.tick() * 0.3;
-		output += osc2.tick() * 0.3;
-		output += osc3.tick() * 0.3;
+		output = 0;
+
+		for(auto &wave : osc)
+			output += wave.tick() * 0.3;
 
 		output = filter.process( output );
 
@@ -162,10 +162,28 @@ void Voice::noteOff()
 }
 
 #define ENV_OFFSET 0
+#define ENV_NUMBER 3
+#define ENV_PARAMS 4
+
+
 #define OSC_MOD_OFFSET  16
+#define OSC_MOD_NUMBER  1
+#define OSC_MOD_PARAMS 8
+
+
 #define FLT_MOD_OFFSET  32
+#define FLT_MOD_NUMBER  1
+#define FLT_MOD_PARAMS 8
+
+
 #define LFO_OFFSET 48
+#define LFO_NUMBER 3
+#define LFO_PARAMS 2
+
+
 #define OSC_OFFSET 64
+#define OSC_NUMBER 3
+#define OSC_PARAMS 4
 
 void Voice::controlCange(uint8_t param, uint8_t value)
 {
@@ -175,302 +193,210 @@ void Voice::controlCange(uint8_t param, uint8_t value)
 			if(val==0)
 				val=0.001*127.; // avoid pops and clicks
 
+
+	if(param >= OSC_OFFSET && param <= OSC_OFFSET+(OSC_NUMBER*OSC_PARAMS) )
+	{
+		uint_fast8_t tmp_param = param - OSC_OFFSET;
+		uint_fast8_t osc_number = tmp_param / OSC_PARAMS;
+		tmp_param = tmp_param % OSC_PARAMS;
+		switch (tmp_param)
+		{
+			case 0:
+			{
+				osc[osc_number].set_sin_level(val*divider);
+			}
+			break;
+			case 1:
+			{
+				osc[osc_number].set_saw_level(val*divider);
+			}
+			break;
+			case 2:
+			{
+				osc[osc_number].set_sqr_level(val*divider);
+			}
+			break;
+			case 3:
+			{
+				osc[osc_number].set_noise_level(val*divider);
+			}
+			break;
+		}
+	}
+
+
+
+	if(param >= LFO_OFFSET && param <= LFO_OFFSET+(LFO_NUMBER*LFO_PARAMS) )
+	{
+		uint_fast8_t tmp_param = param - LFO_OFFSET;
+		uint_fast8_t lfo_number = tmp_param / LFO_PARAMS;
+		tmp_param = tmp_param % LFO_PARAMS;
+		switch (tmp_param)
+		{
+			case 0:
+			{
+				lfo[lfo_number].setShape(val*divider*4);
+			}
+			break;
+			case 1:
+			{
+				lfo[lfo_number].setFrequency( (val*divider * 10.) + 0.0001);
+			}
+			break;
+		}
+	}
+
+	if(param >= ENV_OFFSET && param <= ENV_OFFSET+(ENV_NUMBER*ENV_PARAMS) )
+	{
+		uint_fast8_t tmp_param = param - ENV_OFFSET;
+		uint_fast8_t adsr_number = tmp_param / ENV_PARAMS;
+		tmp_param = tmp_param % ENV_PARAMS;
+		switch (tmp_param)
+		{
+			case 0:
+			{
+				env[adsr_number].setAttackRate(val*divider);
+			}
+			break;
+			case 1:
+			{
+				env[adsr_number].setDecayRate(val*divider);
+			}
+			break;
+			case 2:
+			{
+				env[adsr_number].setSustainLevel(val*divider);
+			}
+			break;
+			case 3:
+			{
+				env[adsr_number].setReleaseRate(val*divider);
+			}
+			break;
+		}
+	}
+
+
+
+	if(param >= OSC_MOD_OFFSET && param <= OSC_MOD_OFFSET+(OSC_MOD_NUMBER	*OSC_MOD_PARAMS) )
+	{
+		uint_fast8_t tmp_param = param - OSC_MOD_OFFSET;
+		uint_fast8_t osc_number = tmp_param / OSC_MOD_PARAMS;
+		tmp_param = tmp_param % OSC_MOD_PARAMS;
+		switch (tmp_param)
+		{
+			case 0:
+			{
+				osc_mod_matrix[osc_number].main = val*divider;
+			}
+			break;
+			case 1:
+			{
+				osc_mod_matrix[osc_number].env0_amt = val*divider;
+			}
+			break;
+			case 2:
+			{
+				osc_mod_matrix[osc_number].env1_amt = val*divider;
+			}
+			break;
+			case 3:
+			{
+				osc_mod_matrix[osc_number].env2_amt = val*divider;
+			}
+			break;
+			case 4:
+			{
+				osc_mod_matrix[osc_number].lfo0_amt = val*divider;
+			}
+			break;
+			case 5:
+			{
+				osc_mod_matrix[osc_number].lfo1_amt = val*divider;
+			}
+			break;
+			case 6:
+			{
+				osc_mod_matrix[osc_number].lfo2_amt = val*divider;
+			}
+			break;
+			case 7:
+			{
+				;
+			}
+
+			break;
+		}
+	}
+
+
+
+
+	if(param >= FLT_MOD_OFFSET && param <= FLT_MOD_OFFSET+(FLT_MOD_NUMBER * FLT_MOD_PARAMS) )
+	{
+		uint_fast8_t tmp_param = param - FLT_MOD_OFFSET;
+		uint_fast8_t osc_number = tmp_param / FLT_MOD_PARAMS;
+		tmp_param = tmp_param % FLT_MOD_PARAMS;
+		switch (tmp_param)
+		{
+			case 0:
+			{
+				osc_mod_matrix[osc_number].main = val*divider;
+			}
+			break;
+			case 1:
+			{
+				osc_mod_matrix[osc_number].env0_amt = val*divider;
+			}
+			break;
+			case 2:
+			{
+				osc_mod_matrix[osc_number].env1_amt = val*divider;
+			}
+			break;
+			case 3:
+			{
+				osc_mod_matrix[osc_number].env2_amt = val*divider;
+			}
+			break;
+			case 4:
+			{
+				osc_mod_matrix[osc_number].lfo0_amt = val*divider;
+			}
+			break;
+			case 5:
+			{
+				osc_mod_matrix[osc_number].lfo1_amt = val*divider;
+			}
+			break;
+			case 6:
+			{
+				osc_mod_matrix[osc_number].lfo2_amt = val*divider;
+			}
+			break;
+			case 7:
+			{
+				;
+			}
+
+			break;
+		}
+	}
+
+
 	switch (param)
 	{
-	/// syf
-
-
-	case 0 + OSC_OFFSET:
-	{
-		osc.set_sin_level(val*divider);
-	}
-	break;
-	case 1 + OSC_OFFSET:
-	{
-		osc.set_saw_level(val*divider);
-	}
-	break;
-	case 2 + OSC_OFFSET:
-	{
-		osc.set_sqr_level(val*divider);
-	}
-	break;
-	case 3 + OSC_OFFSET:
-	{
-		osc.set_noise_level(val*divider);
-	}
-	break;
-
-	case 4 + OSC_OFFSET:
-	{
-		osc2.set_sin_level(val*divider);
-	}
-	break;
-	case 5 + OSC_OFFSET:
-	{
-		osc2.set_saw_level(val*divider);
-	}
-	break;
-	case 6 + OSC_OFFSET:
-	{
-		osc2.set_sqr_level(val*divider);
-	}
-	break;
-	case 7 + OSC_OFFSET:
-	{
-		osc2.set_noise_level(val*divider);
-	}
-	break;
-
-
-	case 8 + OSC_OFFSET:
-	{
-		osc3.set_sin_level(val*divider);
-	}
-	break;
-	case 9 + OSC_OFFSET:
-	{
-		osc3.set_saw_level(val*divider);
-	}
-	break;
-	case 10 + OSC_OFFSET:
-	{
-		osc3.set_sqr_level(val*divider);
-	}
-	break;
-	case 11 + OSC_OFFSET:
-	{
-		osc3.set_noise_level(val*divider);
-	}
-	break;
-
-
-
-
-
-
-
-
-
-
-
-
-
-	case 0 + LFO_OFFSET:
-	{
-		lfo[0].setShape(val*divider*4);
-	}
-	break;
-	case 1 + LFO_OFFSET:
-	{
-		lfo[0].setFrequency( (val*divider * 10.) + 0.0001);
-	}
-	break;
-	case 2 + LFO_OFFSET:
-	{
-		lfo[1].setShape(val*divider*4);
-	}
-	break;
-	case 3 + LFO_OFFSET:
-	{
-		lfo[1].setFrequency( (val*divider * 10.) + 0.0001);
-	}
-	break;
-	case 4 + LFO_OFFSET:
-	{
-		lfo[2].setShape(val*divider*4);
-	}
-	break;
-	case 5 + LFO_OFFSET:
-	{
-		lfo[2].setFrequency( (val*divider * 10.) + 0.0001);
-	}
-	break;
-
-
-	/// glupota
-	case 0 + ENV_OFFSET:
-	{
-		env[0].setAttackRate(val*divider);
-	}
-	break;
-	case 1 + ENV_OFFSET:
-	{
-		env[0].setDecayRate(val*divider);
-	}
-	break;
-	case 2 + ENV_OFFSET:
-	{
-		env[0].setSustainLevel(val*divider);
-	}
-	break;
-	case 3 + ENV_OFFSET:
-	{
-		env[0].setReleaseRate(val*divider);
-	}
-	break;
-
-
-	case 4 + ENV_OFFSET:
-	{
-		env[1].setAttackRate(val*divider);
-	}
-	break;
-	case 5 + ENV_OFFSET:
-	{
-		env[1].setDecayRate(val*divider);
-	}
-	break;
-	case 6 + ENV_OFFSET:
-	{
-		env[1].setSustainLevel(val*divider);
-	}
-	break;
-	case 7 + ENV_OFFSET:
-	{
-		env[1].setReleaseRate(val*divider);
-	}
-	break;
-
-
-	case 8 + ENV_OFFSET:
-	{
-		env[2].setAttackRate(val*divider);
-	}
-	break;
-	case 9 + ENV_OFFSET:
-	{
-		env[2].setDecayRate(val*divider);
-	}
-	break;
-	case 10 + ENV_OFFSET:
-	{
-		env[2].setSustainLevel(val*divider);
-	}
-	break;
-	case 11 + ENV_OFFSET:
-	{
-		env[2].setReleaseRate(val*divider);
-	}
-	break;
-	/// *glupota
-
-
-
-
-	
-	case 0 + OSC_MOD_OFFSET:
-	{
-		osc_mod_matrix.main = val*divider;
-	}
-	break;
-	case 1 + OSC_MOD_OFFSET:
-	{
-		osc_mod_matrix.env0_amt = val*divider;
-	}
-	break;
-	case 2 + OSC_MOD_OFFSET:
-	{
-		osc_mod_matrix.env1_amt = val*divider;
-	}
-	break;
-	case 3 + OSC_MOD_OFFSET:
-	{
-		osc_mod_matrix.env2_amt = val*divider;
-	}
-	break;
-	case 4 + OSC_MOD_OFFSET:
-	{
-		osc_mod_matrix.lfo0_amt = val*divider;
-	}
-	break;
-	case 5 + OSC_MOD_OFFSET:
-	{
-		osc_mod_matrix.lfo1_amt = val*divider;
-	}
-	break;
-	case 6 + OSC_MOD_OFFSET:
-	{
-		osc_mod_matrix.lfo2_amt = val*divider;
-	}
-	break;
-	case 7 + OSC_MOD_OFFSET:
-	{
-		;
-	}
-	break;
-	
-	
-	
-	
-	case 0 + FLT_MOD_OFFSET:
-	{
-		flt_mod_matrix.main = val*divider;
-	}
-	break;
-	case 1 + FLT_MOD_OFFSET:
-	{
-		flt_mod_matrix.env0_amt = val*divider;
-	}
-	break;
-	case 2 + FLT_MOD_OFFSET:
-	{
-		flt_mod_matrix.env1_amt = val*divider;
-	}
-	break;
-	case 3 + FLT_MOD_OFFSET:
-	{
-		flt_mod_matrix.env2_amt = val*divider;
-	}
-	break;
-	case 4 + FLT_MOD_OFFSET:
-	{
-		flt_mod_matrix.lfo0_amt = val*divider;
-	}
-	break;
-	case 5 + FLT_MOD_OFFSET:
-	{
-		flt_mod_matrix.lfo1_amt = val*divider;
-	}
-	break;
-	case 6 + FLT_MOD_OFFSET:
-	{
-		flt_mod_matrix.lfo2_amt = val*divider;
-	}
-	break;
-	case 7 + FLT_MOD_OFFSET:
-	{
-		;
-	}
-	break;
-	
-	
-	
-	case 96:
-	{
-		flt_tune = val;
-	}
+		case 96:
+		{
+			flt_tune = val;
+		}
 		break;
 
-
-	case 97:
-	{
-		flt_res = val * divider;
-	}
+		case 97:
+		{
+			flt_res = val * divider;
+		}
 		break;
-
-	case 96+16:
-	{
-		osc_mod_matrix.env0_amt = val * divider;
 	}
-		break;
 
-
-	case 97+16:
-	{
-		flt_mod_matrix.env1_amt = val * divider;
-	}
-		break;
-
-	}
 }
