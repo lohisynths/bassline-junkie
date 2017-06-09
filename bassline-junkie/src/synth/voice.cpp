@@ -341,37 +341,37 @@ void Voice::controlCange(uint8_t param, uint8_t value)
 		{
 			case 0:
 			{
-				osc_mod_matrix[osc_number].main = val*divider;
+				flt_mod_matrix.main = val*divider;
 			}
 			break;
 			case 1:
 			{
-				osc_mod_matrix[osc_number].env0_amt = val*divider;
+				flt_mod_matrix.env0_amt = val*divider;
 			}
 			break;
 			case 2:
 			{
-				osc_mod_matrix[osc_number].env1_amt = val*divider;
+				flt_mod_matrix.env1_amt = val*divider;
 			}
 			break;
 			case 3:
 			{
-				osc_mod_matrix[osc_number].env2_amt = val*divider;
+				flt_mod_matrix.env2_amt = val*divider;
 			}
 			break;
 			case 4:
 			{
-				osc_mod_matrix[osc_number].lfo0_amt = val*divider;
+				flt_mod_matrix.lfo0_amt = val*divider;
 			}
 			break;
 			case 5:
 			{
-				osc_mod_matrix[osc_number].lfo1_amt = val*divider;
+				flt_mod_matrix.lfo1_amt = val*divider;
 			}
 			break;
 			case 6:
 			{
-				osc_mod_matrix[osc_number].lfo2_amt = val*divider;
+				flt_mod_matrix.lfo2_amt = val*divider;
 			}
 			break;
 			case 7:
