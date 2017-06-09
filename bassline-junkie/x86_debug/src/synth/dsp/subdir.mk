@@ -5,15 +5,18 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
 ../src/synth/dsp/Lfo.cpp \
-../src/synth/dsp/MoogFilter.cpp 
+../src/synth/dsp/MoogFilter.cpp \
+../src/synth/dsp/Osc.cpp 
 
 OBJS += \
 ./src/synth/dsp/Lfo.o \
-./src/synth/dsp/MoogFilter.o 
+./src/synth/dsp/MoogFilter.o \
+./src/synth/dsp/Osc.o 
 
 CPP_DEPS += \
 ./src/synth/dsp/Lfo.d \
-./src/synth/dsp/MoogFilter.d 
+./src/synth/dsp/MoogFilter.d \
+./src/synth/dsp/Osc.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

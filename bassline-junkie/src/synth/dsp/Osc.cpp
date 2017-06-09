@@ -18,9 +18,9 @@ StkFloat Osc::tick()
 	StkFloat output;
 
 	output = m_sine->tick() * m_osc_ctrl.sin_level;
-	output = m_saw->tick() * m_osc_ctrl.saw_level;
+	output += m_saw->tick() * m_osc_ctrl.saw_level;
 	output += m_square->tick() * m_osc_ctrl.sqr_level;
-	output += m_noise->tick() * m_osc_ctrl.rnd_level;
+	output += m_noise->tick() * m_osc_ctrl.rnd_level * 0.5;
 
 	StkFloat div =  m_osc_ctrl.sin_level+m_osc_ctrl.saw_level+m_osc_ctrl.sqr_level+m_osc_ctrl.rnd_level;
 	if(div<1) div=1;

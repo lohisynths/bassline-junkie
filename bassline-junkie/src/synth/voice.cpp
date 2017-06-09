@@ -12,7 +12,7 @@ const stk::StkFloat divider = 1. / 127.;
 Voice::Voice()
 {
 	osc_tune = 64;
-	flt_tune = 64;
+	flt_tune = 64+32;
 
 
 	osc2_detune = 0.;
@@ -37,6 +37,7 @@ Voice::~Voice()
 }
 
 const stk::StkFloat env_range_in_notes = 12 * 2;
+const stk::StkFloat lfo_range_in_notes = 12;
 
 #include "utils/array_writer.h"
 ArrayWriter writer;
@@ -65,9 +66,9 @@ void Voice::process()
 		osc_freq += adsr1tick * osc_mod_matrix.env1_amt * env_range_in_notes;
 		osc_freq += adsr2tick * osc_mod_matrix.env2_amt * env_range_in_notes;
 
-		osc_freq += lfo0tick * osc_mod_matrix.lfo0_amt * env_range_in_notes;
-		osc_freq += lfo1tick * osc_mod_matrix.lfo1_amt * env_range_in_notes;
-		osc_freq += lfo2tick * osc_mod_matrix.lfo2_amt * env_range_in_notes;
+		osc_freq += lfo0tick * osc_mod_matrix.lfo0_amt * lfo_range_in_notes;
+		osc_freq += lfo1tick * osc_mod_matrix.lfo1_amt * lfo_range_in_notes;
+		osc_freq += lfo2tick * osc_mod_matrix.lfo2_amt * lfo_range_in_notes;
 
 		osc_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (osc_freq - 57.0) / 12.0 );
 		///////////////////////////// OSCILLATORS
@@ -84,9 +85,9 @@ void Voice::process()
 		flt_freq += adsr1tick * flt_mod_matrix.env1_amt * env_range_in_notes;
 		flt_freq += adsr2tick * flt_mod_matrix.env2_amt * env_range_in_notes;
 
-		flt_freq += lfo0tick * flt_mod_matrix.lfo0_amt * env_range_in_notes;
-		flt_freq += lfo1tick * flt_mod_matrix.lfo1_amt * env_range_in_notes;
-		flt_freq += lfo2tick * flt_mod_matrix.lfo2_amt * env_range_in_notes;
+		flt_freq += lfo0tick * flt_mod_matrix.lfo0_amt * lfo_range_in_notes;
+		flt_freq += lfo1tick * flt_mod_matrix.lfo1_amt * lfo_range_in_notes;
+		flt_freq += lfo2tick * flt_mod_matrix.lfo2_amt * lfo_range_in_notes;
 
 		flt_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (flt_freq - 57.0) / 12.0 );
 
@@ -123,7 +124,7 @@ void Voice::process()
 
 void Voice::message(MidiMessage *msg)
 {
-	msg->print();
+	//msg->print();
 
 	if (msg->m_type != MidiMessage::NO_MESSAGE)
 	{
@@ -163,7 +164,7 @@ void Voice::noteOff()
 #define OSC_MOD_OFFSET  16
 #define FLT_MOD_OFFSET  32
 #define LFO_OFFSET 48
-
+#define OSC_OFFSET 64
 
 void Voice::controlCange(uint8_t param, uint8_t value)
 {
@@ -176,6 +177,83 @@ void Voice::controlCange(uint8_t param, uint8_t value)
 	switch (param)
 	{
 	/// syf
+
+
+	case 0 + OSC_OFFSET:
+	{
+		osc.set_sin_level(val*divider);
+	}
+	break;
+	case 1 + OSC_OFFSET:
+	{
+		osc.set_saw_level(val*divider);
+	}
+	break;
+	case 2 + OSC_OFFSET:
+	{
+		osc.set_sqr_level(val*divider);
+	}
+	break;
+	case 3 + OSC_OFFSET:
+	{
+		osc.set_noise_level(val*divider);
+	}
+	break;
+
+	case 4 + OSC_OFFSET:
+	{
+		osc2.set_sin_level(val*divider);
+	}
+	break;
+	case 5 + OSC_OFFSET:
+	{
+		osc2.set_saw_level(val*divider);
+	}
+	break;
+	case 6 + OSC_OFFSET:
+	{
+		osc2.set_sqr_level(val*divider);
+	}
+	break;
+	case 7 + OSC_OFFSET:
+	{
+		osc2.set_noise_level(val*divider);
+	}
+	break;
+
+
+	case 8 + OSC_OFFSET:
+	{
+		osc3.set_sin_level(val*divider);
+	}
+	break;
+	case 9 + OSC_OFFSET:
+	{
+		osc3.set_saw_level(val*divider);
+	}
+	break;
+	case 10 + OSC_OFFSET:
+	{
+		osc3.set_sqr_level(val*divider);
+	}
+	break;
+	case 11 + OSC_OFFSET:
+	{
+		osc3.set_noise_level(val*divider);
+	}
+	break;
+
+
+
+
+
+
+
+
+
+
+
+
 
 	case 0 + LFO_OFFSET:
 	{
