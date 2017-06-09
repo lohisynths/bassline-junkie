@@ -66,6 +66,8 @@ public:
 
 	stk::StkFloat osc_tune;
 	stk::StkFloat osc2_detune;
+	stk::StkFloat osc3_detune;
+
 
 private:
 	//stk::FileLoop *waves_;

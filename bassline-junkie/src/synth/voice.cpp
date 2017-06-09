@@ -16,6 +16,7 @@ Voice::Voice()
 
 
 	osc2_detune = 0.;
+	osc3_detune = 0.;
 
 	amp_mod_matrix.main = 0;
 
@@ -98,7 +99,7 @@ void Voice::process()
 
 		osc.setFrequency(osc_freq);
 		osc2.setFrequency(osc_freq+osc2_detune);
-		osc3.setFrequency(osc_freq+osc2_detune);
+		osc3.setFrequency(osc_freq+osc3_detune);
 
 		filter.setCutoff(flt_freq);
 		filter.setRes(flt_res);

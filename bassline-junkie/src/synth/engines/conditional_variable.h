@@ -59,11 +59,17 @@ public:
 				[](uint32_t &output, stk::StkFloat &input)
 				{
 					//input *= 0.3;
-//
-//					if (input > 0)
-//						input = 1 - exp(-input);
-//					else
-//						input = -1 + exp(input);
+
+					if (input > 0)
+						input = 1 - exp(-input);
+					else
+						input = -1 + exp(input);
+					//input *= 0.7;
+
+					if (input > 1)
+						std::cout << "clip +1" << std::endl;
+					else if (input < -1 )
+						std::cout << "clip -1" << std::endl;
 
 					//writer.process(input);
 
