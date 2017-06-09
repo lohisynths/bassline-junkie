@@ -36,8 +36,8 @@ Voice::~Voice()
 
 }
 
-const stk::StkFloat env_range_in_notes = 12 * 2;
-const stk::StkFloat lfo_range_in_notes = 12;
+const stk::StkFloat env_range_in_notes = 12 * 4;
+const stk::StkFloat lfo_range_in_notes = 12 * 2;
 
 #include "utils/array_writer.h"
 ArrayWriter writer;
