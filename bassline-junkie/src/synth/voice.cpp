@@ -11,7 +11,6 @@ const stk::StkFloat divider = 1. / 127.;
 
 Voice::Voice()
 {
-	osc_tune = 64;
 	flt_tune = 64+32;
 
 
@@ -24,8 +23,13 @@ Voice::Voice()
 
 
 	flt_mod_matrix.main = 0.5; // octave switcher
-	osc_mod_matrix[0].main = 0.5; // octave switcher
+	for (auto &osc_mod : osc_mod_matrix)
+	{
+		//osc_mod_matrix[0].main = 0.5; // octave switcher
+		osc_mod.osc_mod.main = 0.5;
 
+		osc_mod.freq = 64;
+	}
 
 	flt_res = 0.0;
 	
@@ -58,29 +62,43 @@ void Voice::process()
 
 		/////////////////////////////////////////////////////////////////////////////
 		///////////////////////////// OSCILLATORS
-		static const stk::StkFloat elko = 128. / 26.; // 4,923076923 * 12 = 5 octaves /    -2 center pitch
-		auto ciabejek = (uint_fast8_t(osc_mod_matrix[0].main * elko)- 2) * 12;
+		for(auto &osc_mod : osc_mod_matrix)
+		{
+			// scale 0-127 to 0-5
+			// 127 / 25.4 = 5
+			static const stk::StkFloat octave_divider = 127. / 25.4;
 
-		stk::StkFloat osc_freq = osc_tune + ciabejek;
+			// octave switcher
+			// -2 for center pitch scale (-2:2)
+			// * 12 for octave multiply
+			auto octave = ( (uint_fast8_t)(osc_mod.osc_mod.main * octave_divider)- 2) * 12;
 
-		osc_freq += adsr0tick * osc_mod_matrix[0].env0_amt * env_range_in_notes;
-		osc_freq += adsr1tick * osc_mod_matrix[0].env1_amt * env_range_in_notes;
-		osc_freq += adsr2tick * osc_mod_matrix[0].env2_amt * env_range_in_notes;
+			stk::StkFloat osc_freq = osc_mod.freq + octave;
 
-		osc_freq += lfo0tick * osc_mod_matrix[0].lfo0_amt * lfo_range_in_notes;
-		osc_freq += lfo1tick * osc_mod_matrix[0].lfo1_amt * lfo_range_in_notes;
-		osc_freq += lfo2tick * osc_mod_matrix[0].lfo2_amt * lfo_range_in_notes;
+			osc_freq += adsr0tick * osc_mod.osc_mod.env0_amt * env_range_in_notes;
+			osc_freq += adsr1tick * osc_mod.osc_mod.env1_amt * env_range_in_notes;
+			osc_freq += adsr2tick * osc_mod.osc_mod.env2_amt * env_range_in_notes;
 
-		osc_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (osc_freq - 57.0) / 12.0 );
+			osc_freq += lfo0tick * osc_mod.osc_mod.lfo0_amt * lfo_range_in_notes;
+			osc_freq += lfo1tick * osc_mod.osc_mod.lfo1_amt * lfo_range_in_notes;
+			osc_freq += lfo2tick * osc_mod.osc_mod.lfo2_amt * lfo_range_in_notes;
+
+			osc_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (osc_freq - 57.0) / 12.0 );
+
+			auto elo = std::distance(osc_mod_matrix.begin(), &osc_mod);
+
+			osc[elo].setFrequency(osc_freq);
+		}
 		///////////////////////////// OSCILLATORS
 		/////////////////////////////////////////////////////////////////////////////
 
 
 		/////////////////////////////////////////////////////////////////////////////
 		///////////////////////////// FILTERS
-		ciabejek = (uint_fast8_t(flt_mod_matrix.main * elko)- 2) * 12;
+		static const stk::StkFloat octave_divider = 127. / 25.4;
+		auto octave = (uint_fast8_t(flt_mod_matrix.main * octave_divider)- 2) * 12;
 
-		stk::StkFloat flt_freq = flt_tune + ciabejek;
+		stk::StkFloat flt_freq = flt_tune + octave;
 
 		flt_freq += adsr0tick * flt_mod_matrix.env0_amt * env_range_in_notes;
 		flt_freq += adsr1tick * flt_mod_matrix.env1_amt * env_range_in_notes;
@@ -92,17 +110,20 @@ void Voice::process()
 
 		flt_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (flt_freq - 57.0) / 12.0 );
 
-		if(flt_freq > 6000)flt_freq = 6000.; //moogfliter fixed upper limit to avoid aliasing
-		///////////////////////////// FILTERS
-		/////////////////////////////////////////////////////////////////////////////
-
-
-		for(auto &wave : osc)
-			wave.setFrequency(osc_freq);
+		if(flt_freq > 20000)flt_freq = 20000.; //moogfliter fixed upper limit to avoid aliasing
 
 
 		filter.setCutoff(flt_freq);
 		filter.setRes(flt_res);
+
+
+		///////////////////////////// FILTERS
+		/////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
 
 		sralinka output;
 		output = 0;
@@ -149,7 +170,11 @@ void Voice::message(MidiMessage *msg)
 
 void Voice::noteOn(stk::StkFloat note, stk::StkFloat vel)
 {
-	osc_tune = note;
+	for(auto &osc_mod : osc_mod_matrix)
+	{
+		osc_mod.freq = note;
+	}
+
 	amp_mod_matrix.main = vel * divider;
 	for(auto &ads : env)
 		ads.gate(1);
@@ -164,6 +189,7 @@ void Voice::noteOff()
 #define ENV_OFFSET 0
 #define ENV_NUMBER 3
 #define ENV_PARAMS 4
+
 
 
 #define OSC_MOD_OFFSET  16
@@ -278,7 +304,7 @@ void Voice::controlCange(uint8_t param, uint8_t value)
 
 
 
-	if(param >= OSC_MOD_OFFSET && param <= OSC_MOD_OFFSET+(OSC_MOD_NUMBER	*OSC_MOD_PARAMS) )
+	if(param >= OSC_MOD_OFFSET && param <= OSC_MOD_OFFSET+(OSC_MOD_NUMBER * OSC_MOD_PARAMS) )
 	{
 		uint_fast8_t tmp_param = param - OSC_MOD_OFFSET;
 		uint_fast8_t osc_number = tmp_param / OSC_MOD_PARAMS;
@@ -287,37 +313,37 @@ void Voice::controlCange(uint8_t param, uint8_t value)
 		{
 			case 0:
 			{
-				osc_mod_matrix[osc_number].main = val*divider;
+				osc_mod_matrix[osc_number].osc_mod.main = val*divider;
 			}
 			break;
 			case 1:
 			{
-				osc_mod_matrix[osc_number].env0_amt = val*divider;
+				osc_mod_matrix[osc_number].osc_mod.env0_amt = val*divider;
 			}
 			break;
 			case 2:
 			{
-				osc_mod_matrix[osc_number].env1_amt = val*divider;
+				osc_mod_matrix[osc_number].osc_mod.env1_amt = val*divider;
 			}
 			break;
 			case 3:
 			{
-				osc_mod_matrix[osc_number].env2_amt = val*divider;
+				osc_mod_matrix[osc_number].osc_mod.env2_amt = val*divider;
 			}
 			break;
 			case 4:
 			{
-				osc_mod_matrix[osc_number].lfo0_amt = val*divider;
+				osc_mod_matrix[osc_number].osc_mod.lfo0_amt = val*divider;
 			}
 			break;
 			case 5:
 			{
-				osc_mod_matrix[osc_number].lfo1_amt = val*divider;
+				osc_mod_matrix[osc_number].osc_mod.lfo1_amt = val*divider;
 			}
 			break;
 			case 6:
 			{
-				osc_mod_matrix[osc_number].lfo2_amt = val*divider;
+				osc_mod_matrix[osc_number].osc_mod.lfo2_amt = val*divider;
 			}
 			break;
 			case 7:

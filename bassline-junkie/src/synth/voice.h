@@ -55,7 +55,16 @@ public:
 	void controlCange(uint8_t param, uint8_t value);
 
 
-	std::array<mod_matrix, 1> osc_mod_matrix;
+	struct osc_mod_struct
+	{
+		stk::StkFloat freq;
+		mod_matrix osc_mod={0};
+	};
+
+	std::array<osc_mod_struct, 3> osc_mod_matrix;
+
+
+
 	mod_matrix flt_mod_matrix={0};
 
 	mod_matrix amp_mod_matrix={0};
@@ -64,7 +73,7 @@ public:
 	stk::StkFloat flt_tune;
 	stk::StkFloat flt_res;
 
-	stk::StkFloat osc_tune;
+	//stk::StkFloat osc_tune;
 	stk::StkFloat osc2_detune;
 	stk::StkFloat osc3_detune;
 
