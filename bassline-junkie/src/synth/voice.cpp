@@ -11,14 +11,16 @@ const stk::StkFloat divider = 1. / 127.;
 
 Voice::Voice()
 {
+	flt_mod_matrix.frequency = 64+32;
+	flt_mod_matrix.resonance = 0;
+
+	amp_mod_matrix.velocity= 0;
+
 	for (auto &osc_mod : osc_mod_matrix)
 	{
 		osc_mod.octave = 0.5;
 		osc_mod.freq = 64;
 	}
-	flt_mod_matrix.frequency = 64+32;
-	flt_mod_matrix.resonance = 0;
-	amp_mod_matrix.velocity= 0;
 	
 	std::fill(std::begin(array), std::end(array), 0);
 }
@@ -103,9 +105,6 @@ void Voice::process()
 
 		///////////////////////////// FILTERS
 		/////////////////////////////////////////////////////////////////////////////
-
-
-
 
 
 
