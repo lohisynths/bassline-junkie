@@ -70,10 +70,14 @@ public:
 	};
 	amp_mod_struct amp_mod_matrix;
 
-	mod_matrix flt_mod_matrix={0};
 
-	stk::StkFloat flt_tune;
-	stk::StkFloat flt_res;
+	struct flt_mod_struct
+	{
+		stk::StkFloat frequency=0;
+		stk::StkFloat resonance=0;
+		mod_matrix flt_mod_matrix={0};
+	};
+	flt_mod_struct flt_mod_matrix;
 
 
 

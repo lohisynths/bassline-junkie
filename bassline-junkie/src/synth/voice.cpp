@@ -11,17 +11,14 @@ const stk::StkFloat divider = 1. / 127.;
 
 Voice::Voice()
 {
-	flt_tune = 64+32;
-
-	amp_mod_matrix.velocity= 0;
-
 	for (auto &osc_mod : osc_mod_matrix)
 	{
 		osc_mod.octave = 0.5;
 		osc_mod.freq = 64;
 	}
-
-	flt_res = 0.0;
+	flt_mod_matrix.frequency = 64+32;
+	flt_mod_matrix.resonance = 0;
+	amp_mod_matrix.velocity= 0;
 	
 	std::fill(std::begin(array), std::end(array), 0);
 }
@@ -85,15 +82,15 @@ void Voice::process()
 		/////////////////////////////////////////////////////////////////////////////
 		///////////////////////////// FILTERS
 
-		stk::StkFloat flt_freq = flt_tune;
+		stk::StkFloat flt_freq = flt_mod_matrix.frequency;
 
-		flt_freq += adsr0tick * flt_mod_matrix.env0_amt * env_range_in_notes;
-		flt_freq += adsr1tick * flt_mod_matrix.env1_amt * env_range_in_notes;
-		flt_freq += adsr2tick * flt_mod_matrix.env2_amt * env_range_in_notes;
+		flt_freq += adsr0tick * flt_mod_matrix.flt_mod_matrix.env0_amt * env_range_in_notes;
+		flt_freq += adsr1tick * flt_mod_matrix.flt_mod_matrix.env1_amt * env_range_in_notes;
+		flt_freq += adsr2tick * flt_mod_matrix.flt_mod_matrix.env2_amt * env_range_in_notes;
 
-		flt_freq += lfo0tick * flt_mod_matrix.lfo0_amt * lfo_range_in_notes;
-		flt_freq += lfo1tick * flt_mod_matrix.lfo1_amt * lfo_range_in_notes;
-		flt_freq += lfo2tick * flt_mod_matrix.lfo2_amt * lfo_range_in_notes;
+		flt_freq += lfo0tick * flt_mod_matrix.flt_mod_matrix.lfo0_amt * lfo_range_in_notes;
+		flt_freq += lfo1tick * flt_mod_matrix.flt_mod_matrix.lfo1_amt * lfo_range_in_notes;
+		flt_freq += lfo2tick * flt_mod_matrix.flt_mod_matrix.lfo2_amt * lfo_range_in_notes;
 
 		flt_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (flt_freq - 57.0) / 12.0 );
 
@@ -101,7 +98,7 @@ void Voice::process()
 
 
 		filter.setCutoff(flt_freq);
-		filter.setRes(flt_res);
+		filter.setRes(flt_mod_matrix.resonance);
 
 
 		///////////////////////////// FILTERS
@@ -354,62 +351,45 @@ void Voice::controlCange(uint8_t param, uint8_t value)
 		{
 			case 0:
 			{
-				//flt_mod_matrix.main = val*divider;
+				flt_mod_matrix.frequency = val;
 			}
 			break;
 			case 1:
 			{
-				flt_mod_matrix.env0_amt = val*divider;
+				flt_mod_matrix.flt_mod_matrix.env0_amt = val*divider;
 			}
 			break;
 			case 2:
 			{
-				flt_mod_matrix.env1_amt = val*divider;
+				flt_mod_matrix.flt_mod_matrix.env1_amt = val*divider;
 			}
 			break;
 			case 3:
 			{
-				flt_mod_matrix.env2_amt = val*divider;
+				flt_mod_matrix.flt_mod_matrix.env2_amt = val*divider;
 			}
 			break;
 			case 4:
 			{
-				flt_mod_matrix.lfo0_amt = val*divider;
+				flt_mod_matrix.flt_mod_matrix.lfo0_amt = val*divider;
 			}
 			break;
 			case 5:
 			{
-				flt_mod_matrix.lfo1_amt = val*divider;
+				flt_mod_matrix.flt_mod_matrix.lfo1_amt = val*divider;
 			}
 			break;
 			case 6:
 			{
-				flt_mod_matrix.lfo2_amt = val*divider;
+				flt_mod_matrix.flt_mod_matrix.lfo2_amt = val*divider;
 			}
 			break;
 			case 7:
 			{
-				;
+				flt_mod_matrix.resonance = val * divider;
 			}
 
 			break;
 		}
 	}
-
-
-	switch (param)
-	{
-		case 96:
-		{
-			flt_tune = val;
-		}
-		break;
-
-		case 97:
-		{
-			flt_res = val * divider;
-		}
-		break;
-	}
-
 }
