@@ -26,7 +26,6 @@ class Voice
 {
 	struct mod_matrix
 	{
-		stk::StkFloat main;
 		stk::StkFloat env0_amt;
 		stk::StkFloat env1_amt;
 		stk::StkFloat env2_amt;
@@ -57,24 +56,25 @@ public:
 
 	struct osc_mod_struct
 	{
-		stk::StkFloat freq;
+		stk::StkFloat freq=0;
+		stk::StkFloat detune=0;
+		stk::StkFloat octave=0;
 		mod_matrix osc_mod={0};
 	};
-
 	std::array<osc_mod_struct, 3> osc_mod_matrix;
 
-
+	struct amp_mod_struct
+	{
+		stk::StkFloat velocity=0;
+		mod_matrix amp_mod_matrix={0};
+	};
+	amp_mod_struct amp_mod_matrix;
 
 	mod_matrix flt_mod_matrix={0};
-
-	mod_matrix amp_mod_matrix={0};
-
 
 	stk::StkFloat flt_tune;
 	stk::StkFloat flt_res;
 
-	stk::StkFloat osc2_detune;
-	stk::StkFloat osc3_detune;
 
 
 private:

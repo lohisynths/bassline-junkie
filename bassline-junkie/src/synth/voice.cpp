@@ -13,21 +13,11 @@ Voice::Voice()
 {
 	flt_tune = 64+32;
 
+	amp_mod_matrix.velocity= 0;
 
-	osc2_detune = 0.;
-	osc3_detune = 0.;
-
-	amp_mod_matrix.main = 0;
-
-
-
-
-	flt_mod_matrix.main = 0.5; // octave switcher
 	for (auto &osc_mod : osc_mod_matrix)
 	{
-		//osc_mod_matrix[0].main = 0.5; // octave switcher
-		osc_mod.osc_mod.main = 0.5;
-
+		osc_mod.octave = 0.5;
 		osc_mod.freq = 64;
 	}
 
@@ -64,14 +54,11 @@ void Voice::process()
 		///////////////////////////// OSCILLATORS
 		for(auto &osc_mod : osc_mod_matrix)
 		{
-			// scale 0-127 to 0-5
-			// 127 / 25.4 = 5
-			static const stk::StkFloat octave_divider = 127. / 25.4;
-
 			// octave switcher
-			// -2 for center pitch scale (-2:2)
+			// osc_mod.octave range (0:1)
+			// multiply by 5 and substract 2 for center pitch scale (zero in (-2:2) range)
 			// * 12 for octave multiply
-			auto octave = ( (uint_fast8_t)(osc_mod.osc_mod.main * octave_divider)- 2) * 12;
+			auto octave = ( (uint_fast8_t)(osc_mod.octave * 5)- 2) * 12;
 
 			stk::StkFloat osc_freq = osc_mod.freq + octave;
 
@@ -82,6 +69,8 @@ void Voice::process()
 			osc_freq += lfo0tick * osc_mod.osc_mod.lfo0_amt * lfo_range_in_notes;
 			osc_freq += lfo1tick * osc_mod.osc_mod.lfo1_amt * lfo_range_in_notes;
 			osc_freq += lfo2tick * osc_mod.osc_mod.lfo2_amt * lfo_range_in_notes;
+
+			osc_freq += osc_mod.detune * 20;
 
 			osc_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (osc_freq - 57.0) / 12.0 );
 
@@ -95,10 +84,8 @@ void Voice::process()
 
 		/////////////////////////////////////////////////////////////////////////////
 		///////////////////////////// FILTERS
-		static const stk::StkFloat octave_divider = 127. / 25.4;
-		auto octave = (uint_fast8_t(flt_mod_matrix.main * octave_divider)- 2) * 12;
 
-		stk::StkFloat flt_freq = flt_tune + octave;
+		stk::StkFloat flt_freq = flt_tune;
 
 		flt_freq += adsr0tick * flt_mod_matrix.env0_amt * env_range_in_notes;
 		flt_freq += adsr1tick * flt_mod_matrix.env1_amt * env_range_in_notes;
@@ -138,7 +125,7 @@ void Voice::process()
 
 		output *= adsr2tick;
 
-		output *= amp_mod_matrix.main; // velocity
+		output *= amp_mod_matrix.velocity; // velocity
 
 		sample = output;
 	}
@@ -175,7 +162,7 @@ void Voice::noteOn(stk::StkFloat note, stk::StkFloat vel)
 		osc_mod.freq = note;
 	}
 
-	amp_mod_matrix.main = vel * divider;
+	amp_mod_matrix.velocity = vel * divider;
 	for(auto &ads : env)
 		ads.gate(1);
 }
@@ -313,7 +300,7 @@ void Voice::controlCange(uint8_t param, uint8_t value)
 		{
 			case 0:
 			{
-				osc_mod_matrix[osc_number].osc_mod.main = val*divider;
+				osc_mod_matrix[osc_number].octave = val*divider;
 			}
 			break;
 			case 1:
@@ -348,7 +335,7 @@ void Voice::controlCange(uint8_t param, uint8_t value)
 			break;
 			case 7:
 			{
-				;
+				osc_mod_matrix[osc_number].detune = val*divider;
 			}
 
 			break;
@@ -367,7 +354,7 @@ void Voice::controlCange(uint8_t param, uint8_t value)
 		{
 			case 0:
 			{
-				flt_mod_matrix.main = val*divider;
+				//flt_mod_matrix.main = val*divider;
 			}
 			break;
 			case 1:
