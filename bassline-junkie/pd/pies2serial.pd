@@ -1,4 +1,4 @@
-#N canvas 1920 93 1280 931 10;
+#N canvas 2109 232 960 681 10;
 #X obj 47 119 i;
 #X obj 46 81 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1 1
 ;
@@ -54,7 +54,7 @@
 #X obj 73 1284 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
 -1 -1 0 1;
 #X obj 91 1284 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 0 1;
+-1 -1 1800 1;
 #X obj 110 1284 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
 -1 -1 0 1;
 #X obj 128 1284 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
@@ -66,9 +66,9 @@
 #X obj 73 1444 s output;
 #X obj 116 1953 s output;
 #X obj 74 1018 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 12700 1;
+-1 -1 0 1;
 #X obj 104 975 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 5000 1;
+-1 -1 12700 1;
 #X obj 586 2452 s output;
 #X text 195 1884 Attack Ratio;
 #X obj 616 1953 s output;
@@ -252,7 +252,7 @@
 #X msg 619 91 40 0;
 #X obj 47 494 makenote 60 20 20;
 #X obj 167 455 vsl 15 30 50 500 0 1 empty empty empty 0 -9 0 10 -262144
--1 -1 2900 1;
+-1 -1 100 1;
 #X obj 47 426 +;
 #X obj 102 412 nbx 4 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 10
 -262144 -1 -1 36 256;
@@ -260,10 +260,10 @@
 #X obj 147 1398 + 0;
 #X obj 820 113 s ADSR_OFFSET;
 #X obj 147 1377 r ADSR_OFFSET;
-#X obj 403 885 s output;
-#X obj 403 862 eight_params, f 26;
+#X obj 403 905 s output;
+#X obj 403 882 eight_params, f 26;
 #X obj 403 702 hradio 15 1 0 5 empty empty empty 0 -8 0 10 -262144
--1 -1 2;
+-1 -1 1;
 #X obj 428 742 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 -262144
 -1 -1 0 1;
 #X obj 428 762 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 -262144
@@ -284,10 +284,10 @@
 #X text 573 840 lfo 2 amount;
 #X text 616 700 octave;
 #X obj 403 721 * 26;
-#X obj 402 1174 s output;
-#X obj 402 1151 eight_params, f 26;
+#X obj 402 1173 s output;
+#X obj 402 1150 eight_params, f 26;
 #X obj 402 991 hradio 15 1 0 5 empty empty empty 0 -8 0 10 -262144
--1 -1 3;
+-1 -1 2;
 #X obj 427 1031 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 -262144
 -1 -1 0 1;
 #X obj 427 1051 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 -262144
@@ -307,7 +307,7 @@
 #X text 572 1111 lfo 1 amount;
 #X text 572 1129 lfo 2 amount;
 #X obj 402 1010 * 26;
-#X obj 311 1134 r FLT_OFFSET;
+#X obj 311 1133 r FLT_OFFSET;
 #X obj 820 161 16;
 #X obj 820 230 32;
 #X obj 820 209 loadbang;
@@ -320,11 +320,11 @@
 #X obj 66 203 vsl 15 128 0 12 0 0 empty empty empty 0 -9 0 10 -262144
 -1 -1 0 1;
 #X obj 86 203 vsl 15 128 0 12 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 0 1;
+-1 -1 1200 1;
 #X obj 106 203 vsl 15 128 0 12 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 0 1;
+-1 -1 1500 1;
 #X obj 126 203 vsl 15 128 0 12 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 0 1;
+-1 -1 800 1;
 #X obj 146 203 vsl 15 128 0 12 0 0 empty empty empty 0 -9 0 10 -262144
 -1 -1 0 1;
 #X obj 166 203 vsl 15 128 0 12 0 0 empty empty empty 0 -9 0 10 -262144
@@ -353,7 +353,7 @@
 #X obj 283 1284 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
 -1 -1 0 1;
 #X obj 301 1284 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 0 1;
+-1 -1 3400 1;
 #X obj 320 1284 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
 -1 -1 0 1;
 #X obj 338 1284 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
@@ -366,13 +366,13 @@
 #X obj 283 1421 four_params;
 #X obj 357 1377 r ADSR_OFFSET;
 #X obj 493 1284 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 0 1;
+-1 -1 200 1;
 #X obj 511 1284 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 6800 1;
+-1 -1 4500 1;
 #X obj 530 1284 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 5700 1;
+-1 -1 0 1;
 #X obj 548 1284 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 1200 1;
+-1 -1 2000 1;
 #X text 493 1261 a;
 #X text 511 1261 d;
 #X text 530 1261 s;
@@ -426,33 +426,33 @@
 #X obj 851 1284 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
 -1 -1 12700 1;
 #X obj 870 1284 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 12700 1;
+-1 -1 0 1;
 #X obj 888 1284 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 12700 1;
+-1 -1 0 1;
 #X obj 833 1444 s output;
 #X obj 833 1421 four_params;
 #X obj 907 1377 r OSC_OFFSET;
 #X obj 907 1398 + 0;
 #X obj 819 392 s OSC_OFFSET;
 #X obj 1003 1284 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 12700 1;
+-1 -1 0 1;
 #X obj 1021 1284 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
 -1 -1 12700 1;
 #X obj 1040 1284 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 12700 1;
+-1 -1 0 1;
 #X obj 1058 1284 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 12700 1;
+-1 -1 0 1;
 #X obj 1003 1444 s output;
 #X obj 1003 1421 four_params;
 #X obj 1077 1377 r OSC_OFFSET;
 #X obj 1173 1284 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 12700 1;
+-1 -1 0 1;
 #X obj 1191 1284 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 12700 1;
+-1 -1 0 1;
 #X obj 1210 1284 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 12700 1;
+-1 -1 0 1;
 #X obj 1228 1284 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 12700 1;
+-1 -1 0 1;
 #X obj 1173 1444 s output;
 #X obj 1173 1421 four_params;
 #X obj 1247 1377 r OSC_OFFSET;
@@ -460,11 +460,14 @@
 #X obj 1247 1398 + 8;
 #X obj 819 370 64;
 #X obj 819 349 loadbang;
-#X obj 282 845 r OSC_MOD_OFFSET;
+#X obj 282 865 r OSC_MOD_OFFSET;
 #X obj 820 182 s OSC_MOD_OFFSET;
 #X msg 452 69 50 127;
 #X msg 530 72 60 127;
 #X msg 607 66 40 127;
+#X obj 428 862 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 600 1;
+#X text 573 860 osc detune;
 #X connect 0 0 2 0;
 #X connect 0 0 19 0;
 #X connect 1 0 148 0;
@@ -696,3 +699,4 @@
 #X connect 316 0 135 0;
 #X connect 317 0 137 0;
 #X connect 318 0 139 0;
+#X connect 319 0 170 7;
