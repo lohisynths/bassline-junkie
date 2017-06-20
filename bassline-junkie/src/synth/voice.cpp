@@ -175,13 +175,13 @@ void Voice::noteOff()
 
 
 
-#define OSC_MOD_OFFSET  16
-#define OSC_MOD_NUMBER  1
+#define OSC_MOD_OFFSET  96
+#define OSC_MOD_NUMBER  3
 #define OSC_MOD_PARAMS 8
 
 
 #define FLT_MOD_OFFSET  32
-#define FLT_MOD_NUMBER  1
+#define FLT_MOD_NUMBER  8
 #define FLT_MOD_PARAMS 8
 
 
