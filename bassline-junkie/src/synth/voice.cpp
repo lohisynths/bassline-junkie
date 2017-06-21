@@ -129,7 +129,7 @@ void Voice::process()
 
 void Voice::message(MidiMessage *msg)
 {
-	//msg->print();
+	msg->print();
 
 	if (msg->m_type != MidiMessage::NO_MESSAGE)
 	{

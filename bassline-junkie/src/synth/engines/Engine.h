@@ -117,9 +117,9 @@ public:
 		}
 
 	}
-//	SerialReceiver messager;
+	SerialReceiver messager;
 
-	MidiReceiver messager;
+//	MidiReceiver messager;
 	std::vector<std::pair<MidiMessage, int>> notes;
 	std::vector<int> free_cores;
 

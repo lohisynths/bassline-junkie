@@ -152,6 +152,7 @@ MidiMessage* SerialReceiver::getMessage()
 {
 	MidiMessage* output= nullptr;
 
+	//TODO: IMPORTANT better parsing
 	if(n!=0)
 	{
 		for(size_t i=0;i<n;i++)
@@ -166,8 +167,8 @@ MidiMessage* SerialReceiver::getMessage()
 				//output->print();
 			}
 		}
+		n=0;
 	}
-	n=0;
 
 	return output;
 }
