@@ -16,6 +16,7 @@ static void DoNotOptimize(int const& value)
 	asm volatile("" : : "g"(value) : "memory");
 }
 
+#include "../utils/SerialReceiver.h"
 #include "../utils/MidiReceiver.h"
 #include <vector>
 #include <algorithm>
@@ -116,6 +117,7 @@ public:
 		}
 
 	}
+//	SerialReceiver messager;
 
 	MidiReceiver messager;
 	std::vector<std::pair<MidiMessage, int>> notes;
