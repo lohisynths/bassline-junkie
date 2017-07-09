@@ -30,7 +30,48 @@ RtMidiReceiver::~RtMidiReceiver()
 }
 
 
-
+int RtMidiReceiver::parse(char input)
+{
+	if (input == 0xb0 || input == 0xb9)
+	{
+		msg.m_type = MidiMessage::Type::CC;
+		msg.count++;
+	}
+	else if (input == 0x90 || input == 0x99)
+	{
+		msg.m_type = MidiMessage::Type::NOTE_ON;
+		msg.count++;
+	}
+	else if (input == 0x80)
+	{
+		msg.m_type = MidiMessage::Type::NOTE_OFF;
+		msg.count++;
+	}
+	else if (msg.m_type != MidiMessage::Type::NO_MESSAGE)
+	{
+		if (msg.count == 1)
+		{
+			msg.m_val_1 = input;
+			msg.count++;
+		}
+		else if (msg.count == 2)
+		{
+			msg.m_val_2 = input;
+			return 1;
+		}
+		else
+		{
+			msg.reset();
+			std::cout << "wrong message" << std::endl;
+		}
+	}
+	else
+	{
+		msg.reset();
+		std::cout << "unknown message" << std::endl;
+	}
+	return 0;
+}
 
 MidiMessage* RtMidiReceiver::getMessage() {
 
