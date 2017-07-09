@@ -30,7 +30,7 @@ RtMidiReceiver::~RtMidiReceiver()
 }
 
 
-int RtMidiReceiver::parse(char input)
+int RtMidiReceiver::parse(uint8_t input)
 {
 	if (input == 0xb0 || input == 0xb9)
 	{
@@ -96,6 +96,7 @@ MidiMessage* RtMidiReceiver::getMessage() {
 			//std::cout << "    get ";
 			//output->print();
 		}
+//        std::cout << std::endl;
     }
    	return output;
 }

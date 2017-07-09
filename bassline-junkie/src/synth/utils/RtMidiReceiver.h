@@ -17,7 +17,7 @@ public:
 	MidiMessage* getMessage();
 
 
-	int parse(char input);
+	int parse(uint8_t input);
 	void probe();
 
 private:
