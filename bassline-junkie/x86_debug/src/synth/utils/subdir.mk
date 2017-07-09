@@ -6,6 +6,7 @@
 CPP_SRCS += \
 ../src/synth/utils/AudioDevice.cpp \
 ../src/synth/utils/MidiReceiver.cpp \
+../src/synth/utils/RtMidiReceiver.cpp \
 ../src/synth/utils/SerialReceiver.cpp \
 ../src/synth/utils/array_writer.cpp \
 ../src/synth/utils/cpucounter.cpp \
@@ -14,6 +15,7 @@ CPP_SRCS += \
 OBJS += \
 ./src/synth/utils/AudioDevice.o \
 ./src/synth/utils/MidiReceiver.o \
+./src/synth/utils/RtMidiReceiver.o \
 ./src/synth/utils/SerialReceiver.o \
 ./src/synth/utils/array_writer.o \
 ./src/synth/utils/cpucounter.o \
@@ -22,6 +24,7 @@ OBJS += \
 CPP_DEPS += \
 ./src/synth/utils/AudioDevice.d \
 ./src/synth/utils/MidiReceiver.d \
+./src/synth/utils/RtMidiReceiver.d \
 ./src/synth/utils/SerialReceiver.d \
 ./src/synth/utils/array_writer.d \
 ./src/synth/utils/cpucounter.d \
@@ -32,7 +35,7 @@ CPP_DEPS += \
 src/synth/utils/%.o: ../src/synth/utils/%.cpp
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C++ Compiler'
-	g++ -std=c++1y -I../../stk/include -O3 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"
+	g++ -std=c++1y -I../../stk/include -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
