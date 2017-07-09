@@ -9,7 +9,7 @@
 
 wav_writer::wav_writer()
 {
-	wave_output.openFile("/home/pi/bassline.wav", 1, stk::FileWrite::FILE_WAV,
+	wave_output.openFile("bassline.wav", 1, stk::FileWrite::FILE_WAV,
 			stk::Stk::STK_SINT32);
 	wave_output.printErrors(true);
 	lolo.resize(512, 1);

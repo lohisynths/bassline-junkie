@@ -18,6 +18,8 @@
 #include "dsp/Osc.h"
 
 #include "dsp/MoogFilter.h"
+#include "dsp/VAStateVariableFilter.h"
+
 #include "utils/MidiReceiver.h"
 #include "utils/clipping.h"
 
@@ -83,7 +85,8 @@ public:
 
 private:
 
-	MoogFilter filter;
+	//MoogFilter filter;
+	VAStateVariableFilter filter;
 
 	std::array<Osc, 3> osc;
 	std::array<Lfo, 3> lfo;
