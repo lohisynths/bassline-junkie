@@ -32,7 +32,7 @@ public:
 		free_cores.push_back(7);
 	}
 
-	std::array<uint32_t, 512> &process(std::array<Voice, voices_count> &voices)
+	std::array<stk::StkFloat, 512> &process(std::array<Voice, voices_count> &voices)
 	{
 		for(auto core : cores)
 			core->request();
@@ -44,7 +44,6 @@ public:
 			updateMessages(voices);
 
 		// reset buffer
-		std::fill(std::begin(output), std::end(output), 0);
 		std::fill(std::begin(output_float), std::end(output_float), 0);
 		// fill output buffer with data
 		for (auto &voice : voices)
@@ -55,40 +54,14 @@ public:
 
 		}
 
-		auto ciabej =
-				[](uint32_t &output, stk::StkFloat &input)
-				{
-					//input *= 0.3;
 
-					if (input > 0)
-						input = 1 - exp(-input);
-					else
-						input = -1 + exp(input);
-					//input *= 0.7;
-
-					if (input > 1)
-						std::cout << "clip +1" << std::endl;
-					else if (input < -1 )
-						std::cout << "clip -1" << std::endl;
-
-					//writer.process(input);
-
-					//input = atan(input) * 2/M_PI;
-					output = (input+1) * maxval;
-					output += maxval;
-					return output;
-				};
-
-		std::transform(output.begin(), output.end(), output_float.begin(),output.begin(),ciabej);
-
-		return output;
+		return output_float;
 	}
 
 
 private:
 	std::vector<ConditionalVar*> cores;
 	std::array<Voice, voices_count> &m_voices;
-	std::array<uint32_t, 512> output;
 	std::array<stk::StkFloat, 512> output_float;
 
 };

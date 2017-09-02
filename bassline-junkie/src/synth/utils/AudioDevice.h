@@ -12,6 +12,9 @@
 #include <string>
 #include <array>
 
+#include "Stk.h"
+#include <algorithm>
+
 extern void tick(int32_t **data, unsigned int channels, unsigned int count);
 
 class AudioDevice
@@ -40,7 +43,7 @@ public:
 	int prepare_mmap();
 
 	int aval();
-	void play(std::array<uint32_t, 512> &arr);
+	void play(std::array<stk::StkFloat, 512> &arr);
 
 	snd_pcm_t *handle;
 	signed short *samples;

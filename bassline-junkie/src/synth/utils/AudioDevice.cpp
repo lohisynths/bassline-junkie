@@ -357,8 +357,44 @@ int xrun_recovery(snd_pcm_t *handle, int err)
 
 static int err, first = 1;
 
-void AudioDevice::play(std::array<uint32_t, 512> &arr)
+const unsigned int format_bits = 32; //snd_pcm_format_width(*m_format);
+const unsigned int maxval = (1U << (format_bits - 1U)) - 1U;
+
+void AudioDevice::play(std::array<stk::StkFloat, 512> &output_float)
 {
+
+	while(!aval());
+
+	std::array<uint32_t, 512> arr;
+
+	auto ciabej =
+			[](uint32_t &output, stk::StkFloat &input)
+			{
+				//input *= 0.3;
+
+				if (input > 0)
+					input = 1 - exp(-input);
+				else
+					input = -1 + exp(input);
+				//input *= 0.7;
+
+				if (input > 1)
+					std::cout << "clip +1" << std::endl;
+				else if (input < -1 )
+					std::cout << "clip -1" << std::endl;
+
+				//writer.process(input);
+
+				//input = atan(input) * 2/M_PI;
+				output = (input+1) * maxval;
+				output += maxval;
+				return output;
+			};
+
+	std::fill(std::begin(arr), std::end(arr), 0);
+
+	std::transform(arr.begin(), arr.end(), output_float.begin(),arr.begin(),ciabej);
+
 	snd_pcm_uframes_t size = period_size;
 
 	while (size > 0)

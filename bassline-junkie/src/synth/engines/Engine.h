@@ -26,7 +26,7 @@ static void DoNotOptimize(int const& value)
 class Engine
 {
 public:
-	virtual std::array<uint32_t, 512> &process(
+	virtual std::array<double, 512> &process(
 			std::array<Voice, voices_count> &voices) = 0;
 
 	void noteOff(MidiMessage* msg, std::array<Voice, voices_count> &voices)
