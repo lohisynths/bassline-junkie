@@ -8,11 +8,17 @@
 #ifndef SRC_CONFIG_H_
 #define SRC_CONFIG_H_
 
-#ifndef __arm__
-const unsigned int councyrent_cores[3] = {3,6,7};
-#else
-const unsigned int councyrent_cores[3] = {1,2,3};
-#endif
+
+static bool play = true;
+
+static void finish(int ignore)
+{
+	printf("finish finish finish finish finish finish\n");
+	play = false;
+}
+
+const size_t voices_count = 8;
+
 
 
 #endif /* SRC_CONFIG_H_ */

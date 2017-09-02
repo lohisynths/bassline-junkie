@@ -1,5 +1,39 @@
 #!/bin/bash
 set -e 
+
+
+main() {
+	if [ "$#" -ne 1 ]
+	then
+	  echo "Usage: ..."
+	  exit 1
+	fi
+
+
+	for i in "$@" ; do
+	    if [[ $i == "arm" ]] ; then
+		echo "Is set and compiling!"
+		check_crosscompiler
+		git_init
+		configure arm
+		./build.sh arm
+		break
+	    elif [[ $i == "x86" ]] ; then
+		echo "Is set and compiling!"
+		git_init
+		configure x86
+		./build.sh x86
+		break
+	    fi
+	done
+
+echo -e ${BGreen} 'done' ${NC}
+
+	#exit
+}
+
+
+
 cross_compiler=arm-linux-gnueabihf-g++
 
 # http://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux
@@ -8,27 +42,50 @@ GREEN='\033[0;32m'
 BGreen='\033[1;32m'
 NC='\033[0m'
 
-# http://stackoverflow.com/questions/592620/check-if-a-program-exists-from-a-bash-script
-command -v $cross_compiler >/dev/null 2>&1 || { echo -e >&2 ${RED} $cross_compiler "is requied but it's not installed.  Aborting." ${NC}; exit 1; }
-type $cross_compiler >/dev/null 2>&1 || { echo >&2 $cross_compiler "is requied but it's not installed.  Aborting."; exit 1; }
-hash $cross_compiler 2>/dev/null || { echo >&2 $cross_compiler "is requied but it's not installed.  Aborting."; exit 1; }
+function check_crosscompiler {
+	# http://stackoverflow.com/questions/592620/check-if-a-program-exists-from-a-bash-script
+	command -v $cross_compiler >/dev/null 2>&1 || { echo -e >&2 ${RED} $cross_compiler "is requied but it's not installed.  Aborting." ${NC}; exit 1; }
+	type $cross_compiler >/dev/null 2>&1 || { echo >&2 $cross_compiler "is requied but it's not installed.  Aborting."; exit 1; }
+	hash $cross_compiler 2>/dev/null || { echo >&2 $cross_compiler "is requied but it's not installed.  Aborting."; exit 1; }
 
-echo -e ${GREEN} 'cross-compiler' $cross_compiler 'found' ${NC}
+	echo -e ${GREEN} 'cross-compiler' $cross_compiler 'found' ${NC}
+}  
 
-echo -e ${GREEN} 'submodule init' ${NC}
-git submodule init
-git submodule update
+function git_init {
+	echo -e ${GREEN} 'submodule init' ${NC}
+	git submodule init
+	git submodule update
 
-cd stk
-
-echo -e ${GREEN} 'updating stk subrepo' ${NC}
-git checkout master
-
-echo -e ${GREEN} 'configuring stk subrepo' ${NC}
-autoreconf
-#./configure --enable-debug --with-alsa --disable-shared --enable-static
-#./configure --with-alsa --disable-shared --enable-static
-./configure --host=arm-linux-gnueabihf --build=x86_64-linux-gnu --enable-debug --with-alsa --disable-shared --enable-static
+	cd stk
+	echo -e ${GREEN} 'updating stk subrepo' ${NC}
+	git checkout master
+	echo -e ${GREEN} 'configuring stk subrepo' ${NC}
+	cd ../
+}
 
 
-echo -e ${BGreen} 'done' ${NC}
+function configure {
+	cd stk
+	autoreconf
+
+	for i in "$@" ; do
+	    if [[ $i == "arm" ]] ; then
+		echo "arm configure !"
+		./configure --host=arm-linux-gnueabihf --build=x86_64-linux-gnu --enable-debug --with-alsa --disable-shared --enable-static
+		break
+	    elif [[ $i == "x86" ]] ; then
+		echo "x86 configure !"
+		./configure --enable-debug --with-alsa --disable-shared --enable-static
+		break
+	    else
+		echo "wrong configure !"
+		exit
+	    fi
+	done
+	cd ../
+}
+
+
+
+main "$@"
+

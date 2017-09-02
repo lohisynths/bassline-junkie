@@ -4,31 +4,16 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
-../src/synth/AudioDevice.cpp \
-../src/synth/MidiReceiver.cpp \
-../src/synth/MoogFilter.cpp \
 ../src/synth/bassline-junkie.cpp \
-../src/synth/cpucounter.cpp \
-../src/synth/synth.cpp \
-../src/synth/wavwriter.cpp 
+../src/synth/voice.cpp 
 
 OBJS += \
-./src/synth/AudioDevice.o \
-./src/synth/MidiReceiver.o \
-./src/synth/MoogFilter.o \
 ./src/synth/bassline-junkie.o \
-./src/synth/cpucounter.o \
-./src/synth/synth.o \
-./src/synth/wavwriter.o 
+./src/synth/voice.o 
 
 CPP_DEPS += \
-./src/synth/AudioDevice.d \
-./src/synth/MidiReceiver.d \
-./src/synth/MoogFilter.d \
 ./src/synth/bassline-junkie.d \
-./src/synth/cpucounter.d \
-./src/synth/synth.d \
-./src/synth/wavwriter.d 
+./src/synth/voice.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

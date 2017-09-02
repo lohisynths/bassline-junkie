@@ -8,116 +8,120 @@
 #ifndef SRC_SYNTH_ENGINE_H_
 #define SRC_SYNTH_ENGINE_H_
 
-#include "../synth.h"
+#include "../voice.h"
+#include "../config.h"
 
-const size_t voices_count = 4;
-
-static void DoNotOptimize(int const& value) {
+static void DoNotOptimize(int const& value)
+{
 	asm volatile("" : : "g"(value) : "memory");
 }
 
-#include "../MidiReceiver.h"
+#include "../utils/SerialReceiver.h"
+#include "../utils/MidiReceiver.h"
+#include "../utils/RtMidiReceiver.h"
 #include <vector>
 #include <algorithm>
-
-const size_t max_voices = 4;
+#include "../config.h"
 
 class Engine
 {
 public:
-	Engine()
+	virtual std::array<uint32_t, 512> &process(
+			std::array<Voice, voices_count> &voices) = 0;
+
+	void noteOff(MidiMessage* msg, std::array<Voice, voices_count> &voices)
 	{
-		free_cores.push_back(0);
-		free_cores.push_back(1);
-		free_cores.push_back(2);
-		free_cores.push_back(3);
-	}
-
-	virtual void process(std::array<synth, voices_count> &voices) = 0;
-
-
-	void updateMessages(std::array<synth, voices_count> &voices)
-	{
-		auto msg = messager.getMessage();
-		if(msg)
-		{
-			//msg->print();
-
-			if (msg->m_type == MidiMessage::NOTE_ON)
-			{
-				if (notes.size() < max_voices)
-				{
-					auto core = free_cores.back();
-					free_cores.pop_back();
-
-					notes.push_back(std::make_pair(*msg, core));
-
-					auto &note = notes.back().first;
-					auto core_nr = notes.back().second;
-
-					voices[core_nr].message(&note);
-
-				//	std::cout << "core " << core_nr << " bussy of total " << notes.size() << " voices\n";
-
-				}
-			}
-			else if (msg->m_type == MidiMessage::NOTE_OFF)
-			{
-				for (size_t i=0;i < notes.size();i++)
-				{
-					auto &note = notes[i].first;
-					auto core_nr = notes[i].second;
-
-					if(note.m_val_1 == msg->m_val_1)
-					{
-				//		std::cout << "core " << core_nr << " free of total " << notes.size() << " voices\n";
-
-						note.m_type = MidiMessage::NO_MESSAGE;
-					}
-				}
-
-	//			notes.erase(std::remove_if(notes.begin(), notes.end(), [](auto &msg)
-	//			{	return msg.first.m_type == MidiMessage::NO_MESSAGE;}), notes.end());
-
-				//std::cout << "notes size " << notes.size() << "\n";
-			}
-			else
-			{
-				msg->print();
-
-				for(auto &voice : voices)
-				{
-					voice.message(msg);
-				}
-			}
-		}
-
-		for (size_t i=0;i < notes.size();i++)
+		for (size_t i = 0; i < notes.size(); i++)
 		{
 			auto &note = notes[i].first;
 			auto core = notes[i].second;
 
-			if (note.m_type == MidiMessage::NO_MESSAGE)
+			if (note.m_val_1 == msg->m_val_1)
 			{
-				note.time++;
-				if(note.time > 0)
-				{
-					voices[core].noteOff();
-					notes.erase(notes.begin() + i);
-					free_cores.push_back(core);
-				//	std::cout << "core " << core << " freed of total " << notes.size() << " voices\n";
-
-					//std::cout << +note.m_val_1 << " " << +note.m_type << " " << core << std::endl;
-					break;
-				}
+				voices[core].message(msg);
+				notes.erase(notes.begin() + i);
+				free_cores.push_back(core);
 			}
 		}
 	}
 
+	void noteOn(MidiMessage* msg, std::array<Voice, voices_count> &voices)
+	{
+
+		if (msg->m_val_2 != 0)
+		{
+			if (notes.size() < voices_count)
+			{
+				//noteOn(msg, voices);
+
+				auto core = free_cores.back();
+				free_cores.pop_back();
+
+				notes.push_back(std::make_pair(*msg, core));
+
+				auto &note = notes.back().first;
+				auto core_nr = notes.back().second;
+
+				voices[core_nr].message(&note);
+
+			}
+		}
+		else
+		{
+			noteOff(msg, voices);
+		}
 
 
-	MidiReceiver messager;
+	}
 
+	void updateMessages(std::array<Voice, voices_count> &voices)
+	{
+		auto msg = messager.getMessage();
+		if (msg)
+		{
+
+			if (msg->m_type != MidiMessage::NO_MESSAGE)
+			{
+				switch (msg->m_type)
+				{
+
+				case MidiMessage::Type::NOTE_ON:
+				{
+					if(msg->m_val_2!=0)
+					{
+						noteOn(msg, voices);
+						break;
+					}
+					else
+						msg->m_type=MidiMessage::Type::NOTE_OFF;
+				} // ignore warning NoteOn with vel 0 = NoteOff
+
+				case MidiMessage::Type::NOTE_OFF:
+				{
+					noteOff(msg, voices);
+
+					break;       // and exits the switchNOTE_ON
+				}
+				case MidiMessage::Type::CC:
+				{
+					for(auto &voice : voices)
+						voice.message(msg);
+
+					break;       // and exits the switchNOTE_ON
+				}
+				case MidiMessage::Type::NO_MESSAGE:
+					break;       // and exits the switchNOTE_ON
+
+
+				};
+			}
+		}
+
+	}
+//	SerialReceiver messager;
+//	MidiReceiver messager;
+
+	RtMidiReceiver messager;
 	std::vector<std::pair<MidiMessage, int>> notes;
 	std::vector<int> free_cores;
 

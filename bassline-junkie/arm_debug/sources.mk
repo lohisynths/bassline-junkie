@@ -24,5 +24,8 @@ CPP_DEPS :=
 # Every subdirectory with source files must be described here
 SUBDIRS := \
 src/synth \
-src/synth/engines \
+src/synth/dsp/ADSR \
+src/synth/dsp \
+src/synth/dsp/PolyBLEPOscillator \
+src/synth/utils \
 
