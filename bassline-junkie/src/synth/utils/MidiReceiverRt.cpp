@@ -1,13 +1,13 @@
 /*
- * RtMidiReceiver.cpp
+ * MidiReceiverRt.cpp
  *
  *  Created on: Jul 9, 2017
  *      Author: alax
  */
 
-#include "RtMidiReceiver.h"
+#include "MidiReceiverRt.h"
 
-RtMidiReceiver::RtMidiReceiver()
+MidiReceiverRt::MidiReceiverRt()
 {
 	  probe();
 
@@ -24,13 +24,13 @@ RtMidiReceiver::RtMidiReceiver()
 
 }
 
-RtMidiReceiver::~RtMidiReceiver()
+MidiReceiverRt::~MidiReceiverRt()
 {
 
 }
 
 
-int RtMidiReceiver::parse(uint8_t input)
+int MidiReceiverRt::parse(uint8_t input)
 {
 	if (input == 0xb0 || input == 0xb9)
 	{
@@ -73,7 +73,7 @@ int RtMidiReceiver::parse(uint8_t input)
 	return 0;
 }
 
-MidiMessage* RtMidiReceiver::getMessage() {
+MidiMessage* MidiReceiverRt::getMessage() {
 
 	MidiMessage* output= nullptr;
 
@@ -101,7 +101,7 @@ MidiMessage* RtMidiReceiver::getMessage() {
    	return output;
 }
 
-void RtMidiReceiver::probe(){
+void MidiReceiverRt::probe(){
 	RtMidiOut *midiout = 0;
 
 	// Check inputs.

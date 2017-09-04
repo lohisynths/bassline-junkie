@@ -21,7 +21,7 @@ int AudioDeviceRt::setup()
 {
 	  try {
 	    // Define and open the default realtime output device for one-channel playback
-	    dac = new stk::RtWvOut( 2, stk::Stk::sampleRate(), 0, 256, 2);
+	    dac = new stk::RtWvOut( 1, stk::Stk::sampleRate(), 0, 256, 2);
 
 	  }
 	  catch ( stk::StkError & ) {

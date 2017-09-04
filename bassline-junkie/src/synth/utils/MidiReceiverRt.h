@@ -1,19 +1,19 @@
 /*
- * RtMidiReceiver.h
+ * MidiReceiverRt.h
  *
  *  Created on: Jul 9, 2017
  *      Author: alax
  */
 
-#ifndef SRC_SYNTH_UTILS_RTMIDIRECEIVER_H_
-#define SRC_SYNTH_UTILS_RTMIDIRECEIVER_H_
+#ifndef SRC_SYNTH_UTILS_MIDIRECEIVERRT_H_
+#define SRC_SYNTH_UTILS_MIDIRECEIVERRT_H_
 #include "RtMidi.h"
 #include "MidiMessage.h"
 
-class RtMidiReceiver {
+class MidiReceiverRt {
 public:
-	RtMidiReceiver();
-	virtual ~RtMidiReceiver();
+	MidiReceiverRt();
+	virtual ~MidiReceiverRt();
 	MidiMessage* getMessage();
 
 
@@ -26,4 +26,4 @@ private:
 	  MidiMessage msg, msg_out;
 };
 
-#endif /* SRC_SYNTH_UTILS_RTMIDIRECEIVER_H_ */
+#endif /* SRC_SYNTH_UTILS_MIDIRECEIVERRT_H_ */

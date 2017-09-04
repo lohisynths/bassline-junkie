@@ -18,7 +18,7 @@ static void DoNotOptimize(int const& value)
 
 #include "../utils/SerialReceiver.h"
 #include "../utils/MidiReceiver.h"
-#include "../utils/RtMidiReceiver.h"
+#include "../utils/MidiReceiverRt.h"
 #include <vector>
 #include <algorithm>
 #include "../config.h"
@@ -121,7 +121,7 @@ public:
 //	SerialReceiver messager;
 //	MidiReceiver messager;
 
-	RtMidiReceiver messager;
+	MidiReceiverRt messager;
 	std::vector<std::pair<MidiMessage, int>> notes;
 	std::vector<int> free_cores;
 
