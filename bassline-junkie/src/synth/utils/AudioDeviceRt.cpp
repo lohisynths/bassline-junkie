@@ -36,8 +36,6 @@ void AudioDeviceRt::close()
 
 }
 
-static int err, first = 1;
-
 const unsigned int format_bits = 32; //snd_pcm_format_width(*m_format);
 const unsigned int maxval = (1U << (format_bits - 1U)) - 1U;
 

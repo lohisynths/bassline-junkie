@@ -85,8 +85,8 @@ public:
 
 private:
 
-	//MoogFilter filter;
-	VAStateVariableFilter filter;
+	MoogFilter filter;
+	//VAStateVariableFilter filter;
 
 	std::array<Osc, 3> osc;
 	std::array<Lfo, 3> lfo;

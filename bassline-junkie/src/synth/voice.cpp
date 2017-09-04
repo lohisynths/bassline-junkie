@@ -169,26 +169,22 @@ void Voice::noteOff()
 		ads.gate(0);
 }
 
-#define ENV_OFFSET 0
-#define ENV_NUMBER 3
-#define ENV_PARAMS 4
-
-
-
-#define OSC_MOD_OFFSET  96
-#define OSC_MOD_NUMBER  3
-#define OSC_MOD_PARAMS 8
-
+#define ADSR_OFFSET 0
+#define ADSR_NUMBER 3
+#define ADSR_PARAMS 4
 
 #define FLT_MOD_OFFSET  32
-#define FLT_MOD_NUMBER  8
+#define FLT_MOD_NUMBER  1
 #define FLT_MOD_PARAMS 8
-
 
 #define LFO_OFFSET 48
 #define LFO_NUMBER 3
 #define LFO_PARAMS 2
 
+
+#define OSC_MOD_OFFSET  96
+#define OSC_MOD_NUMBER  3
+#define OSC_MOD_PARAMS 8
 
 #define OSC_OFFSET 64
 #define OSC_NUMBER 3
@@ -201,6 +197,90 @@ void Voice::controlCange(uint8_t param, uint8_t value)
 		if(param > 0)
 			if(val==0)
 				val=0.001*127.; // avoid pops and clicks
+
+
+	if(param >= ADSR_OFFSET && param <= ADSR_OFFSET+(ADSR_NUMBER*ADSR_PARAMS) )
+	{
+		uint_fast8_t tmp_param = param - ADSR_OFFSET;
+		uint_fast8_t adsr_number = tmp_param / ADSR_PARAMS;
+		tmp_param = tmp_param % ADSR_PARAMS;
+		switch (tmp_param)
+		{
+			case 0:
+			{
+				env[adsr_number].setAttackRate(val*divider);
+			}
+			break;
+			case 1:
+			{
+				env[adsr_number].setDecayRate(val*divider);
+			}
+			break;
+			case 2:
+			{
+				env[adsr_number].setSustainLevel(val*divider);
+			}
+			break;
+			case 3:
+			{
+				env[adsr_number].setReleaseRate(val*divider);
+			}
+			break;
+		}
+	}
+
+
+	if(param >= FLT_MOD_OFFSET && param <= FLT_MOD_OFFSET+(FLT_MOD_NUMBER * FLT_MOD_PARAMS) )
+	{
+		uint_fast8_t tmp_param = param - FLT_MOD_OFFSET;
+		uint_fast8_t osc_number = tmp_param / FLT_MOD_PARAMS;
+		tmp_param = tmp_param % FLT_MOD_PARAMS;
+		switch (tmp_param)
+		{
+			case 0:
+			{
+				flt_mod_matrix.frequency = val;
+			}
+			break;
+			case 1:
+			{
+				flt_mod_matrix.flt_mod_matrix.env0_amt = val*divider;
+			}
+			break;
+			case 2:
+			{
+				flt_mod_matrix.flt_mod_matrix.env1_amt = val*divider;
+			}
+			break;
+			case 3:
+			{
+				flt_mod_matrix.flt_mod_matrix.env2_amt = val*divider;
+			}
+			break;
+			case 4:
+			{
+				flt_mod_matrix.flt_mod_matrix.lfo0_amt = val*divider;
+			}
+			break;
+			case 5:
+			{
+				flt_mod_matrix.flt_mod_matrix.lfo1_amt = val*divider;
+			}
+			break;
+			case 6:
+			{
+				flt_mod_matrix.flt_mod_matrix.lfo2_amt = val*divider;
+			}
+			break;
+			case 7:
+			{
+				flt_mod_matrix.resonance = val * divider;
+			}
+
+			break;
+		}
+	}
+
 
 
 	if(param >= OSC_OFFSET && param <= OSC_OFFSET+(OSC_NUMBER*OSC_PARAMS) )
@@ -255,35 +335,6 @@ void Voice::controlCange(uint8_t param, uint8_t value)
 		}
 	}
 
-	if(param >= ENV_OFFSET && param <= ENV_OFFSET+(ENV_NUMBER*ENV_PARAMS) )
-	{
-		uint_fast8_t tmp_param = param - ENV_OFFSET;
-		uint_fast8_t adsr_number = tmp_param / ENV_PARAMS;
-		tmp_param = tmp_param % ENV_PARAMS;
-		switch (tmp_param)
-		{
-			case 0:
-			{
-				env[adsr_number].setAttackRate(val*divider);
-			}
-			break;
-			case 1:
-			{
-				env[adsr_number].setDecayRate(val*divider);
-			}
-			break;
-			case 2:
-			{
-				env[adsr_number].setSustainLevel(val*divider);
-			}
-			break;
-			case 3:
-			{
-				env[adsr_number].setReleaseRate(val*divider);
-			}
-			break;
-		}
-	}
 
 
 
@@ -341,54 +392,5 @@ void Voice::controlCange(uint8_t param, uint8_t value)
 
 
 
-	if(param >= FLT_MOD_OFFSET && param <= FLT_MOD_OFFSET+(FLT_MOD_NUMBER * FLT_MOD_PARAMS) )
-	{
-		uint_fast8_t tmp_param = param - FLT_MOD_OFFSET;
-		uint_fast8_t osc_number = tmp_param / FLT_MOD_PARAMS;
-		tmp_param = tmp_param % FLT_MOD_PARAMS;
-		switch (tmp_param)
-		{
-			case 0:
-			{
-				flt_mod_matrix.frequency = val;
-			}
-			break;
-			case 1:
-			{
-				flt_mod_matrix.flt_mod_matrix.env0_amt = val*divider;
-			}
-			break;
-			case 2:
-			{
-				flt_mod_matrix.flt_mod_matrix.env1_amt = val*divider;
-			}
-			break;
-			case 3:
-			{
-				flt_mod_matrix.flt_mod_matrix.env2_amt = val*divider;
-			}
-			break;
-			case 4:
-			{
-				flt_mod_matrix.flt_mod_matrix.lfo0_amt = val*divider;
-			}
-			break;
-			case 5:
-			{
-				flt_mod_matrix.flt_mod_matrix.lfo1_amt = val*divider;
-			}
-			break;
-			case 6:
-			{
-				flt_mod_matrix.flt_mod_matrix.lfo2_amt = val*divider;
-			}
-			break;
-			case 7:
-			{
-				flt_mod_matrix.resonance = val * divider;
-			}
 
-			break;
-		}
-	}
 }
