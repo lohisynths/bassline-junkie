@@ -10,6 +10,7 @@
 #include <algorithm>
 
 #include "utils/AudioDevice.h"
+#include "utils/AudioDeviceRt.h"
 #include "utils/cpucounter.h"
 #include "utils/wavwriter.h"
 #include "utils/concurency_helpers.h"
@@ -28,17 +29,7 @@ int main()
 	Stk::setSampleRate( 44100.0 );
 	Stk::showWarnings( true );
 
-	AudioDevice device;
-//	  stk::RtWvOut *dac=nullptr;
-//	  try {
-//	    // Define and open the default realtime output device for one-channel playback
-//	    dac = new RtWvOut( 1, Stk::sampleRate(), 0, 256, 2);
-//
-//	  }
-//	  catch ( StkError & ) {
-//	    exit( 1 );
-//	  }
-
+	AudioDeviceRt device;
 	
 	wav_writer wav_out;
 	cpu_counter licznik;
@@ -57,21 +48,6 @@ int main()
 		// process data
 		auto output = engine.process(voices);
 		// send buffer to soundcard
-
-
-
-//			for(auto &it : output)
-//			{
-//			    try {
-//			      dac->tick( it );
-//			     }
-//			    catch ( StkError & ) {
-//			    	std::cout << "errrorrorororororoo n''n'n'n'\n\\n\n\n\n";
-//			    }
-//
-//			}
-
-
 		device.play(output); // while loop inside
 		// stop time reporting
 		// write buffer to file

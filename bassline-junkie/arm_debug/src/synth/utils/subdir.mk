@@ -5,6 +5,7 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
 ../src/synth/utils/AudioDevice.cpp \
+../src/synth/utils/AudioDeviceRt.cpp \
 ../src/synth/utils/MidiReceiver.cpp \
 ../src/synth/utils/RtMidiReceiver.cpp \
 ../src/synth/utils/SerialReceiver.cpp \
@@ -14,6 +15,7 @@ CPP_SRCS += \
 
 OBJS += \
 ./src/synth/utils/AudioDevice.o \
+./src/synth/utils/AudioDeviceRt.o \
 ./src/synth/utils/MidiReceiver.o \
 ./src/synth/utils/RtMidiReceiver.o \
 ./src/synth/utils/SerialReceiver.o \
@@ -23,6 +25,7 @@ OBJS += \
 
 CPP_DEPS += \
 ./src/synth/utils/AudioDevice.d \
+./src/synth/utils/AudioDeviceRt.d \
 ./src/synth/utils/MidiReceiver.d \
 ./src/synth/utils/RtMidiReceiver.d \
 ./src/synth/utils/SerialReceiver.d \
