@@ -34,9 +34,16 @@ public:
 	Engine(std::array<Voice, voices_count> &voices) : m_voices(voices)
 	{
 		// ConditionalVar(vector of voices, first cpu, number of first voice, number of voices to process
-		cores.push_back( new thread(m_voices, 1,0,2) );
-		cores.push_back( new thread(m_voices, 2,2,3) );
-		cores.push_back( new thread(m_voices, 3,5,3) );
+
+
+		thread_info info={1,0,2};
+
+
+		cores.push_back( new thread(m_voices, info) );
+		info={2,2,3};
+		cores.push_back( new thread(m_voices, info) );
+		info={3,5,3};
+		cores.push_back( new thread(m_voices, info) );
 
 		free_cores.push_back(0);
 		free_cores.push_back(1);

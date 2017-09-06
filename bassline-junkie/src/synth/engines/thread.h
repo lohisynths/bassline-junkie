@@ -15,13 +15,19 @@
 #include "../config.h"
 #include "../utils/concurency_helpers.h"
 
+struct thread_info
+{
+	uint8_t cpu;
+	uint8_t first_voice;
+	uint8_t voice_count;
+};
+
 class thread
 {
 public:
-	thread(std::array<Voice, voices_count> &voices, const uint8_t cpu,
-			const uint8_t voice_first, const uint8_t voices_count) :
+	thread(std::array<Voice, voices_count> &voices, thread_info info) :
 			ready(false), processed(false), t(0), m(0), cv(0), m_voices(voices), m_voice_first(
-					voice_first), m_voices_count(voices_count), m_cpu(cpu)
+					info.first_voice), m_voices_count(info.voice_count), m_cpu(info.cpu)
 	{
 		m = new std::mutex;
 		cv = new std::condition_variable;
@@ -70,6 +76,13 @@ public:
 		cv->notify_one();
 	}
 	void wait()
+	{
+		std::unique_lock<std::mutex> lk(*m);
+		cv->wait(lk, [this]
+		{	return processed;});
+	}
+
+	void add_voice()
 	{
 		std::unique_lock<std::mutex> lk(*m);
 		cv->wait(lk, [this]
