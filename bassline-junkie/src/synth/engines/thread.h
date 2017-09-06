@@ -1,12 +1,12 @@
 /*
- * ConditionalVar.h
+ * thread.h
  *
  *  Created on: May 12, 2017
  *      Author: alax
  */
 
-#ifndef SRC_SYNTH_ENGINES_CONDITIONALVAR_H_
-#define SRC_SYNTH_ENGINES_CONDITIONALVAR_H_
+#ifndef SRC_SYNTH_ENGINES_THREAD_H_
+#define SRC_SYNTH_ENGINES_THREAD_H_
 
 #include <array>
 #include <thread>
@@ -15,10 +15,10 @@
 #include "../config.h"
 #include "../utils/concurency_helpers.h"
 
-class ConditionalVar
+class thread
 {
 public:
-	ConditionalVar(std::array<Voice, voices_count> &voices, const uint8_t cpu,
+	thread(std::array<Voice, voices_count> &voices, const uint8_t cpu,
 			const uint8_t voice_first, const uint8_t voices_count) :
 			ready(false), processed(false), t(0), m(0), cv(0), m_voices(voices), m_voice_first(
 					voice_first), m_voices_count(voices_count), m_cpu(cpu)
@@ -29,7 +29,7 @@ public:
 		{	return worker_thread();});
 	}
 
-	virtual ~ConditionalVar()
+	virtual ~thread()
 	{
 	}
 	;
@@ -91,4 +91,4 @@ private:
 
 };
 
-#endif /* SRC_SYNTH_ENGINES_CONDITIONALVAR_H_ */
+#endif /* SRC_SYNTH_ENGINES_THREAD_H_ */

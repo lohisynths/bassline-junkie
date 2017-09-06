@@ -1,33 +1,79 @@
-/*
- * Engine.h
- *
- *  Created on: Apr 12, 2017
- *      Author: alax
- */
-
-#ifndef SRC_SYNTH_ENGINE_H_
-#define SRC_SYNTH_ENGINE_H_
-
-#include "../voice.h"
-#include "../config.h"
-
-static void DoNotOptimize(int const& value)
-{
-	asm volatile("" : : "g"(value) : "memory");
-}
-
+#include <iostream>
+#include <string>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <vector>
 #include "../utils/SerialReceiver.h"
 #include "../utils/MidiReceiver.h"
 #include "../utils/MidiReceiverRt.h"
 #include <vector>
 #include <algorithm>
 #include "../config.h"
+#include "../voice.h"
+#include "thread.h"
 
-class Engine
-{
+const unsigned int format_bits = 32; //snd_pcm_format_width(*m_format);
+const unsigned int maxval = (1U << (format_bits - 1U)) - 1U;
+
+class Engine {
+
+private:
+	std::vector<thread*> cores;
+	std::array<Voice, voices_count> &m_voices;
+	std::array<stk::StkFloat, 512> output_float;
+
+
+
+	MidiReceiverRt messager;
+	std::vector<std::pair<MidiMessage, int>> notes;
+	std::vector<int> free_cores;
+
+
 public:
-	virtual std::array<double, 512> &process(
-			std::array<Voice, voices_count> &voices) = 0;
+	Engine(std::array<Voice, voices_count> &voices) : m_voices(voices)
+	{
+		// ConditionalVar(vector of voices, first cpu, number of first voice, number of voices to process
+		cores.push_back( new thread(m_voices, 1,0,2) );
+		cores.push_back( new thread(m_voices, 2,2,3) );
+		cores.push_back( new thread(m_voices, 3,5,3) );
+
+		free_cores.push_back(0);
+		free_cores.push_back(1);
+		free_cores.push_back(2);
+		free_cores.push_back(3);
+		free_cores.push_back(4);
+		free_cores.push_back(5);
+		free_cores.push_back(6);
+		free_cores.push_back(7);
+	}
+
+	std::array<stk::StkFloat, 512> &process()
+	{
+		for(auto core : cores)
+			core->request();
+		for(auto core : cores)
+			core->wait();
+
+
+		for(int i = 0; i < 100; i++)
+			updateMessages(m_voices);
+
+		// reset buffer
+		std::fill(std::begin(output_float), std::end(output_float), 0);
+		// fill output buffer with data
+		for (auto &voice : m_voices)
+		{
+			auto &voice_data = voice.get_array();
+			auto ciabej = [](stk::StkFloat &output, stk::StkFloat &input){ output += input; return output;};
+			std::transform(output_float.begin(), output_float.end(), voice_data.begin(),output_float.begin(),ciabej);
+
+		}
+
+
+		return output_float;
+	}
+
 
 	void noteOff(MidiMessage* msg, std::array<Voice, voices_count> &voices)
 	{
@@ -118,13 +164,7 @@ public:
 		}
 
 	}
-//	SerialReceiver messager;
-//	MidiReceiver messager;
 
-	MidiReceiverRt messager;
-	std::vector<std::pair<MidiMessage, int>> notes;
-	std::vector<int> free_cores;
+
 
 };
-
-#endif /* SRC_SYNTH_ENGINE_H_ */

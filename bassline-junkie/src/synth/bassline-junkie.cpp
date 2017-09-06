@@ -14,9 +14,8 @@
 #include "utils/cpucounter.h"
 #include "utils/wavwriter.h"
 #include "utils/concurency_helpers.h"
-#include "engines/conditional_variable.h"
-
 #include <RtWvOut.h>
+#include "engines/engine.h"
 
 int main()
 {
@@ -35,7 +34,7 @@ int main()
 	cpu_counter licznik;
 
 	std::array<Voice, voices_count> voices;
-	ConditionalVarEngine engine(voices);
+	Engine engine(voices);
 
 	play = true;
 
@@ -45,10 +44,8 @@ int main()
 		// start reporting time
 		// licznik.start();
 		{
-		// process data
-		auto output = engine.process(voices);
-		// send buffer to soundcard
-		device.play(output); // while loop inside
+		// process data and send buffer to soundcard
+		device.play(engine.process());
 		// stop time reporting
 		// write buffer to file
 		// wav_out.tick(output);
