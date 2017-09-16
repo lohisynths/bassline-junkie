@@ -38,7 +38,12 @@ void Lfo::setFrequency(stk::StkFloat freq)
 stk::StkFloat Lfo::tick()
 {
 	auto output = osc.nextSample();
-	return static_cast<stk::StkFloat>(output);
+	return output;
+}
+
+stk::StkFloat Lfo::get_value()
+{
+	return osc.getSample();
 }
 
 

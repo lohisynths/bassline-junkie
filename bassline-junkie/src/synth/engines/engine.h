@@ -118,10 +118,10 @@ public:
 
 				notes.push_back(std::make_pair(*msg, core));
 
-				auto &note = notes.back().first;
+				auto note = &notes.back().first;
 				auto core_nr = notes.back().second;
 
-				m_voices[core_nr].message(&note);
+				m_voices[core_nr].message(note);
 			}
 		}
 		else

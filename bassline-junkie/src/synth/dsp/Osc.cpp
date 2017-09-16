@@ -29,6 +29,9 @@ StkFloat Osc::tick()
 	return output ;
 }
 
+const stk::StkFloat env_range_in_notes = 12 * 4;
+const stk::StkFloat lfo_range_in_notes = 12 * 2;
+
 void Osc::setFrequency(StkFloat freq)
 {
 	m_saw.setFrequency(freq);

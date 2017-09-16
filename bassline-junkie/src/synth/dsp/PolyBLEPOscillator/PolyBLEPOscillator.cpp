@@ -28,6 +28,10 @@ stk::StkFloat PolyBLEPOscillator::poly_blep(stk::StkFloat t)
     else return 0.0;
 }
 
+stk::StkFloat PolyBLEPOscillator::getSample() {
+	return outputOutput;
+}
+
 stk::StkFloat PolyBLEPOscillator::nextSample() {
 	stk::StkFloat value = 0.0;
 	stk::StkFloat t = mPhase / twoPI;
@@ -53,5 +57,6 @@ stk::StkFloat PolyBLEPOscillator::nextSample() {
     while (mPhase >= twoPI) {
         mPhase -= twoPI;
     }
+    outputOutput = value;
     return value;
 }

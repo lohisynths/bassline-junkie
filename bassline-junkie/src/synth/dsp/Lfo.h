@@ -22,6 +22,7 @@ public:
 	void setShape(int shape);
 
 	stk::StkFloat tick();
+	stk::StkFloat get_value();
 
 	void reset();
 

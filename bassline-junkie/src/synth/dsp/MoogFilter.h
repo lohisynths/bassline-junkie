@@ -1,18 +1,22 @@
 /* moog filter clas by toast[AT]nowhere[DOT]com
 from http://www.musicdsp.org/showone.php?id=24 */
 
+#ifndef SRC_SYNTH_DSP_MOOGFILTER_H_
+#define SRC_SYNTH_DSP_MOOGFILTER_H_
+
 class MoogFilter {
-	public: MoogFilter();
+public:
+	MoogFilter();
+	~MoogFilter();
 	void init();
 	void calc();
 	double process(double x);
-	~MoogFilter();
 	double getCutoff();
 	void setCutoff(double c);
 	double getRes();
 	void setRes(double r);
-	
-	protected:
+
+protected:
 	double cutoff;
 	double res;
 	double fs;
@@ -23,4 +27,6 @@ class MoogFilter {
 	double r;
 	double p;
 	double k;
-}; 
+};
+
+#endif /* SRC_SYNTH_DSP_MOOGFILTER_H_ */
