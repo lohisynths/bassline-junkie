@@ -17,8 +17,8 @@ static void finish(int ignore)
 	play = false;
 }
 
-const size_t voices_count = 8;
-
-
+const size_t overall_voices_count = 8;
+const size_t max_cores=3;
+const size_t max_voices_per_core=3;
 
 #endif /* SRC_CONFIG_H_ */

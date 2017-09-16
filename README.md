@@ -1,5 +1,8 @@
 # bassline-junkie
 
+sudo apt install libasound2-dev autoconf
+
+
 init 
 	- export toolchain path (toolchain from raspi tool respo)
 	in ~/.bashrc add

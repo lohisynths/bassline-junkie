@@ -8,26 +8,18 @@
 #ifndef SRC_SYNTH_ENGINES_THREAD_H_
 #define SRC_SYNTH_ENGINES_THREAD_H_
 
-#include <array>
+#include <vector>
 #include <thread>
 #include <condition_variable>
 #include "../voice.h"
 #include "../config.h"
 #include "../utils/concurency_helpers.h"
 
-struct thread_info
-{
-	uint8_t cpu;
-	uint8_t first_voice;
-	uint8_t voice_count;
-};
-
 class thread
 {
 public:
-	thread(std::array<Voice, voices_count> &voices, thread_info info) :
-			ready(false), processed(false), t(0), m(0), cv(0), m_voices(voices), m_voice_first(
-					info.first_voice), m_voices_count(info.voice_count), m_cpu(info.cpu)
+	thread(size_t cpu) :
+			ready(false), processed(false), t(0), m(0), cv(0), m_cpu(cpu)
 	{
 		m = new std::mutex;
 		cv = new std::condition_variable;
@@ -52,9 +44,9 @@ public:
 			cv->wait(lk, [this]
 			{	return ready;});
 
-			for (int i = m_voice_first; i < m_voice_first+m_voices_count; i++)
+			for (auto &voice : m_voices)
 			{
-				m_voices[i].process();
+				voice->process();
 			}
 
 			// Send data back to main()
@@ -82,11 +74,9 @@ public:
 		{	return processed;});
 	}
 
-	void add_voice()
+	void add_voice(Voice* voice)
 	{
-		std::unique_lock<std::mutex> lk(*m);
-		cv->wait(lk, [this]
-		{	return processed;});
+		m_voices.push_back(voice);
 	}
 
 private:
@@ -96,10 +86,8 @@ private:
 	std::mutex* m;
 	std::condition_variable* cv;
 
-	std::array<Voice, voices_count> &m_voices;
+	std::vector<Voice*> m_voices;
 
-	uint8_t m_voice_first;
-	uint8_t m_voices_count;
 	uint8_t m_cpu;
 
 };

@@ -33,8 +33,7 @@ int main()
 	wav_writer wav_out;
 	cpu_counter licznik;
 
-	std::array<Voice, voices_count> voices;
-	Engine engine(voices);
+	Engine<overall_voices_count, 512> engine;
 
 	play = true;
 

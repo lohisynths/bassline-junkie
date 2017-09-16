@@ -16,55 +16,63 @@
 const unsigned int format_bits = 32; //snd_pcm_format_width(*m_format);
 const unsigned int maxval = (1U << (format_bits - 1U)) - 1U;
 
+template<size_t voices_count,size_t buffer_size>
 class Engine {
 
 private:
 	std::vector<thread*> cores;
-	std::array<Voice, voices_count> &m_voices;
-	std::array<stk::StkFloat, 512> output_float;
-
-
+	std::array<stk::StkFloat, buffer_size> output_float;
+	std::array<Voice, voices_count> m_voices;
 
 	MidiReceiverRt messager;
 	std::vector<std::pair<MidiMessage, int>> notes;
-	std::vector<int> free_cores;
-
+	std::vector<int> free_voices;
 
 public:
-	Engine(std::array<Voice, voices_count> &voices) : m_voices(voices)
+	Engine()
 	{
-		// ConditionalVar(vector of voices, first cpu, number of first voice, number of voices to process
+		if(voices_count > max_cores*max_voices_per_core)
+		{
+			std::cerr << "more voice requested than possible to get from max_cores*max_voices_per_core."
+					<< std::endl << "edit config.h"<< std::endl;
+			exit(1);
+		}
 
+		int voices_left=voices_count;
+		size_t core_count=0;
 
-		thread_info info={1,0,2};
+		while(voices_left)
+		{
+			core_count++;
+			int core_nr = max_cores - core_count;
 
+			auto tmp = new thread(core_nr);
 
-		cores.push_back( new thread(m_voices, info) );
-		info={2,2,3};
-		cores.push_back( new thread(m_voices, info) );
-		info={3,5,3};
-		cores.push_back( new thread(m_voices, info) );
+			std::cout << "new thread created on core " << core_nr << std::endl;
 
-		free_cores.push_back(0);
-		free_cores.push_back(1);
-		free_cores.push_back(2);
-		free_cores.push_back(3);
-		free_cores.push_back(4);
-		free_cores.push_back(5);
-		free_cores.push_back(6);
-		free_cores.push_back(7);
+			for(size_t j=0; j < max_voices_per_core ; j++)
+			{
+				int voice_nr = voices_count - voices_left;
+				tmp->add_voice(&m_voices[voice_nr]);
+				free_voices.push_back(voice_nr);
+				std::cout << "core " << core_nr << " voice " << voice_nr << " pushed" << std::endl;
+
+				voices_left--;
+				if(voices_left==0)
+					break;
+			}
+			cores.push_back( tmp );
+		}
 	}
 
-	std::array<stk::StkFloat, 512> &process()
+	std::array<stk::StkFloat, buffer_size> &process()
 	{
 		for(auto core : cores)
 			core->request();
 		for(auto core : cores)
 			core->wait();
 
-
-		for(int i = 0; i < 100; i++)
-			updateMessages(m_voices);
+		updateMessages(m_voices);
 
 		// reset buffer
 		std::fill(std::begin(output_float), std::end(output_float), 0);
@@ -74,13 +82,9 @@ public:
 			auto &voice_data = voice.get_array();
 			auto ciabej = [](stk::StkFloat &output, stk::StkFloat &input){ output += input; return output;};
 			std::transform(output_float.begin(), output_float.end(), voice_data.begin(),output_float.begin(),ciabej);
-
 		}
-
-
 		return output_float;
 	}
-
 
 	void noteOff(MidiMessage* msg, std::array<Voice, voices_count> &voices)
 	{
@@ -93,7 +97,7 @@ public:
 			{
 				voices[core].message(msg);
 				notes.erase(notes.begin() + i);
-				free_cores.push_back(core);
+				free_voices.push_back(core);
 			}
 		}
 	}
@@ -105,10 +109,8 @@ public:
 		{
 			if (notes.size() < voices_count)
 			{
-				//noteOn(msg, voices);
-
-				auto core = free_cores.back();
-				free_cores.pop_back();
+				auto core = free_voices.back();
+				free_voices.pop_back();
 
 				notes.push_back(std::make_pair(*msg, core));
 
@@ -116,15 +118,12 @@ public:
 				auto core_nr = notes.back().second;
 
 				voices[core_nr].message(&note);
-
 			}
 		}
 		else
 		{
 			noteOff(msg, voices);
 		}
-
-
 	}
 
 	void updateMessages(std::array<Voice, voices_count> &voices)
@@ -164,14 +163,8 @@ public:
 				}
 				case MidiMessage::Type::NO_MESSAGE:
 					break;       // and exits the switchNOTE_ON
-
-
 				};
 			}
 		}
-
 	}
-
-
-
 };
