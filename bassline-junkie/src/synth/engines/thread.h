@@ -21,16 +21,16 @@ class thread
 public:
 	thread() :
 			ready(false), processed(false), t(0), m_cpu(0)
-	{
+	{}
 
+	void start()
+	{
 		t = new std::thread([this]
 		{	return worker_thread();});
 	}
 
 	virtual ~thread()
-	{
-	}
-	;
+	{};
 
 	void set_cpu_affinity(uint8_t cpu)
 	{
@@ -38,7 +38,7 @@ public:
 	}
 	void worker_thread()
 	{
-		std::cout << __PRETTY_FUNCTION__ << std::endl;
+		std::cout << __PRETTY_FUNCTION__ << " on cpu " << +m_cpu << std::endl;
 		stick_this_thread_to_core(m_cpu);
 		// Wait until main() sends data
 		while (1)

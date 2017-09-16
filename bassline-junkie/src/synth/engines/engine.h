@@ -18,7 +18,7 @@ template<size_t voices_count,size_t buffer_size>
 class Engine {
 
 private:
-	std::array<thread<buffer_size>, voices_count> cores;
+	std::array<thread<buffer_size>, max_cores> cores;
 	std::array<stk::StkFloat, buffer_size> output_float;
 	std::array<Voice<buffer_size>, voices_count> m_voices;
 
@@ -46,7 +46,6 @@ public:
 		
 			std::cout << "new thread created on core " << core_nr << std::endl;
 			
-			cores[core_nr].set_cpu_affinity(core_nr);
 
 			for(size_t j=0; j < max_voices_per_core ; j++)
 			{
@@ -59,6 +58,14 @@ public:
 				if(voices_left==0)
 					break;
 			}
+			cores[core_count-1].set_cpu_affinity(core_nr);
+
+		}
+
+		for(auto &core: cores)
+		{
+			std::cout << "core started" << std::endl;
+			core.start();
 		}
 	}
 
