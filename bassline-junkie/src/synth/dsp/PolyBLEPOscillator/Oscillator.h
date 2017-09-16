@@ -25,7 +25,7 @@ public:
     void setSampleRate(stk::StkFloat sampleRate);
     void generate(stk::StkFloat* buffer, int nFrames);
     inline void setMuted(bool muted) { isMuted = muted; }
-    virtual stk::StkFloat nextSample();
+    virtual stk::StkFloat nextSample()=0;
     Oscillator() :
     mOscillatorMode(OSCILLATOR_MODE_SINE),
     mPI(2*acos(0.0)),
@@ -34,7 +34,8 @@ public:
     mFrequency(440.0),
     mPitchMod(0.0),
     mPhase(0.0) { updateIncrement(); };
-    
+    virtual ~Oscillator();
+
     void reset() { mPhase = 0.0; }
     void setPitchMod(stk::StkFloat amount);
 protected:

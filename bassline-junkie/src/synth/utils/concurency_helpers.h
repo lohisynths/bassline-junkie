@@ -51,7 +51,7 @@ static int stick_this_thread_to_core(int core_id)
 
 //////////////////////////////////////////////////////////////////////////////////
 
-static void set_pthread_params()
+inline void set_pthread_params()
 {
 	int policy = SCHED_FIFO;
 	int priority = sched_get_priority_max(policy);
@@ -66,8 +66,7 @@ static void set_pthread_params()
 
 //////////////////////////////////////////////////////////////////////////////////
 
-static
-void getinfo()
+inline void getinfo()
 {
 	struct sched_param param;
 	int policy;

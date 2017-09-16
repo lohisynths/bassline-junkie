@@ -224,7 +224,6 @@ public:
 		if(param >= FLT_MOD_OFFSET && param <= FLT_MOD_OFFSET+(FLT_MOD_NUMBER * FLT_MOD_PARAMS) )
 		{
 			uint_fast8_t tmp_param = param - FLT_MOD_OFFSET;
-			uint_fast8_t osc_number = tmp_param / FLT_MOD_PARAMS;
 			tmp_param = tmp_param % FLT_MOD_PARAMS;
 			switch (tmp_param)
 			{
@@ -403,7 +402,8 @@ public:
 			case MidiMessage::Type::NOTE_OFF:
 				noteOff();
 				break;       // and exits the switchNOTE_ON
-
+			case MidiMessage::Type::NO_MESSAGE:
+				break;
 			};
 		}
 	}

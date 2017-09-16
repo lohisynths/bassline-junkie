@@ -24,6 +24,7 @@ double pitchToFreq(double pitch)
 
 VAStateVariableFilter::VAStateVariableFilter()
 {
+	shelfGain=1;
     sampleRate = stk::Stk::sampleRate();				// default sample rate when constructed
     filterType = SVFLowpass;			// lowpass filter by default
 

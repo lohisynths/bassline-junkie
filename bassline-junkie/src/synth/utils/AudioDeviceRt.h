@@ -9,13 +9,14 @@
 #define AUDIODEVICE_RT_H_
 
 #include <alsa/asoundlib.h>
+#include <iostream>
 #include <string>
 #include <array>
+#include <algorithm>
 
 #include "Stk.h"
 #include "RtWvOut.h"
 
-#include <algorithm>
 
 template<size_t buffer_size>
 class AudioDeviceRt
