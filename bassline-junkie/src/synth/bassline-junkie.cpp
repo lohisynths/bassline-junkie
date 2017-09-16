@@ -28,12 +28,12 @@ int main()
 	Stk::setSampleRate( 44100.0 );
 	Stk::showWarnings( true );
 
-	AudioDeviceRt device;
+	AudioDeviceRt<buffer_size> device;
 	
 	wav_writer wav_out;
 	cpu_counter licznik;
 
-	Engine<overall_voices_count, 512> engine;
+	Engine<overall_voices_count, buffer_size> engine;
 
 	play = true;
 

@@ -15,6 +15,7 @@
 #include "../config.h"
 #include "../utils/concurency_helpers.h"
 
+template<size_t buffer_size>
 class thread
 {
 public:
@@ -74,7 +75,7 @@ public:
 		{	return processed;});
 	}
 
-	void add_voice(Voice* voice)
+	void add_voice(Voice<buffer_size>* voice)
 	{
 		m_voices.push_back(voice);
 	}
@@ -86,7 +87,7 @@ private:
 	std::mutex* m;
 	std::condition_variable* cv;
 
-	std::vector<Voice*> m_voices;
+	std::vector<Voice<buffer_size>*> m_voices;
 
 	uint8_t m_cpu;
 

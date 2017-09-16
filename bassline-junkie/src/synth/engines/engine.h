@@ -4,25 +4,22 @@
 #include <mutex>
 #include <condition_variable>
 #include <vector>
+
 #include "../utils/SerialReceiver.h"
 #include "../utils/MidiReceiver.h"
 #include "../utils/MidiReceiverRt.h"
-#include <vector>
-#include <algorithm>
 #include "../config.h"
 #include "../voice.h"
 #include "thread.h"
 
-const unsigned int format_bits = 32; //snd_pcm_format_width(*m_format);
-const unsigned int maxval = (1U << (format_bits - 1U)) - 1U;
 
 template<size_t voices_count,size_t buffer_size>
 class Engine {
 
 private:
-	std::vector<thread*> cores;
+	std::vector<thread<buffer_size>*> cores;
 	std::array<stk::StkFloat, buffer_size> output_float;
-	std::array<Voice, voices_count> m_voices;
+	std::array<Voice<buffer_size>, voices_count> m_voices;
 
 	MidiReceiverRt messager;
 	std::vector<std::pair<MidiMessage, int>> notes;
@@ -44,9 +41,9 @@ public:
 		while(voices_left)
 		{
 			core_count++;
-			int core_nr = max_cores - core_count;
+			int core_nr = max_cores - core_count + first_cpu;
 
-			auto tmp = new thread(core_nr);
+			auto tmp = new thread<buffer_size>(core_nr);
 
 			std::cout << "new thread created on core " << core_nr << std::endl;
 
@@ -86,7 +83,7 @@ public:
 		return output_float;
 	}
 
-	void noteOff(MidiMessage* msg, std::array<Voice, voices_count> &voices)
+	void noteOff(MidiMessage* msg, std::array<Voice<buffer_size>, voices_count> &voices)
 	{
 		for (size_t i = 0; i < notes.size(); i++)
 		{
@@ -102,7 +99,7 @@ public:
 		}
 	}
 
-	void noteOn(MidiMessage* msg, std::array<Voice, voices_count> &voices)
+	void noteOn(MidiMessage* msg, std::array<Voice<buffer_size>, voices_count> &voices)
 	{
 
 		if (msg->m_val_2 != 0)
@@ -126,7 +123,7 @@ public:
 		}
 	}
 
-	void updateMessages(std::array<Voice, voices_count> &voices)
+	void updateMessages(std::array<Voice<buffer_size>, voices_count> &voices)
 	{
 		auto msg = messager.getMessage();
 		if (msg)

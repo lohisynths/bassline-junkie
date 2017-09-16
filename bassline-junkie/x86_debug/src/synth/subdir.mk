@@ -4,16 +4,13 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
-../src/synth/bassline-junkie.cpp \
-../src/synth/voice.cpp 
+../src/synth/bassline-junkie.cpp 
 
 OBJS += \
-./src/synth/bassline-junkie.o \
-./src/synth/voice.o 
+./src/synth/bassline-junkie.o 
 
 CPP_DEPS += \
-./src/synth/bassline-junkie.d \
-./src/synth/voice.d 
+./src/synth/bassline-junkie.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

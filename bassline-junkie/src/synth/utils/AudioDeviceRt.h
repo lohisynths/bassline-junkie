@@ -17,25 +17,50 @@
 
 #include <algorithm>
 
-
+template<size_t buffer_size>
 class AudioDeviceRt
 {
 public:
-	AudioDeviceRt();
-	virtual ~AudioDeviceRt();
+	AudioDeviceRt()
+	{
+		setup();
+	}
+	~AudioDeviceRt()
+	{
+		this->close();
+	}
 
-	void play(std::array<stk::StkFloat, 512> &arr);
-
+	void play(std::array<stk::StkFloat, buffer_size> &output)
+	{
+		for(auto &it : output)
+		{
+		    try {
+		      dac->tick( it );
+		     }
+		    catch ( stk::StkError & ) {
+		    	std::cout << "errrorrorororororoo n''n'n'n'\n\\n\n\n\n";
+		    }
+		}
+	}
 
 private:
+	void setup()
+	{
+	  try {
+		// Define and open the default realtime output device for one-channel playback
+		dac = new stk::RtWvOut( 2, stk::Stk::sampleRate(), 0, buffer_size, 2);
+	  }
+	  catch ( stk::StkError & ) {
+		  // TODO: think whats next
+		exit( 1 );
+	  }
+	}
+	void close()
+	{
+		delete dac;
+	}
 
-	int setup();
-
-	void close();
-
-	  stk::RtWvOut *dac=nullptr;
-
-
+	stk::RtWvOut *dac=nullptr;
 };
 
 #endif /* AUDIODEVICE_RT_H_ */
