@@ -19,11 +19,10 @@ template<size_t buffer_size>
 class thread
 {
 public:
-	thread(size_t cpu) :
-			ready(false), processed(false), t(0), m(0), cv(0), m_cpu(cpu)
+	thread() :
+			ready(false), processed(false), t(0), m_cpu(0)
 	{
-		m = new std::mutex;
-		cv = new std::condition_variable;
+
 		t = new std::thread([this]
 		{	return worker_thread();});
 	}
@@ -33,6 +32,10 @@ public:
 	}
 	;
 
+	void set_cpu_affinity(uint8_t cpu)
+	{
+		m_cpu=cpu;
+	}
 	void worker_thread()
 	{
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
@@ -40,9 +43,9 @@ public:
 		// Wait until main() sends data
 		while (1)
 		{
-			std::unique_lock<std::mutex> lk(*m);
+			std::unique_lock<std::mutex> lk(m);
 
-			cv->wait(lk, [this]
+			cv.wait(lk, [this]
 			{	return ready;});
 
 			for (auto &voice : m_voices)
@@ -57,21 +60,21 @@ public:
 			// Manual unlocking is done before notifying, to avoid waking up
 			// the waiting thread only to block again (see notify_one for details)
 			lk.unlock();
-			cv->notify_one();
+			cv.notify_one();
 		}
 	}
 
 	void request()
 	{
-		std::lock_guard<std::mutex> lk(*m);
+		std::lock_guard<std::mutex> lk(m);
 		ready = true;
 		processed = false;
-		cv->notify_one();
+		cv.notify_one();
 	}
 	void wait()
 	{
-		std::unique_lock<std::mutex> lk(*m);
-		cv->wait(lk, [this]
+		std::unique_lock<std::mutex> lk(m);
+		cv.wait(lk, [this]
 		{	return processed;});
 	}
 
@@ -84,8 +87,8 @@ private:
 	bool ready;
 	bool processed;
 	std::thread* t;
-	std::mutex* m;
-	std::condition_variable* cv;
+	std::mutex m;
+	std::condition_variable cv;
 
 	std::vector<Voice<buffer_size>*> m_voices;
 

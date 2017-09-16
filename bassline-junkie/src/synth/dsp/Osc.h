@@ -40,10 +40,10 @@ private:
 		StkFloat rnd_level;
 	};
 	waves_level m_osc_ctrl;
-	std::unique_ptr<SineWave>m_sine = std::make_unique<SineWave>();
-	std::unique_ptr<BlitSaw>m_saw = std::make_unique<BlitSaw>();
-	std::unique_ptr<BlitSquare>m_square = std::make_unique<BlitSquare>();
-	std::unique_ptr<Noise>m_noise = std::make_unique<Noise>();
+	SineWave m_sine;
+	BlitSaw m_saw;
+	BlitSquare m_square;
+	Noise m_noise;
 };
 
 #endif /* OSC_H_ */

@@ -26,7 +26,7 @@ public:
 	void reset();
 
 private:
-	std::unique_ptr<PolyBLEPOscillator>osc = std::make_unique<PolyBLEPOscillator>();
+	PolyBLEPOscillator osc;
 
 };
 

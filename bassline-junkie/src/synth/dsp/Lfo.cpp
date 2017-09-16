@@ -9,9 +9,9 @@
 
 Lfo::Lfo()
 {
-	osc->setSampleRate(44100);
-	osc->setMode(Oscillator::OSCILLATOR_MODE_SINE);
-	osc->setFrequency(1.);
+	osc.setSampleRate(44100);
+	osc.setMode(Oscillator::OSCILLATOR_MODE_SINE);
+	osc.setFrequency(1.);
 }
 
 Lfo::~Lfo(){}
@@ -19,11 +19,11 @@ Lfo::~Lfo(){}
 void Lfo::setShape(int shape)
 {
 	if(shape == 0)
-		osc->setMode(Oscillator::OSCILLATOR_MODE_SINE);
+		osc.setMode(Oscillator::OSCILLATOR_MODE_SINE);
 	else if(shape == 1)
-		osc->setMode(Oscillator::OSCILLATOR_MODE_SAW);
+		osc.setMode(Oscillator::OSCILLATOR_MODE_SAW);
 	else if(shape == 2)
-		osc->setMode(Oscillator::OSCILLATOR_MODE_SQUARE);
+		osc.setMode(Oscillator::OSCILLATOR_MODE_SQUARE);
 	else
 		std::cout << "Lfo::setShape - wrong shape selected. input = " << shape << std::endl;
 }
@@ -31,13 +31,13 @@ void Lfo::setShape(int shape)
 
 void Lfo::setFrequency(stk::StkFloat freq)
 {
-	osc->setFrequency(static_cast<float>(freq));
+	osc.setFrequency(static_cast<float>(freq));
 }
 
 
 stk::StkFloat Lfo::tick()
 {
-	auto output = osc->nextSample();
+	auto output = osc.nextSample();
 	return static_cast<stk::StkFloat>(output);
 }
 
@@ -45,5 +45,5 @@ stk::StkFloat Lfo::tick()
 
 void Lfo::reset()
 {
-	osc->reset();
+	osc.reset();
 }

@@ -4,6 +4,7 @@
 #include <mutex>
 #include <condition_variable>
 #include <vector>
+#include <array>
 
 #include "../utils/SerialReceiver.h"
 #include "../utils/MidiReceiver.h"
@@ -17,7 +18,7 @@ template<size_t voices_count,size_t buffer_size>
 class Engine {
 
 private:
-	std::vector<thread<buffer_size>*> cores;
+	std::array<thread<buffer_size>, voices_count> cores;
 	std::array<stk::StkFloat, buffer_size> output_float;
 	std::array<Voice<buffer_size>, voices_count> m_voices;
 
@@ -42,15 +43,15 @@ public:
 		{
 			core_count++;
 			int core_nr = max_cores - core_count + first_cpu;
-
-			auto tmp = new thread<buffer_size>(core_nr);
-
+		
 			std::cout << "new thread created on core " << core_nr << std::endl;
+			
+			cores[core_nr].set_cpu_affinity(core_nr);
 
 			for(size_t j=0; j < max_voices_per_core ; j++)
 			{
 				int voice_nr = voices_count - voices_left;
-				tmp->add_voice(&m_voices[voice_nr]);
+				cores[core_count-1].add_voice(&m_voices[voice_nr]);
 				free_voices.push_back(voice_nr);
 				std::cout << "core " << core_nr << " voice " << voice_nr << " pushed" << std::endl;
 
@@ -58,16 +59,15 @@ public:
 				if(voices_left==0)
 					break;
 			}
-			cores.push_back( tmp );
 		}
 	}
 
 	std::array<stk::StkFloat, buffer_size> &process()
 	{
-		for(auto core : cores)
-			core->request();
-		for(auto core : cores)
-			core->wait();
+		for(auto &core : cores)
+			core.request();
+		for(auto &core : cores)
+			core.wait();
 
 		updateMessages(m_voices);
 
