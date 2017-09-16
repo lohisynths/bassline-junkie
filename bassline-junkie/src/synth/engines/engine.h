@@ -76,7 +76,7 @@ public:
 		for(auto &core : cores)
 			core.wait();
 
-		updateMessages(m_voices);
+		updateMessages();
 
 		// reset buffer
 		std::fill(std::begin(output_float), std::end(output_float), 0);
@@ -90,7 +90,7 @@ public:
 		return output_float;
 	}
 
-	void noteOff(MidiMessage* msg, std::array<Voice<buffer_size>, voices_count> &voices)
+	void noteOff(MidiMessage* msg)
 	{
 		for (size_t i = 0; i < notes.size(); i++)
 		{
@@ -99,14 +99,14 @@ public:
 
 			if (note.m_val_1 == msg->m_val_1)
 			{
-				voices[core].message(msg);
+				m_voices[core].message(msg);
 				notes.erase(notes.begin() + i);
 				free_voices.push_back(core);
 			}
 		}
 	}
 
-	void noteOn(MidiMessage* msg, std::array<Voice<buffer_size>, voices_count> &voices)
+	void noteOn(MidiMessage* msg)
 	{
 
 		if (msg->m_val_2 != 0)
@@ -121,16 +121,16 @@ public:
 				auto &note = notes.back().first;
 				auto core_nr = notes.back().second;
 
-				voices[core_nr].message(&note);
+				m_voices[core_nr].message(&note);
 			}
 		}
 		else
 		{
-			noteOff(msg, voices);
+			noteOff(msg);
 		}
 	}
 
-	void updateMessages(std::array<Voice<buffer_size>, voices_count> &voices)
+	void updateMessages()
 	{
 		auto msg = messager.getMessage();
 		if (msg)
@@ -145,7 +145,7 @@ public:
 				{
 					if(msg->m_val_2!=0)
 					{
-						noteOn(msg, voices);
+						noteOn(msg);
 						break;
 					}
 					else
@@ -154,13 +154,13 @@ public:
 
 				case MidiMessage::Type::NOTE_OFF:
 				{
-					noteOff(msg, voices);
+					noteOff(msg);
 
 					break;       // and exits the switchNOTE_ON
 				}
 				case MidiMessage::Type::CC:
 				{
-					for(auto &voice : voices)
+					for(auto &voice : m_voices)
 						voice.message(msg);
 
 					break;       // and exits the switchNOTE_ON
