@@ -17,7 +17,7 @@ static void finish(int ignore)
 	play = false;
 }
 
-const size_t overall_voices_count = 2;
+const size_t overall_voices_count = 1;
 
 const size_t first_cpu=1;
 const size_t max_cores=3;

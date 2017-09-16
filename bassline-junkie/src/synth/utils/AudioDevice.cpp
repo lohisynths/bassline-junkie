@@ -25,7 +25,7 @@ AudioDevice::AudioDevice()
 
 
 	format = SND_PCM_FORMAT_S32; /* sample format */
-	rate = 44100; /* stream rate */
+	rate = stk::Stk::sampleRate(); /* stream rate */
 	channels = 2; /* count of channels */
 	//desired_buffer_size = 1024; /* desired buffer size */
 	//desired_period_count = 2;

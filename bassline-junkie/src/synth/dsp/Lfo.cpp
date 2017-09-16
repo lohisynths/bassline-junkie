@@ -9,7 +9,7 @@
 
 Lfo::Lfo()
 {
-	osc.setSampleRate(44100);
+	osc.setSampleRate(stk::Stk::sampleRate());
 	osc.setMode(Oscillator::OSCILLATOR_MODE_SINE);
 	osc.setFrequency(1.);
 }

@@ -22,7 +22,7 @@
 #include "ADSR.h"
 
 ADSR::ADSR(void) {
-	sample_rate = 44100;
+	sample_rate = stk::Stk::sampleRate();
 	max_time = 2;
     reset();
     setAttackRate(0.001);
