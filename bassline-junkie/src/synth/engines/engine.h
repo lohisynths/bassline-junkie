@@ -22,7 +22,8 @@ private:
 	std::array<stk::StkFloat, buffer_size> output_float;
 	std::array<Voice<buffer_size>, voices_count> m_voices;
 
-	MidiReceiverRt messager;
+	SerialReceiver messager;
+	//MidiReceiverRt messager;
 	std::vector<std::pair<MidiMessage, int>> notes;
 	std::vector<int> free_voices;
 
@@ -76,7 +77,10 @@ public:
 		for(auto &core : cores)
 			core.wait();
 
-		updateMessages();
+		for(int i=0;i<50;i++)
+		{
+			updateMessages();
+		}
 
 		// reset buffer
 		std::fill(std::begin(output_float), std::end(output_float), 0);

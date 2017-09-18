@@ -37,7 +37,7 @@ int MidiReceiverRt::parse(uint8_t input)
 		msg.m_type = MidiMessage::Type::CC;
 		msg.count++;
 	}
-	else if (input == 0x90 || input == 0x99)
+	else if (input == 0x90 || input == 0x99 || input == 0x91)
 	{
 		msg.m_type = MidiMessage::Type::NOTE_ON;
 		msg.count++;

@@ -44,7 +44,8 @@ int main()
 		// licznik.start();
 		{
 		// process data and send buffer to soundcard
-		device.play(engine.process());
+		auto &output = engine.process();
+		device.play(output);
 		// stop time reporting
 		// write buffer to file
 		// wav_out.tick(output);

@@ -18,6 +18,7 @@ SerialReceiver::SerialReceiver() {
 	fd = open(portname, O_RDWR | O_NOCTTY | O_SYNC);
 	if (fd < 0) {
 		printf("error %d opening %s", errno, portname);
+		exit(1);
 		return;
 	}
 
@@ -98,25 +99,25 @@ void SerialReceiver::set_blocking(int fd, int should_block) {
 }
 
 
-void SerialReceiver::writeBytes(const char *data, size_t size)
+void SerialReceiver::writeBytes(const uint8_t *data, size_t size)
 {
 	write(fd, data, size);           // send 7 character greeting
 }
 
 
-int SerialReceiver::parse(char input)
+int SerialReceiver::parse(uint8_t input)
 {
 	if (input == 0xb0 || input == 0xb9)
 	{
 		msg.m_type = MidiMessage::Type::CC;
 		msg.count++;
 	}
-	else if (input == 0x90 || input == 0x99)
+	else if ( (input == 0x90 || input == 0x99) && (msg.m_type == MidiMessage::Type::NO_MESSAGE))
 	{
 		msg.m_type = MidiMessage::Type::NOTE_ON;
 		msg.count++;
 	}
-	else if (input == 0x80)
+	else if (input == 0x80 && msg.m_type == MidiMessage::Type::NO_MESSAGE)
 	{
 		msg.m_type = MidiMessage::Type::NOTE_OFF;
 		msg.count++;

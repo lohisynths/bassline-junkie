@@ -32,7 +32,7 @@ public:
 	int set_interface_attribs(int fd, int speed, int parity);
 	void set_blocking(int fd, int should_block);
 
-	void writeBytes(const char *data, size_t size);
+	void writeBytes(const uint8_t *data, size_t size);
 
 	void readBytes();
 
@@ -41,7 +41,7 @@ public:
 
 private:
 
-	char buf[100]={};
+	uint8_t buf[100]={};
 
 	std::atomic<size_t> n;
 	std::thread *t;
@@ -50,7 +50,7 @@ private:
 
 
 
-	int parse(char input);
+	int parse(uint8_t input);
 
 
 	int fd;

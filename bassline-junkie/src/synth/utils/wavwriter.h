@@ -17,11 +17,11 @@ public:
 	wav_writer();
 	virtual ~wav_writer();
 
-	void tick(std::array<unsigned int, 512> &output);
+	void tick(std::array<stk::StkFloat, 512> &output);
 
 private:
 	stk::FileWvOut wave_output;
-	stk::StkFrames lolo;
+	stk::StkFrames output_frames;
 
 };
 

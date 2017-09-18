@@ -12,8 +12,8 @@ public:
 	};
 
 	Type m_type=NO_MESSAGE;
-	char m_val_1=0;
-	char m_val_2=0;
+	uint8_t m_val_1=0;
+	uint8_t m_val_2=0;
 
 	uint8_t count=0;
 	uint8_t time=0;
