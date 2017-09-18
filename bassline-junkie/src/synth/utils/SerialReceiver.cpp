@@ -13,7 +13,7 @@
 SerialReceiver::SerialReceiver() {
 
 	n=0;
-	const char *portname = "/dev/ttyUSB0";
+	const char *portname = "/dev/ttyACM0";
 
 	fd = open(portname, O_RDWR | O_NOCTTY | O_SYNC);
 	if (fd < 0) {
@@ -107,7 +107,7 @@ void SerialReceiver::writeBytes(const uint8_t *data, size_t size)
 
 int SerialReceiver::parse(uint8_t input)
 {
-	if (input == 0xb0 || input == 0xb9)
+	if (input == 0xb0)
 	{
 		msg.m_type = MidiMessage::Type::CC;
 		msg.count++;
