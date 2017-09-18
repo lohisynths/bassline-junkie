@@ -19,6 +19,7 @@
 #define OSC_OFFSET 1
 #define OSC_NUMBER 3
 #define OSC_PARAMS 6
+#define OSC_OFFSET_SIZE (OSC_OFFSET+(OSC_NUMBER * OSC_PARAMS))
 
 #define ADSR_OFFSET 20
 #define ADSR_NUMBER 3
@@ -32,19 +33,12 @@
 #define LFO_NUMBER 3
 #define LFO_PARAMS 2
 
-#define OSC_OFFSET_SIZE (OSC_OFFSET+(OSC_NUMBER * OSC_PARAMS))
+#define MATRIX_MOD_OFFSET  96
+#define MATIRX_MOD_PARAMS_COUNT  6
 
-
-#define OSC_MOD_OFFSET  96
-#define OSC_MOD_NUMBER  3
-#define OSC_MOD_PARAMS  6
 #define OSC_MOD_COUNT   5
-
-#define OSC_MOD_OFFSET_SIZE OSC_MOD_OFFSET+(OSC_MOD_NUMBER * OSC_MOD_PARAMS * OSC_MOD_COUNT)
-
-const size_t osc_params_length=OSC_MOD_NUMBER*OSC_MOD_PARAMS*OSC_MOD_COUNT;
-const size_t flt_params_length=2;
-const size_t amp_params_length=1;
+#define FLT_MOD_COUNT   2
+#define FLT_MOD_OFFSET (OSC_NUMBER*OSC_MOD_COUNT)
 
 
 class modifiers{
@@ -76,7 +70,7 @@ public:
 
 
 
-	mod_matrix_s mod_matrix[osc_params_length+flt_params_length+amp_params_length];
+	mod_matrix_s mod_matrix[OSC_NUMBER*OSC_MOD_COUNT + FLT_MOD_COUNT];
 
 
 
@@ -153,7 +147,7 @@ void updateFilter(MoogFilter *filter)
 {
 	stk::StkFloat flt_freq = flt_mod_matrix.frequency;
 
-	auto tmp = getModVal(osc_params_length) ;
+	auto tmp = getModVal(FLT_MOD_OFFSET) ;
 
 	flt_freq += tmp * 12;
 
@@ -218,56 +212,6 @@ void controlCange(uint8_t param, uint8_t value)
 			{
 				std::cout << "osc " << +osc_number <<  " rnd level" << std::endl;
 				this->osc_m[osc_number].rnd_level=(val*divider);
-			}
-			break;
-		}
-	}
-
-
-	if(param >= OSC_MOD_OFFSET && param <= OSC_MOD_OFFSET_SIZE )
-	{
-		// tmp_param = 0 for first item starting from OSC_MOD_OFFSET
-		uint_fast8_t tmp_param = param - OSC_MOD_OFFSET;
-
-
-		int mod_param_matrix_nr = tmp_param / OSC_MOD_PARAMS;
-
-		int osc_numer = mod_param_matrix_nr / (OSC_MOD_COUNT*OSC_MOD_PARAMS);
-
-
-		uint_fast8_t mod_val = (tmp_param-(osc_numer*30)) % OSC_MOD_PARAMS;
-
-
-		switch (mod_val)
-		{
-			case 0:
-			{
-				mod_matrix[mod_param_matrix_nr].env0_amt = val*divider;
-			}
-			break;
-			case 1:
-			{
-				mod_matrix[mod_param_matrix_nr].env1_amt = val*divider;
-			}
-			break;
-			case 2:
-			{
-				mod_matrix[mod_param_matrix_nr].env2_amt = val*divider;
-			}
-			break;
-			case 3:
-			{
-				mod_matrix[mod_param_matrix_nr].lfo0_amt = val*divider;
-			}
-			break;
-			case 4:
-			{
-				mod_matrix[mod_param_matrix_nr].lfo1_amt = val*divider;
-			}
-			break;
-			case 5:
-			{
-				mod_matrix[mod_param_matrix_nr].lfo2_amt = val*divider;
 			}
 			break;
 		}
@@ -352,6 +296,61 @@ void controlCange(uint8_t param, uint8_t value)
 			{
 				std::cout << "lfo " << lfo_number <<  " frequency" << std::endl;
 				this->lfo[lfo_number].setFrequency( (val*divider * 10.) + 0.0001);
+			}
+			break;
+		}
+	}
+
+	
+
+
+
+
+
+	if(param >= MATRIX_MOD_OFFSET )
+	{
+		// tmp_param = 0 for first item starting from MATRIX_MOD_OFFSET
+		uint_fast8_t tmp_param = param - MATRIX_MOD_OFFSET;
+
+
+		int mod_param_matrix_nr = tmp_param / MATIRX_MOD_PARAMS_COUNT;
+
+		int osc_numer = mod_param_matrix_nr / (OSC_MOD_COUNT*MATIRX_MOD_PARAMS_COUNT);
+
+
+		uint_fast8_t mod_val = (tmp_param-(osc_numer*30)) % MATIRX_MOD_PARAMS_COUNT;
+
+
+		switch (mod_val)
+		{
+			case 0:
+			{
+				mod_matrix[mod_param_matrix_nr].env0_amt = val*divider;
+			}
+			break;
+			case 1:
+			{
+				mod_matrix[mod_param_matrix_nr].env1_amt = val*divider;
+			}
+			break;
+			case 2:
+			{
+				mod_matrix[mod_param_matrix_nr].env2_amt = val*divider;
+			}
+			break;
+			case 3:
+			{
+				mod_matrix[mod_param_matrix_nr].lfo0_amt = val*divider;
+			}
+			break;
+			case 4:
+			{
+				mod_matrix[mod_param_matrix_nr].lfo1_amt = val*divider;
+			}
+			break;
+			case 5:
+			{
+				mod_matrix[mod_param_matrix_nr].lfo2_amt = val*divider;
 			}
 			break;
 		}
