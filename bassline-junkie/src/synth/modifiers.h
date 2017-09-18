@@ -16,10 +16,10 @@
 
 #include "utils/MidiReceiver.h"
 
+
 #define OSC_OFFSET 1
 #define OSC_NUMBER 3
 #define OSC_PARAMS 6
-#define OSC_OFFSET_SIZE (OSC_OFFSET+(OSC_NUMBER * OSC_PARAMS))
 
 #define ADSR_OFFSET 20
 #define ADSR_NUMBER 3
@@ -33,12 +33,16 @@
 #define LFO_NUMBER 3
 #define LFO_PARAMS 2
 
-#define MATRIX_MOD_OFFSET  96
-#define MATIRX_MOD_PARAMS_COUNT  6
 
 #define OSC_MOD_COUNT   5
 #define FLT_MOD_COUNT   2
 #define FLT_MOD_OFFSET (OSC_NUMBER*OSC_MOD_COUNT)
+
+
+#define MATRIX_MOD_OFFSET  96
+#define MATIRX_MOD_PARAMS_COUNT  6
+
+#define MATRIX_MOD_MATRIX_ITEMS ( (OSC_NUMBER * OSC_MOD_COUNT) + FLT_MOD_COUNT )
 
 
 class modifiers{
@@ -171,7 +175,7 @@ void controlCange(uint8_t param, uint8_t value)
 			if(val==0)
 				val=0.001*127.; // avoid pops and clicks
 
-	if(param >= OSC_OFFSET && param <= OSC_OFFSET_SIZE )
+	if(param >= OSC_OFFSET && param <= OSC_OFFSET+(OSC_NUMBER * OSC_PARAMS) )
 	{
 		uint_fast8_t tmp_param = (param - OSC_OFFSET)%OSC_PARAMS;
 		uint_fast8_t osc_number = (param - OSC_OFFSET) / OSC_PARAMS;
@@ -306,22 +310,16 @@ void controlCange(uint8_t param, uint8_t value)
 
 
 
-
-	if(param >= MATRIX_MOD_OFFSET )
+	if(param >= MATRIX_MOD_OFFSET && param < MATRIX_MOD_OFFSET+(MATRIX_MOD_MATRIX_ITEMS * MATIRX_MOD_PARAMS_COUNT))
 	{
 		// tmp_param = 0 for first item starting from MATRIX_MOD_OFFSET
 		uint_fast8_t tmp_param = param - MATRIX_MOD_OFFSET;
 
-
 		int mod_param_matrix_nr = tmp_param / MATIRX_MOD_PARAMS_COUNT;
-
-		int osc_numer = mod_param_matrix_nr / (OSC_MOD_COUNT*MATIRX_MOD_PARAMS_COUNT);
-
-
-		uint_fast8_t mod_val = (tmp_param-(osc_numer*30)) % MATIRX_MOD_PARAMS_COUNT;
+		int param_nr = tmp_param % MATIRX_MOD_PARAMS_COUNT;
 
 
-		switch (mod_val)
+		switch (param_nr)
 		{
 			case 0:
 			{
