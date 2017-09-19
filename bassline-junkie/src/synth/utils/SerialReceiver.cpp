@@ -9,10 +9,10 @@
 
 #include "concurency_helpers.h"
 
+//TODO!!: IMPORTANT no memory allocations after lauynch!!
 
-SerialReceiver::SerialReceiver() {
-
-	n=0;
+SerialReceiver::SerialReceiver()
+{
 	const char *portname = "/dev/ttyACM0";
 
 	fd = open(portname, O_RDWR | O_NOCTTY | O_SYNC);
@@ -26,19 +26,31 @@ SerialReceiver::SerialReceiver() {
 	set_blocking(fd, 0);                // set no blocking
 
 	t = new std::thread([&]()
-		{
+	{
 		stick_this_thread_to_core(0);
-			while(1)
+
+		uint8_t buf[100];
+
+		while(1)
+		{
+			std::unique_lock<std::mutex> lock(m, std::defer_lock);
+
+			int n = read(fd, &buf, sizeof(buf));// read up to 100 characters if ready to read
+			if(n>0)
 			{
-				if(n==0)
+				uint8_t *tmp_buff = buf;
+				while(n--)
 				{
-				    std::unique_lock<std::mutex> lock(m, std::defer_lock);
-					n =read(fd, buf, sizeof buf); // read up to 100 characters if ready to read
+					vector_char.push_back(*tmp_buff);
+					tmp_buff++;
 				}
-				//sleep(1);
+			}
+			else if( n == -1)
+			{
+				std::cout << "error " << errno << std::endl;
 			}
 		}
-	);
+	});
 
 
 }
@@ -107,73 +119,96 @@ void SerialReceiver::writeBytes(const uint8_t *data, size_t size)
 	write(fd, data, size);           // send 7 character greeting
 }
 
-
-int SerialReceiver::parse(uint8_t input)
+MidiMessage* SerialReceiver::midiHandler(std::deque<uint8_t> &bytes)
 {
-	if (input == 0xb0)
+	MidiMessage* output = nullptr;
+	size_t size = bytes.size();
+
+	// Parse the MIDI bytes ... only keep MIDI channel messages.
+	uint8_t byte = bytes.front();
+	bytes.pop_front();
+	std::cout << "midiHandler " << +byte << " popped " << +bytes.size() <<  "\n";
+
+	if (byte > 239)
+		return nullptr;
+
+
+	uint8_t type = byte & 0xF0;
+	uint8_t channel = byte & 0x0F;
+
+	byte = bytes.front();
+	bytes.pop_front();
+	std::cout << "midiHandler " << +byte << " popped " << +bytes.size() <<  "\n";
+
+	uint8_t intValue0 = byte;
+
+	if ((type != 0xC0) && (type != 0xD0))
 	{
-		msg.m_type = MidiMessage::Type::CC;
-		msg.count++;
-	}
-	else if ( (input == 0x90 || input == 0x99) && (msg.m_type == MidiMessage::Type::NO_MESSAGE))
-	{
-		msg.m_type = MidiMessage::Type::NOTE_ON;
-		msg.count++;
-	}
-	else if (input == 0x80 && msg.m_type == MidiMessage::Type::NO_MESSAGE)
-	{
-		msg.m_type = MidiMessage::Type::NOTE_OFF;
-		msg.count++;
-	}
-	else if (msg.m_type != MidiMessage::Type::NO_MESSAGE)
-	{
-		if (msg.count == 1)
+		if (size < 3)
+			return nullptr;
+
+		byte = bytes.front();
+		bytes.pop_front();
+		std::cout << "midiHandler " << +byte << " popped " << +bytes.size() <<  "\n";
+
+		uint8_t intValue1 = byte;
+
+		if (type == 0xb0)
 		{
-			msg.m_val_1 = input;
-			msg.count++;
+			tmp.m_type = MidiMessage::CC;
+			tmp.m_val_1 = intValue0;
+			tmp.m_val_2 = intValue1;
+			std::cout << "midi CC message on channel " << +channel << " "
+					<< +intValue0 << " " << +intValue1 << " received\n";
+			msg.push_back(tmp);
 		}
-		else if (msg.count == 2)
+		else if (type == 0x90)
 		{
-			msg.m_val_2 = input;
-			return 1;
+			if(intValue1!=0)
+			{
+				tmp.m_type = MidiMessage::NOTE_ON;
+			}
+			else
+			{
+				tmp.m_type = MidiMessage::NOTE_OFF;
+			}
+
+			tmp.m_val_2 = intValue1;
+			tmp.m_val_1 = intValue0;
+
+			std::cout << "midi NOTE ON message on channel " << +channel << " "
+					<< +intValue0 << " " << +intValue1 << " received\n";
+
+			msg.push_back(tmp);
 		}
 		else
-		{
-			msg.reset();
-			std::cout << "wrong message" << std::endl;
-		}
+			tmp.reset();
 	}
-	else
-	{
-		msg.reset();
-		std::cout << "unknown message" << std::endl;
-	}
-	return 0;
-}
 
+	if(msg.size() > 0)
+	{
+		tmp = msg.front();
+		msg.pop_front();
+
+		output = &tmp;
+	}
+
+
+	return output;
+
+}
 
 MidiMessage* SerialReceiver::getMessage()
 {
 	MidiMessage* output= nullptr;
 
 	//TODO: IMPORTANT better parsing
-	if(n!=0)
-	{
-	    std::unique_lock<std::mutex> lock(m, std::defer_lock);
+	// conditional insteadf of lock
+    std::unique_lock<std::mutex> lock(m, std::defer_lock);
 
-		for(size_t i=0;i<n;i++)
-		{
-			if (parse(buf[i]))
-			{
-				//std::cout << std::endl;
-				msg_out = msg;
-				output = &msg_out;
-				msg.reset();
-				//std::cout << "    get ";
-				//output->print();
-			}
-		}
-		n=0;
+    if(vector_char.size() > 2)
+    {
+    	output = midiHandler(vector_char);
 	}
 
 	return output;

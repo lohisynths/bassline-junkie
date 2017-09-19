@@ -11,6 +11,7 @@
 #include <atomic>
 #include <thread>
 #include <mutex>
+#include <deque>
 
 #include <fcntl.h>
 #include <stdio.h>
@@ -23,7 +24,9 @@
 #include <iostream>
 #include <unistd.h>
 
-#include "MidiReceiver.h"
+#include "MidiMessage.h"
+
+//TODO!!: IMPORTANT no memory allocations after lauynch!!
 
 class SerialReceiver {
 public:
@@ -39,17 +42,21 @@ public:
 
 	MidiMessage* getMessage();
 
+	MidiMessage* midiHandler(std::deque<uint8_t> &bytes);
+
 
 private:
 
-	uint8_t buf[100]={};
 
-	std::atomic<size_t> n;
 	std::thread *t;
 
 	std::mutex m;
 
-	MidiMessage msg, msg_out;
+
+	std::deque<uint8_t> vector_char;
+
+	std::deque<MidiMessage> msg;
+	MidiMessage tmp;
 
 
 
