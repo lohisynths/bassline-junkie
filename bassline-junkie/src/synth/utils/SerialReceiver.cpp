@@ -127,7 +127,7 @@ MidiMessage* SerialReceiver::midiHandler(std::deque<uint8_t> &bytes)
 	// Parse the MIDI bytes ... only keep MIDI channel messages.
 	uint8_t byte = bytes.front();
 	bytes.pop_front();
-	std::cout << "midiHandler " << +byte << " popped " << +bytes.size() <<  "\n";
+	//std::cout << "midiHandler " << +byte << " popped " << +bytes.size() <<  "\n";
 
 	if (byte > 239)
 		return nullptr;
@@ -138,7 +138,7 @@ MidiMessage* SerialReceiver::midiHandler(std::deque<uint8_t> &bytes)
 
 	byte = bytes.front();
 	bytes.pop_front();
-	std::cout << "midiHandler " << +byte << " popped " << +bytes.size() <<  "\n";
+	//std::cout << "midiHandler " << +byte << " popped " << +bytes.size() <<  "\n";
 
 	uint8_t intValue0 = byte;
 
@@ -149,7 +149,7 @@ MidiMessage* SerialReceiver::midiHandler(std::deque<uint8_t> &bytes)
 
 		byte = bytes.front();
 		bytes.pop_front();
-		std::cout << "midiHandler " << +byte << " popped " << +bytes.size() <<  "\n";
+		//std::cout << "midiHandler " << +byte << " popped " << +bytes.size() <<  "\n";
 
 		uint8_t intValue1 = byte;
 
@@ -158,8 +158,8 @@ MidiMessage* SerialReceiver::midiHandler(std::deque<uint8_t> &bytes)
 			tmp.m_type = MidiMessage::CC;
 			tmp.m_val_1 = intValue0;
 			tmp.m_val_2 = intValue1;
-			std::cout << "midi CC message on channel " << +channel << " "
-					<< +intValue0 << " " << +intValue1 << " received\n";
+			//std::cout << "midi CC message on channel " << +channel << " "
+			//		<< +intValue0 << " " << +intValue1 << " received\n";
 			msg.push_back(tmp);
 		}
 		else if (type == 0x90)
@@ -176,8 +176,8 @@ MidiMessage* SerialReceiver::midiHandler(std::deque<uint8_t> &bytes)
 			tmp.m_val_2 = intValue1;
 			tmp.m_val_1 = intValue0;
 
-			std::cout << "midi NOTE ON message on channel " << +channel << " "
-					<< +intValue0 << " " << +intValue1 << " received\n";
+			//std::cout << "midi NOTE ON message on channel " << +channel << " "
+			//		<< +intValue0 << " " << +intValue1 << " received\n";
 
 			msg.push_back(tmp);
 		}
