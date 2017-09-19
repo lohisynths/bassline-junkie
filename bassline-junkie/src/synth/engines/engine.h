@@ -103,7 +103,7 @@ public:
 
 			if (note.m_val_1 == msg->m_val_1)
 			{
-				m_voices[core].message(msg);
+				m_voices[core].noteOn(msg->m_val_1,msg->m_val_2);
 				notes.erase(notes.begin() + i);
 				free_voices.push_back(core);
 			}
@@ -125,7 +125,7 @@ public:
 				auto note = &notes.back().first;
 				auto core_nr = notes.back().second;
 
-				m_voices[core_nr].message(note);
+				m_voices[core_nr].noteOff(note->m_val_1,note->m_val_2);
 			}
 		}
 		else
@@ -165,7 +165,7 @@ public:
 				case MidiMessage::Type::CC:
 				{
 					for(auto &voice : m_voices)
-						voice.message(msg);
+						voice.cc(msg->m_val_1,msg->m_val_2);
 
 					break;       // and exits the switchNOTE_ON
 				}

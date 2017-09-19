@@ -57,9 +57,19 @@ public:
 		return array;
 	}
 
-	void message(MidiMessage *note)
+	void cc(stk::StkFloat param, stk::StkFloat val)
 	{
-		m_modifiers.message(note);
+		m_modifiers.controlCange(param, val);
+	}
+
+	void noteOn(stk::StkFloat note, stk::StkFloat vel)
+	{
+		m_modifiers.noteOn(note, vel);
+	}
+
+	void noteOff(stk::StkFloat note, stk::StkFloat vel)
+	{
+		m_modifiers.noteOn(note, vel);
 	}
 
 	void process()

@@ -356,32 +356,6 @@ void controlCange(uint8_t param, uint8_t value)
 
 }
 
-
-void message(MidiMessage *msg)
-{
-	msg->print();
-
-	if (msg->m_type != MidiMessage::NO_MESSAGE)
-	{
-		//std::cout << "Message ";
-
-		switch (msg->m_type)
-		{
-		case MidiMessage::Type::CC:
-			controlCange(msg->m_val_1,msg->m_val_2);
-			break;       // and exits the switchNOTE_ON
-		case MidiMessage::Type::NOTE_ON:
-			noteOn(msg->m_val_1,msg->m_val_2);
-			break;
-		case MidiMessage::Type::NOTE_OFF:
-			noteOff();
-			break;       // and exits the switchNOTE_ON
-		case MidiMessage::Type::NO_MESSAGE:
-			break;
-		};
-	}
-}
-
 const stk::StkFloat divider = 1. / 127.;
 
 void noteOn(stk::StkFloat note, stk::StkFloat vel)
