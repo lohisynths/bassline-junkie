@@ -10,6 +10,7 @@
 
 #include <atomic>
 #include <thread>
+#include <mutex>
 
 #include <fcntl.h>
 #include <stdio.h>
@@ -45,6 +46,8 @@ private:
 
 	std::atomic<size_t> n;
 	std::thread *t;
+
+	std::mutex m;
 
 	MidiMessage msg, msg_out;
 

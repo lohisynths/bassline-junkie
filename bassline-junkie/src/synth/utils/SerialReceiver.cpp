@@ -31,7 +31,10 @@ SerialReceiver::SerialReceiver() {
 			while(1)
 			{
 				if(n==0)
+				{
+				    std::unique_lock<std::mutex> lock(m, std::defer_lock);
 					n =read(fd, buf, sizeof buf); // read up to 100 characters if ready to read
+				}
 				//sleep(1);
 			}
 		}
@@ -156,6 +159,8 @@ MidiMessage* SerialReceiver::getMessage()
 	//TODO: IMPORTANT better parsing
 	if(n!=0)
 	{
+	    std::unique_lock<std::mutex> lock(m, std::defer_lock);
+
 		for(size_t i=0;i<n;i++)
 		{
 			if (parse(buf[i]))
