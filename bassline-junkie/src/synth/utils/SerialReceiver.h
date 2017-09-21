@@ -25,6 +25,7 @@
 #include <unistd.h>
 
 #include "MidiMessage.h"
+#include "MidiParser.h"
 
 //TODO!!: IMPORTANT no memory allocations after lauynch!!
 
@@ -44,21 +45,14 @@ public:
 
 	MidiMessage* midiHandler(std::deque<uint8_t> &bytes);
 
+	MidiParser midi_parser;
 
 private:
-
-
 	std::thread *t;
-
 	std::mutex m;
 
-
 	std::deque<uint8_t> vector_char;
-
-	std::deque<MidiMessage> msg;
-	MidiMessage tmp;
-
-
+	std::deque<uint8_t> &getBuffer();
 
 	int parse(uint8_t input);
 

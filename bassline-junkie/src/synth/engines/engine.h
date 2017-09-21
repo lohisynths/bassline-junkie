@@ -125,7 +125,7 @@ public:
 				auto note = &notes.back().first;
 				auto core_nr = notes.back().second;
 
-				m_voices[core_nr].noteOff(note->m_val_1,note->m_val_2);
+				m_voices[core_nr].noteOn(note->m_val_1,note->m_val_2);
 			}
 		}
 		else
@@ -139,6 +139,7 @@ public:
 		auto msg = messager.getMessage();
 		if (msg)
 		{
+			msg->print();
 
 			if (msg->m_type != MidiMessage::NO_MESSAGE)
 			{
