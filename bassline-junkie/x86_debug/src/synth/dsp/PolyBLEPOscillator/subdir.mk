@@ -20,7 +20,7 @@ CPP_DEPS += \
 src/synth/dsp/PolyBLEPOscillator/%.o: ../src/synth/dsp/PolyBLEPOscillator/%.cpp
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C++ Compiler'
-	g++ -std=c++1y -D__LINUX_ALSA__ -I../../stk/include -O3 -ftree-vectorize -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"
+	g++ -std=c++1y -D__LINUX_ALSA__ -I../../stk/include -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
