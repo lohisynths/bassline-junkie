@@ -48,14 +48,17 @@ public:
 	MidiParser midi_parser;
 
 private:
+	void worker_thread();
+
+	void start();
+	void stop();
 	std::thread *t;
 	std::mutex m;
 
 	std::deque<uint8_t> vector_char;
 	std::deque<uint8_t> &getBuffer();
 
-	int parse(uint8_t input);
-
+	bool running;
 
 	int fd;
 };

@@ -10,14 +10,16 @@
 #include "concurency_helpers.h"
 
 //TODO!!: IMPORTANT no memory allocations after lauynch!!
+#define SERIAL_PRINT_FUNCTION std::cout << "[SerialReceiver] "<< __PRETTY_FUNCTION__ << std::endl;
+#define SERIAL_PRINT(a) std::cout << "[SerialReceiver] \t"<< __func__ << "\t\t " << (a) << std::endl;
 
-SerialReceiver::SerialReceiver()
+SerialReceiver::SerialReceiver() : running(true)
 {
 	const char *portname = "/dev/ttyACM0";
 
 	fd = open(portname, O_RDWR | O_NOCTTY | O_SYNC);
 	if (fd < 0) {
-		printf("error %d opening %s", errno, portname);
+		printf("SerialReceiver  error %d opening %s", errno, portname);
 		exit(1);
 		return;
 	}
@@ -25,40 +27,94 @@ SerialReceiver::SerialReceiver()
 	set_interface_attribs(fd, B115200, 0); // set speed to 115,200 bps, 8n1 (no parity)
 	set_blocking(fd, 0);                // set no blocking
 
-	t = new std::thread([&]()
-	{
-		stick_this_thread_to_core(0);
-
-		uint8_t buf[100];
-
-		while(1)
-		{
-			std::unique_lock<std::mutex> lock(m, std::defer_lock);
-
-			int n = read(fd, &buf, sizeof(buf));// read up to 100 characters if ready to read
-			if(n>0)
-			{
-				uint8_t *tmp_buff = buf;
-				while(n--)
-				{
-					//std::cout << "pushed  " << *tmp_buff << std::endl;
-					vector_char.push_back(*tmp_buff);
-					tmp_buff++;
-				}
-			}
-			else if( n == -1)
-			{
-				std::cout << "error " << errno << std::endl;
-			}
-		}
-	});
+	start();
 
 
 }
 
 SerialReceiver::~SerialReceiver()
 {
+	SERIAL_PRINT_FUNCTION;
+	SERIAL_PRINT("break worker thread while loop");
+	stop();
+	SERIAL_PRINT("t->join()");
+    t->join();
+	SERIAL_PRINT("t joinined");
+	SERIAL_PRINT("delete t");
+	delete t;
+}
 
+
+void SerialReceiver::worker_thread()
+{
+	stick_this_thread_to_core(0);
+
+	uint8_t buf[100];
+
+	while(running)
+	{
+		std::unique_lock<std::mutex> lock(m, std::defer_lock);
+
+		int n = read(fd, &buf, sizeof(buf));// read up to 100 characters if ready to read
+		if(n>0)
+		{
+			uint8_t *tmp_buff = buf;
+			while(n--)
+			{
+				//std::cout << "pushed  " << *tmp_buff << std::endl;
+				vector_char.push_back(*tmp_buff);
+				tmp_buff++;
+			}
+		}
+		else if( n == -1)
+		{
+			SERIAL_PRINT("error");
+			SERIAL_PRINT(errno);
+		}
+	}
+	SERIAL_PRINT_FUNCTION;
+	SERIAL_PRINT("worker_thread exit");
+
+}
+
+
+void SerialReceiver::start()
+{
+	t = new std::thread([&]()
+	{
+		worker_thread();
+	});
+}
+
+
+void SerialReceiver::stop()
+{
+    std::unique_lock<std::mutex> lock(m, std::defer_lock);
+    running = false;
+}
+
+void SerialReceiver::writeBytes(const uint8_t *data, size_t size)
+{
+	write(fd, data, size);           // send 7 character greeting
+}
+
+std::deque<uint8_t> &SerialReceiver::getBuffer()
+{
+	return vector_char;
+}
+
+MidiMessage* SerialReceiver::getMessage()
+{
+	MidiMessage* output= nullptr;
+
+	//TODO: IMPORTANT better parsing
+	// conditional insteadf of lock
+    std::unique_lock<std::mutex> lock(m, std::defer_lock);
+
+    midi_parser.midiHandler(getBuffer());
+    output = midi_parser.getMessage();
+
+	return output;
 }
 
 
@@ -113,29 +169,3 @@ void SerialReceiver::set_blocking(int fd, int should_block) {
 	if (tcsetattr(fd, TCSANOW, &tty) != 0)
 		printf("error %d setting term attributes", errno);
 }
-
-
-void SerialReceiver::writeBytes(const uint8_t *data, size_t size)
-{
-	write(fd, data, size);           // send 7 character greeting
-}
-
-std::deque<uint8_t> &SerialReceiver::getBuffer()
-{
-	return vector_char;
-}
-
-MidiMessage* SerialReceiver::getMessage()
-{
-	MidiMessage* output= nullptr;
-
-	//TODO: IMPORTANT better parsing
-	// conditional insteadf of lock
-    std::unique_lock<std::mutex> lock(m, std::defer_lock);
-
-    midi_parser.midiHandler(getBuffer());
-    output = midi_parser.getMessage();
-
-	return output;
-}
-
