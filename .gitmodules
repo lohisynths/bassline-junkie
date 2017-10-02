@@ -3,3 +3,9 @@
 	url = https://github.com/lohisynths/stk.git
 	branch = x86
 	update = rebase
+[submodule "spdlog"]
+	path = spdlog
+	url = https://github.com/gabime/spdlog.git
+[submodule "benchmark"]
+	path = benchmark
+	url = https://github.com/google/benchmark.git

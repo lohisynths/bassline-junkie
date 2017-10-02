@@ -1,4 +1,3 @@
-#include <iostream>
 #include <string>
 #include <thread>
 #include <mutex>
@@ -6,13 +5,16 @@
 #include <vector>
 #include <array>
 
+#include <Stk.h>
+
+#include "../config.h"
 #include "../utils/SerialReceiver.h"
 #include "../utils/MidiReceiver.h"
 #include "../utils/MidiReceiverRt.h"
-#include "../config.h"
 #include "../voice.h"
 #include "thread.h"
 
+#include "PipeReceiver.h"
 
 template<size_t voices_count,size_t buffer_size>
 class Engine {
@@ -26,10 +28,18 @@ private:
 	//MidiReceiverRt messager;
 	std::vector<std::pair<MidiMessage, int>> notes;
 	std::vector<int> free_voices;
+	std::shared_ptr<spdlog::logger> engine_logger=nullptr;
 
 public:
 	Engine()
 	{
+		engine_logger = spdlog::get("engine");
+		if(!engine_logger)
+		{
+			std::cerr << "failed to get egine logger.\n";
+			exit(1);
+		}
+
 		if(voices_count > max_cores*max_voices_per_core)
 		{
 			std::cerr << "more voice requested than possible to get from max_cores*max_voices_per_core."
@@ -45,15 +55,19 @@ public:
 			core_count++;
 			int core_nr = max_cores - core_count + first_cpu;
 		
-			std::cout << "new thread created on core " << core_nr << std::endl;
-			
+			std::ostringstream string;
+			string << "new thread created on core " << core_nr;
+			LOG_DEBUG(engine_logger, string.str());
 
 			for(size_t j=0; j < max_voices_per_core ; j++)
 			{
 				int voice_nr = voices_count - voices_left;
 				cores[core_count-1].add_voice(&m_voices[voice_nr]);
 				free_voices.push_back(voice_nr);
-				std::cout << "core " << core_nr << " voice " << voice_nr << " pushed" << std::endl;
+
+				std::ostringstream string;
+				string << "core " << core_nr << " voice " << voice_nr << " pushed";
+				LOG_DEBUG(engine_logger, string.str());
 
 				voices_left--;
 				if(voices_left==0)
@@ -65,8 +79,9 @@ public:
 
 		for(auto &core: cores)
 		{
-			std::cout << "core started" << std::endl;
-			core.start();
+			std::ostringstream string("core started");
+			LOG_DEBUG(engine_logger, string.str());
+			core.start_thread();
 		}
 	}
 
@@ -136,10 +151,42 @@ public:
 
 	void updateMessages()
 	{
+
+		size_t lolo = stk::Stk::getPipeAvaliable();
+
+
+		uint8_t buffer[1024]={};
+		if(lolo > 0)
+		{
+			std::cout << "getPipeAvaliable " << lolo << std::endl;
+
+			size_t size;
+			stk::Stk::readFromPipe(buffer, size);
+			if(size>0)
+			{
+				std::cout << "jes" << std::endl;
+
+				std::cout << buffer << std::endl << std::endl;
+			}
+			else if (size > sizeof(buffer))
+			{
+				std::cout << "za maly bufor" << std::endl;
+			}
+			else
+			{
+				std::cout << "nie ma" << std::endl;
+
+			}
+		}
+
+
+
 		auto msg = messager.getMessage();
 		if (msg)
 		{
-			msg->print();
+			std::ostringstream data;
+			msg->print(data);
+			LOG_INFO(engine_logger, data.str());
 
 			if (msg->m_type != MidiMessage::NO_MESSAGE)
 			{

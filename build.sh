@@ -25,8 +25,12 @@ main() {
 		make clean -C stk
 		make -j4 lib -C stk
 
+		make clean -C benchmark
+		make -j4 -C benchmark
+
 		make -j4 clean -C bassline-junkie/x86_debug
 		make -j4 -C bassline-junkie/x86_debug
+
 		break
 	    fi
 	done

@@ -15,22 +15,48 @@
 #include "../config.h"
 #include "../utils/concurency_helpers.h"
 
+#include "../utils/Logger.h"
+
+
 template<size_t buffer_size>
 class thread
 {
 public:
 	thread() :
 			ready(false), processed(false), t(0), m_cpu(0)
-	{}
-
-	void start()
 	{
+		logger = spdlog::get("thread");
+		if(!logger)
+		{
+			std::cerr << "failed to get thread logger.\n";
+			exit(1);
+		}
+	}
+
+	void start_thread()
+	{
+		LOG_DEBUG(logger, "thread created");
 		t = new std::thread([this]
 		{	return worker_thread();});
 	}
+	void stop_thread()
+	{
+	    std::unique_lock<std::mutex> lock(m, std::defer_lock);
+	    running = false;
+	}
 
 	virtual ~thread()
-	{};
+	{
+		LOG_DEBUG(logger, "break worker thread while loop");
+		stop_thread();
+//		LOG_DEBUG("t->join()");
+//	    t->join();
+//		LOG_DEBUG("t joinined");
+//		LOG_DEBUG("delete t");
+//		delete t;
+
+		LOG_DEBUG(logger, "thread destructor");
+	};
 
 	void set_cpu_affinity(uint8_t cpu)
 	{
@@ -38,10 +64,13 @@ public:
 	}
 	void worker_thread()
 	{
-		std::cout << __PRETTY_FUNCTION__ << " on cpu " << +m_cpu << std::endl;
+		std::ostringstream log;
+		log << "on cpu " << +m_cpu;
+		LOG_DEBUG(logger, log.str());
+
 		stick_this_thread_to_core(m_cpu);
 		// Wait until main() sends data
-		while (1)
+		while (running)
 		{
 			std::unique_lock<std::mutex> lk(m);
 
@@ -62,6 +91,7 @@ public:
 			lk.unlock();
 			cv.notify_one();
 		}
+		LOG_DEBUG(logger, "exit");
 	}
 
 	void request()
@@ -84,6 +114,9 @@ public:
 	}
 
 private:
+	std::shared_ptr<spdlog::logger> logger=nullptr;
+	bool running=true;
+
 	bool ready;
 	bool processed;
 	std::thread* t;

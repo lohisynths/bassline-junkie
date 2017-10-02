@@ -19,8 +19,8 @@ CPP_DEPS += \
 # Each subdirectory must supply rules for building sources it contributes
 src/synth/dsp/PolyBLEPOscillator/%.o: ../src/synth/dsp/PolyBLEPOscillator/%.cpp
 	@echo 'Building file: $<'
-	@echo 'Invoking: Cross G++ Compiler'
-	arm-linux-gnueabihf-g++ -std=c++1y -D__LINUX_ALSA__ -I../../stk/include -I../../spdlog/include -O1 -mfpu=neon-vfpv4 -mfloat-abi=hard -funsafe-math-optimizations -ftree-vectorize -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"
+	@echo 'Invoking: GCC C++ Compiler'
+	clang++ -std=c++1y --sysroot=/home/alax/rpi/tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf/arm-linux-gnueabihf/sysroot -target arm-linux-gnueabihf -D__LINUX_ALSA__ -I/home/alax/rpi/tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf/arm-linux-gnueabihf/include/c++/4.9.3 -I/home/alax/rpi/tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf/arm-linux-gnueabihf/include/c++/4.9.3/arm-linux-gnueabihf -I../../stk/include -I../../spdlog/include -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 

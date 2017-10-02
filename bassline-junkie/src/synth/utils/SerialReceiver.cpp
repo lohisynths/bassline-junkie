@@ -7,19 +7,27 @@
 
 #include "SerialReceiver.h"
 
-#include "concurency_helpers.h"
-
 //TODO!!: IMPORTANT no memory allocations after lauynch!!
-#define SERIAL_PRINT_FUNCTION std::cout << "[SerialReceiver] "<< __PRETTY_FUNCTION__ << std::endl;
-#define SERIAL_PRINT(a) std::cout << "[SerialReceiver] \t"<< __func__ << "\t\t " << (a) << std::endl;
 
 SerialReceiver::SerialReceiver() : running(true)
 {
+	logger = spdlog::get("serial").get();
+	if(!logger)
+	{
+		std::cerr << "failed to get serial logger.\n";
+		exit(1);
+	}
+
+	std::shared_ptr<spdlog::logger> logger=nullptr;
+
+
 	const char *portname = "/dev/ttyACM0";
 
 	fd = open(portname, O_RDWR | O_NOCTTY | O_SYNC);
 	if (fd < 0) {
-		printf("SerialReceiver  error %d opening %s", errno, portname);
+		std::ostringstream error_message;
+		error_message << "error opening " << portname << ". " << strerror(errno) << ". \n Exit" ;
+		//LOG_ERROR(logger, error_message.str());
 		exit(1);
 		return;
 	}
@@ -34,13 +42,12 @@ SerialReceiver::SerialReceiver() : running(true)
 
 SerialReceiver::~SerialReceiver()
 {
-	SERIAL_PRINT_FUNCTION;
-	SERIAL_PRINT("break worker thread while loop");
+	//LOG_DEBUG(logger, "break worker thread while loop");
 	stop();
-	SERIAL_PRINT("t->join()");
+	//LOG_DEBUG(logger, "t->join()");
     t->join();
-	SERIAL_PRINT("t joinined");
-	SERIAL_PRINT("delete t");
+	//LOG_DEBUG(logger, "t joinined");
+	//LOG_DEBUG(logger, "delete t");
 	delete t;
 }
 
@@ -68,12 +75,12 @@ void SerialReceiver::worker_thread()
 		}
 		else if( n == -1)
 		{
-			SERIAL_PRINT("error");
-			SERIAL_PRINT(errno);
+			std::string error("error ");
+			error += strerror(errno);
+			//LOG_DEBUG(logger, error);
 		}
 	}
-	SERIAL_PRINT_FUNCTION;
-	SERIAL_PRINT("worker_thread exit");
+	//LOG_DEBUG(logger, "worker_thread exit");
 
 }
 

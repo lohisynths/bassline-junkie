@@ -8,7 +8,6 @@
 #ifndef SRC_CONFIG_H_
 #define SRC_CONFIG_H_
 
-
 static bool play = true;
 
 static void finish(int ignore)

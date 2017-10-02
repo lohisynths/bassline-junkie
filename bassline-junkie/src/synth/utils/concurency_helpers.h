@@ -51,7 +51,7 @@ static int stick_this_thread_to_core(int core_id)
 
 //////////////////////////////////////////////////////////////////////////////////
 
-inline void set_pthread_params()
+inline int set_pthread_params()
 {
 	int policy = SCHED_FIFO;
 	int priority = sched_get_priority_max(policy);
@@ -60,8 +60,9 @@ inline void set_pthread_params()
 	sch_params.sched_priority = priority;
 	if (pthread_setschedparam(pthread_self(), policy, &sch_params))
 	{
-		std::cout << "Failed to set Thread scheduling" << std::endl;
+		return -1;
 	}
+	return 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////////

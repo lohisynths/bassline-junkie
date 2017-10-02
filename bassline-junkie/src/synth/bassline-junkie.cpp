@@ -8,6 +8,8 @@
 #include <signal.h>
 #include <sys/mman.h>
 #include <algorithm>
+#include <memory>
+#include "spdlog/spdlog.h"
 
 #include "utils/AudioDevice.h"
 #include "utils/AudioDeviceRt.h"
@@ -16,15 +18,50 @@
 #include "utils/concurency_helpers.h"
 #include <RtWvOut.h>
 #include "engines/engine.h"
+#include "utils/Logger.h"
+
+
 
 int main()
 {
+
+	std::shared_ptr<spdlog::logger> engine_logger=nullptr;
+	std::shared_ptr<spdlog::logger> thread_logger=nullptr;
+	std::shared_ptr<spdlog::logger> synth_logger=nullptr;
+	std::shared_ptr<spdlog::logger> serial_logger=nullptr;
+
+
+	synth_logger = spdlog::stdout_color_mt("synth");
+	engine_logger = spdlog::stdout_color_mt("engine");
+	thread_logger = spdlog::stdout_color_mt("thread");
+	serial_logger = spdlog::stdout_color_mt("serial");
+
+	synth_logger->set_level(spdlog::level::debug); // Set specific logger's log level
+	engine_logger->set_level(spdlog::level::debug); // Set specific logger's log level
+	thread_logger->set_level(spdlog::level::debug); // Set specific logger's log level
+	serial_logger->set_level(spdlog::level::debug); // Set specific logger's log level
+
+
 	mlockall(MCL_FUTURE | MCL_CURRENT);
-
 	signal(SIGINT, finish);
-	stick_this_thread_to_core(1);
-	set_pthread_params();
 
+
+	auto logger = spdlog::get("synth");
+	if(!logger)
+	{
+		std::cerr << "failed to get synth logger.\n";
+		exit(1);
+	}
+
+
+	if(stick_this_thread_to_core(1) < 0)
+	{
+		LOG_WARN(logger, "failed to set phtread params");
+	}
+	if(set_pthread_params() < 0)
+	{
+		LOG_WARN(logger, "failed to set phtread params");
+	}
 	Stk::setSampleRate( 44100.0 );
 	Stk::showWarnings( true );
 
@@ -34,6 +71,8 @@ int main()
 	cpu_counter licznik;
 
 	Engine<overall_voices_count, buffer_size> engine;
+
+
 
 	play = true;
 

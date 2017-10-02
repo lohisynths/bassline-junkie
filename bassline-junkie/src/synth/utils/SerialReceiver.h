@@ -8,7 +8,6 @@
 #ifndef SRC_SYNTH_UTILS_SERIALRECEIVER_H_
 #define SRC_SYNTH_UTILS_SERIALRECEIVER_H_
 
-#include <atomic>
 #include <thread>
 #include <mutex>
 #include <deque>
@@ -17,12 +16,16 @@
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
-
-
 #include <termios.h>
+#include "spdlog/spdlog.h"
+
 
 #include <iostream>
 #include <unistd.h>
+
+#include "../config.h"
+
+#include "concurency_helpers.h"
 
 #include "MidiMessage.h"
 #include "MidiParser.h"
@@ -61,6 +64,9 @@ private:
 	bool running;
 
 	int fd;
+	//pointer because of eclipse bug, not indexing shr_ptr
+	spdlog::logger *logger=nullptr;
+
 };
 
 #endif /* SRC_SYNTH_UTILS_SERIALRECEIVER_H_ */

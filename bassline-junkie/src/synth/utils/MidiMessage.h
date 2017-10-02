@@ -1,6 +1,7 @@
 #ifndef MIDIMESSAGE_H_
 #define MIDIMESSAGE_H_
 #include <iostream>
+#include <sstream>
 
 class MidiMessage
 {
@@ -27,33 +28,33 @@ public:
 		count=0;
 	}
 
-	void print()
+	void print(std::ostringstream &buf)
 	{
 		if (m_type != MidiMessage::NO_MESSAGE)
 		{
-			std::cout << "Message ";
+			buf << "Message ";
 
 			switch (m_type)
 			{
 			case MidiMessage::Type::CC:
-				std::cout << "MidiMessage::Type::CC"; // prints "1"
+				buf << "MidiMessage::Type::CC"; // prints "1"
 				break;       // and exits the switchNOTE_ON
 			case MidiMessage::Type::NOTE_ON:
 				if (m_val_2 == 0)
-					std::cout << "MidiMessage::Type::NOTE_OFF"; // prints "1"
+					buf << "MidiMessage::Type::NOTE_OFF"; // prints "1"
 				else
-					std::cout << "MidiMessage::Type::NOTE_ON"; // prints "1"
+					buf << "MidiMessage::Type::NOTE_ON"; // prints "1"
 				break;
 			case MidiMessage::Type::NOTE_OFF:
-				std::cout << "MidiMessage::Type::NOTE_OFF"; // prints "1"
+				buf << "MidiMessage::Type::NOTE_OFF"; // prints "1"
 				break;
 			case MidiMessage::Type::NO_MESSAGE:
-				std::cout << "MidiMessage::Type::NO_MESSAGE"; // prints "1"
+				buf << "MidiMessage::Type::NO_MESSAGE"; // prints "1"
 				break;       // and exits the switchNOTE_ON
 			}
 
-			std::cout << " param " << +m_val_1 << " val "
-					<< +m_val_2 << std::endl;
+			buf << " param " << +m_val_1 << " val "	<< +m_val_2;
+
 		}
 	}
 

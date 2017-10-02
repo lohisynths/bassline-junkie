@@ -25,6 +25,7 @@
 								<option id="gnu.cpp.compiler.exe.debug.option.debugging.level.679772615" name="Debug Level" superClass="gnu.cpp.compiler.exe.debug.option.debugging.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.340305577" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="../../stk/include"/>
+									<listOptionValue builtIn="false" value="../../spdlog/include"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.dialect.std.893731089" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.cpp.compiler.dialect.c++1y" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.dialect.flags.306140628" name="Other dialect flags" superClass="gnu.cpp.compiler.option.dialect.flags" useByScannerDiscovery="true" value="" valueType="string"/>
@@ -93,6 +94,7 @@
 								<option id="gnu.cpp.compiler.exe.release.option.debugging.level.601417431" name="Debug Level" superClass="gnu.cpp.compiler.exe.release.option.debugging.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.1503754476" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="../../stk/include"/>
+									<listOptionValue builtIn="false" value="../../spdlog/include"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.dialect.std.1169949652" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.cpp.compiler.dialect.c++1y" valueType="enumerated"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1826367919" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
@@ -153,6 +155,8 @@
 								<option id="gnu.cpp.compiler.exe.debug.option.debugging.level.784738736" name="Debug Level" superClass="gnu.cpp.compiler.exe.debug.option.debugging.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.1985118470" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="../../stk/include"/>
+									<listOptionValue builtIn="false" value="../../spdlog/include"/>
+									<listOptionValue builtIn="false" value="../../benchmark/include"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.dialect.std.737070807" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.cpp.compiler.dialect.c++1y" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.dialect.flags.1168358122" name="Other dialect flags" superClass="gnu.cpp.compiler.option.dialect.flags" useByScannerDiscovery="true" value="" valueType="string"/>
@@ -172,6 +176,7 @@
 							<tool command="g++" id="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug.850405106" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug">
 								<option id="gnu.cpp.link.option.paths.453057026" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" useByScannerDiscovery="false" valueType="libPaths">
 									<listOptionValue builtIn="false" value="../../stk/src"/>
+									<listOptionValue builtIn="false" value="../../benchmark/src"/>
 								</option>
 								<option id="gnu.cpp.link.option.libs.1194267068" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" useByScannerDiscovery="false" valueType="libs">
 									<listOptionValue builtIn="false" value="benchmark"/>
@@ -220,11 +225,14 @@
 								<option id="gnu.c.compiler.option.debugging.level.690811677" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.c.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.dialect.std.1495452619" name="Language standard" superClass="gnu.c.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.c.compiler.dialect.default" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.dialect.flags.1454961204" name="Other dialect flags" superClass="gnu.c.compiler.option.dialect.flags" useByScannerDiscovery="true" value="" valueType="string"/>
+								<option id="gnu.c.compiler.option.include.paths.2025918984" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath"/>
+								<option id="gnu.c.compiler.option.include.files.395757464" name="Include files (-include)" superClass="gnu.c.compiler.option.include.files" useByScannerDiscovery="false" valueType="includeFiles"/>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.956653986" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.cross.cpp.compiler.15794242" name="Cross G++ Compiler" superClass="cdt.managedbuild.tool.gnu.cross.cpp.compiler">
 								<option id="gnu.cpp.compiler.option.include.paths.1366832155" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="../../stk/include"/>
+									<listOptionValue builtIn="false" value="../../spdlog/include"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.optimization.level.1261785766" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.optimize" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.debugging.level.850721031" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
@@ -292,6 +300,7 @@
 							<tool id="cdt.managedbuild.tool.gnu.cross.cpp.compiler.821638652" name="Cross G++ Compiler" superClass="cdt.managedbuild.tool.gnu.cross.cpp.compiler">
 								<option id="gnu.cpp.compiler.option.include.paths.211175481" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="../../stk/include"/>
+									<listOptionValue builtIn="false" value="../../spdlog/include"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.optimization.level.1779613965" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.most" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.debugging.level.1701236347" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
@@ -341,6 +350,7 @@
 		<configuration configurationName="tests_build">
 			<resource resourceType="PROJECT" workspacePath="/bassline-junkie"/>
 		</configuration>
+		<configuration configurationName="arm_tests"/>
 		<configuration configurationName="arm_debug">
 			<resource resourceType="PROJECT" workspacePath="/bassline-junkie"/>
 		</configuration>
@@ -350,13 +360,16 @@
 		<configuration configurationName="x86_release">
 			<resource resourceType="PROJECT" workspacePath="/bassline-junkie"/>
 		</configuration>
-		<configuration configurationName="x86_tests"/>
+		<configuration configurationName="x86_tests">
+			<resource resourceType="PROJECT" workspacePath="/bassline-junkie"/>
+		</configuration>
 		<configuration configurationName="Debug">
 			<resource resourceType="PROJECT" workspacePath="/bassline-junkie"/>
 		</configuration>
 		<configuration configurationName="Release">
 			<resource resourceType="PROJECT" workspacePath="/bassline-junkie"/>
 		</configuration>
+		<configuration configurationName="clang arm"/>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 	<storageModule moduleId="scannerConfiguration">
@@ -383,6 +396,12 @@
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
 		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.debug.55035353;cdt.managedbuild.config.gnu.exe.debug.55035353.;cdt.managedbuild.tool.gnu.c.compiler.exe.debug.511418154;cdt.managedbuild.tool.gnu.c.compiler.input.50302670">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.debug.55035353.1323437789;cdt.managedbuild.config.gnu.exe.debug.55035353.1323437789.;cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug.1147794025;cdt.managedbuild.tool.gnu.cpp.compiler.input.1900957973">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.debug.55035353.1323437789;cdt.managedbuild.config.gnu.exe.debug.55035353.1323437789.;cdt.managedbuild.tool.gnu.c.compiler.exe.debug.680184405;cdt.managedbuild.tool.gnu.c.compiler.input.1317732805">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
 	</storageModule>

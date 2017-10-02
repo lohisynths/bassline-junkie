@@ -13,6 +13,11 @@ RM := rm -rf
 -include src/synth/dsp/ADSR/subdir.mk
 -include src/synth/dsp/subdir.mk
 -include src/synth/subdir.mk
+-include clang\ arm/src/synth/utils/subdir.mk
+-include clang\ arm/src/synth/dsp/PolyBLEPOscillator/subdir.mk
+-include clang\ arm/src/synth/dsp/ADSR/subdir.mk
+-include clang\ arm/src/synth/dsp/subdir.mk
+-include clang\ arm/src/synth/subdir.mk
 -include subdir.mk
 -include objects.mk
 
@@ -58,5 +63,6 @@ clean:
 	-@echo ' '
 
 .PHONY: all clean dependents
+.SECONDARY:
 
 -include ../makefile.targets
