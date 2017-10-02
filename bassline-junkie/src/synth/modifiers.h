@@ -51,13 +51,13 @@ public:
 
 	struct mod_matrix_s
 	{
-		stk::StkFloat env0_amt;
-		stk::StkFloat env1_amt;
-		stk::StkFloat env2_amt;
+		stk::StkFloat env0_amt=0;
+		stk::StkFloat env1_amt=0;
+		stk::StkFloat env2_amt=0;
 
-		stk::StkFloat lfo0_amt;
-		stk::StkFloat lfo1_amt;
-		stk::StkFloat lfo2_amt;
+		stk::StkFloat lfo0_amt=0;
+		stk::StkFloat lfo1_amt=0;
+		stk::StkFloat lfo2_amt=0;
 	};
 
 	struct osc_mod_s
@@ -127,7 +127,7 @@ void updateOsc(Osc &osc, size_t osc_nr)
 	stk::StkFloat osc_freq = osc_m[osc_nr].freq + octave;
 
 
-	osc_freq += getModVal(osc_nr*OSC_MOD_COUNT) * env_range_in_notes;
+	//osc_freq += getModVal(osc_nr*OSC_MOD_COUNT) * env_range_in_notes;
 	osc_freq += osc_m[osc_nr].detune * 20;
 	osc_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (osc_freq - 57.0) / 12.0 );
 
