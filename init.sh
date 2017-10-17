@@ -71,6 +71,8 @@ function configure {
 	for i in "$@" ; do
 	    if [[ $i == "arm" ]] ; then
 		echo "arm configure !"
+		export 
+		CXXFLAGS="-O3 -mfpu=neon-vfpv4 -mfloat-abi=hard -funsafe-math-optimizations -ftree-vectorize" 
 		./configure --host=arm-linux-gnueabihf --build=x86_64-linux-gnu --enable-debug --with-alsa --disable-shared --enable-static
 		break
 	    elif [[ $i == "x86" ]] ; then

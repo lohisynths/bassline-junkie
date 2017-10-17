@@ -230,7 +230,7 @@
 								<option id="gnu.cpp.compiler.option.debugging.level.850721031" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.dialect.std.1031703762" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.cpp.compiler.dialect.c++1y" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.dialect.flags.1376911832" name="Other dialect flags" superClass="gnu.cpp.compiler.option.dialect.flags" useByScannerDiscovery="true" value="" valueType="string"/>
-								<option id="gnu.cpp.compiler.option.optimization.flags.2087533244" name="Other optimization flags" superClass="gnu.cpp.compiler.option.optimization.flags" useByScannerDiscovery="false" value="-mfpu=neon-vfpv4 -mfloat-abi=hard -funsafe-math-optimizations -ftree-vectorize " valueType="string"/>
+								<option id="gnu.cpp.compiler.option.optimization.flags.2087533244" name="Other optimization flags" superClass="gnu.cpp.compiler.option.optimization.flags" useByScannerDiscovery="false" value="-mfpu=neon-vfpv4 -mfloat-abi=hard -funsafe-math-optimizations -ftree-vectorize" valueType="string"/>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.1490607755" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__LINUX_ALSA__"/>
 								</option>
@@ -341,6 +341,7 @@
 		<configuration configurationName="tests_build">
 			<resource resourceType="PROJECT" workspacePath="/bassline-junkie"/>
 		</configuration>
+		<configuration configurationName="arm_tests"/>
 		<configuration configurationName="arm_debug">
 			<resource resourceType="PROJECT" workspacePath="/bassline-junkie"/>
 		</configuration>
