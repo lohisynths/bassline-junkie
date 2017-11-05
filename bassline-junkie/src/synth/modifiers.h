@@ -235,25 +235,25 @@ void controlCange(uint8_t param, uint8_t value)
 
 			case 0:
 			{
-				//std::cout << "adsr " << adsr_number <<  " attack" << std::endl;
+				//std::cout << "adsr " << +adsr_number <<  " attack" << std::endl;
 				this->env[adsr_number].setAttackRate(val*divider);
 			}
 			break;
 			case 1:
 			{
-				//std::cout << "adsr " << adsr_number <<  " decay" << std::endl;
+				//std::cout << "adsr " << +adsr_number <<  " decay" << std::endl;
 				this->env[adsr_number].setDecayRate(val*divider);
 			}
 			break;
 			case 2:
 			{
-				//std::cout << "adsr " << adsr_number <<  " sustain" << std::endl;
+				//std::cout << "adsr " << +adsr_number <<  " sustain" << std::endl;
 				this->env[adsr_number].setSustainLevel(val*divider);
 			}
 			break;
 			case 3:
 			{
-				//std::cout << "adsr " << adsr_number <<  " release" << std::endl;
+				//std::cout << "adsr " << +adsr_number <<  " release" << std::endl;
 				this->env[adsr_number].setReleaseRate(val*divider);
 			}
 			break;
