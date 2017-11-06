@@ -15,7 +15,7 @@
 
 SerialReceiver::SerialReceiver() : running(true)
 {
-	const char *portname = "/dev/ttyACM0";
+	const char *portname = "/dev/ttyACM1";
 
 	fd = open(portname, O_RDWR | O_NOCTTY | O_SYNC);
 	if (fd < 0) {
