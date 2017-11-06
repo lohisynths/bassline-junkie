@@ -103,7 +103,7 @@ public:
 
 			if (note.m_val_1 == msg->m_val_1)
 			{
-				m_voices[core].noteOn(msg->m_val_1,msg->m_val_2);
+				m_voices[core].noteOff(msg->m_val_1,msg->m_val_2);
 				notes.erase(notes.begin() + i);
 				free_voices.push_back(core);
 			}
