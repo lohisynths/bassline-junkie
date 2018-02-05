@@ -59,12 +59,25 @@ function git_init {
 	cd stk
 	echo -e ${GREEN} 'updating stk subrepo' ${NC}
 	git checkout master
-	echo -e ${GREEN} 'configuring stk subrepo' ${NC}
+	cd ../
+
+	cd benchmark
+	echo -e ${GREEN} 'updating google benchmark subrepo' ${NC}
+	git checkout v2
 	cd ../
 }
 
 
 function configure {
+
+	echo "cmake arm google benchmark"
+	cd benchmark
+	mkdir -p build_arm
+	cd build_arm
+	cmake -DCMAKE_TOOLCHAIN_FILE=/home/alax/git/buildroot/output/host/share/buildroot/toolchainfile.cmake ../
+	cd ../../
+	echo "done"
+
 	cd stk
 	autoreconf
 
