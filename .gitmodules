@@ -3,3 +3,6 @@
 	url = https://github.com/lohisynths/stk.git
 	branch = x86
 	update = rebase
+[submodule "benchmark"]
+	path = benchmark
+	url = https://github.com/google/benchmark.git
