@@ -58,11 +58,13 @@ function git_init {
 
 	cd stk
 	echo -e ${GREEN} 'updating stk subrepo' ${NC}
-	git checkout master
+	git checkout v4.6.0
+	#git checkout master
 	cd ../
 
 	cd benchmark
 	echo -e ${GREEN} 'updating google benchmark subrepo' ${NC}
+	git pull lohi v2
 	git checkout v2
 	cd ../
 }
