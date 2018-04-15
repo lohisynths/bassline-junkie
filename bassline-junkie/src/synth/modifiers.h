@@ -17,11 +17,11 @@
 #include "utils/MidiReceiver.h"
 
 
-#define OSC_OFFSET 1
+#define OSC_OFFSET 0
 #define OSC_NUMBER 3
 #define OSC_PARAMS 6
 
-#define ADSR_OFFSET 20
+#define ADSR_OFFSET 18
 #define ADSR_NUMBER 3
 #define ADSR_PARAMS 4
 
@@ -175,7 +175,7 @@ void controlCange(uint8_t param, uint8_t value)
 			if(val==0)
 				val=0.001*127.; // avoid pops and clicks
 
-	if(param >= OSC_OFFSET && param <= OSC_OFFSET+(OSC_NUMBER * OSC_PARAMS) )
+	if(param >= OSC_OFFSET && param < OSC_OFFSET+(OSC_NUMBER * OSC_PARAMS) )
 	{
 		uint_fast8_t tmp_param = (param - OSC_OFFSET)%OSC_PARAMS;
 		uint_fast8_t osc_number = (param - OSC_OFFSET) / OSC_PARAMS;
