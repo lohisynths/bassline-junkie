@@ -24,14 +24,14 @@ void MidiParser::midiHandler(std::deque<uint8_t> &bytes)
 {
 
 	size_t size = bytes.size();
-	if(size > 2)
+	if(size > 3)
 	{
 		//std::cout << "midiHandler \n";
 
 		// Parse the MIDI bytes ... only keep MIDI channel messages.
 		uint8_t byte = bytes.front();
 		bytes.pop_front();
-		//std::cout << "midiHandler " << +byte << " popped " << +bytes.size() <<  "\n";
+		//std::cout << "midiHandler " << std::hex << +byte <<  " "<<  std::dec  << +byte << " popped " << +bytes.size() <<  "\n";
 
 		if (byte > 239)
 		{
@@ -46,7 +46,7 @@ void MidiParser::midiHandler(std::deque<uint8_t> &bytes)
 
 		byte = bytes.front();
 		bytes.pop_front();
-		//std::cout << "midiHandler " << +byte << " popped " << +bytes.size() <<  "\n";
+		//std::cout << "midiHandler " << std::hex  << +byte << " "<<  std::dec  << +byte  << " popped " << +bytes.size() <<  "\n";
 
 		uint8_t intValue0 = byte;
 
@@ -59,7 +59,7 @@ void MidiParser::midiHandler(std::deque<uint8_t> &bytes)
 			}
 			byte = bytes.front();
 			bytes.pop_front();
-			//std::cout << "midiHandler " << +byte << " popped " << +bytes.size() <<  "\n";
+			//std::cout << "midiHandler " << std::hex  << +byte << " "<<  std::dec  << +byte << " popped " << +bytes.size() <<  "\n";
 
 			uint8_t intValue1 = byte;
 
@@ -91,8 +91,10 @@ void MidiParser::midiHandler(std::deque<uint8_t> &bytes)
 
 				msg.push_back(tmp);
 			}
-			else
+			else {
+				std::cout << "midi reset " << std::endl;
 				tmp.reset();
+			}
 		}
 	}
 }
