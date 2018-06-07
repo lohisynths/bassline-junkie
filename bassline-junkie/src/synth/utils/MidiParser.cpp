@@ -91,6 +91,19 @@ void MidiParser::midiHandler(std::deque<uint8_t> &bytes)
 
 				msg.push_back(tmp);
 			}
+			else if (type == 0x80)
+			{
+				tmp.m_type = MidiMessage::NOTE_OFF;
+
+				tmp.m_val_2 = intValue1;
+				tmp.m_val_1 = intValue0;
+
+//				std::cout << "midi NOTE ON message on channel " << +channel << " "
+//						<< +intValue0 << " " << +intValue1 << " received\n";
+
+				msg.push_back(tmp);
+			}
+
 			else {
 				std::cout << "midi reset " << std::endl;
 				tmp.reset();
