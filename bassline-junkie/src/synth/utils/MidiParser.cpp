@@ -24,7 +24,7 @@ void MidiParser::midiHandler(std::deque<uint8_t> &bytes)
 {
 
 	size_t size = bytes.size();
-	if(size > 3)
+	if(size > 2)
 	{
 		//std::cout << "midiHandler \n";
 
