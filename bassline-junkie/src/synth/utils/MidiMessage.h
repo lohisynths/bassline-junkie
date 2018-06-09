@@ -18,6 +18,7 @@ public:
 
 	uint8_t count=0;
 	uint8_t time=0;
+	uint8_t channel=0;
 
 	void reset()
 	{

@@ -165,8 +165,13 @@ public:
 				}
 				case MidiMessage::Type::CC:
 				{
-					for(auto &voice : m_voices)
-						voice.cc(msg->m_val_1,msg->m_val_2);
+					for(auto &voice : m_voices) {
+						if(msg->channel == 2) {
+							voice.cc(msg->m_val_1+96,msg->m_val_2);
+						} else {
+							voice.cc(msg->m_val_1,msg->m_val_2);
+						}
+					}
 
 					break;       // and exits the switchNOTE_ON
 				}

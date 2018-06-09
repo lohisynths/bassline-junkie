@@ -127,7 +127,7 @@ void updateOsc(Osc &osc, size_t osc_nr)
 	stk::StkFloat osc_freq = osc_m[osc_nr].freq + octave;
 
 
-	//osc_freq += getModVal(osc_nr*OSC_MOD_COUNT) * env_range_in_notes;
+	osc_freq += getModVal(osc_nr*OSC_MOD_COUNT) * env_range_in_notes;
 	osc_freq += osc_m[osc_nr].detune * 20;
 	osc_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (osc_freq - 57.0) / 12.0 );
 
@@ -153,7 +153,7 @@ void updateFilter(MoogFilter *filter)
 
 	auto tmp = getModVal(FLT_MOD_OFFSET) ;
 
-	flt_freq += tmp * 12;
+	flt_freq += tmp * 48;
 
 
 	flt_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (flt_freq - 57.0) / 12.0 );

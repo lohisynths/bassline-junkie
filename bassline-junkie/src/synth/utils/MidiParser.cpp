@@ -68,6 +68,7 @@ void MidiParser::midiHandler(std::deque<uint8_t> &bytes)
 				tmp.m_type = MidiMessage::CC;
 				tmp.m_val_1 = intValue0;
 				tmp.m_val_2 = intValue1;
+				tmp.channel = channel;
 //				std::cout << "midi CC message on channel " << +channel << " "
 //						<< +intValue0 << " " << +intValue1 << " received\n";
 				msg.push_back(tmp);
@@ -85,6 +86,7 @@ void MidiParser::midiHandler(std::deque<uint8_t> &bytes)
 
 				tmp.m_val_2 = intValue1;
 				tmp.m_val_1 = intValue0;
+				tmp.channel = channel;
 
 //				std::cout << "midi NOTE ON message on channel " << +channel << " "
 //						<< +intValue0 << " " << +intValue1 << " received\n";
@@ -97,6 +99,7 @@ void MidiParser::midiHandler(std::deque<uint8_t> &bytes)
 
 				tmp.m_val_2 = intValue1;
 				tmp.m_val_1 = intValue0;
+				tmp.channel = channel;
 
 //				std::cout << "midi NOTE ON message on channel " << +channel << " "
 //						<< +intValue0 << " " << +intValue1 << " received\n";

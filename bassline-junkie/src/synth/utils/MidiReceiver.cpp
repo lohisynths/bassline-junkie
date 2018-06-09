@@ -29,6 +29,7 @@ MidiReceiver::~MidiReceiver()
 	midiin = NULL;    // snd_rawmidi_close() does not clear invalid pointer,
 }
 
+
 int MidiReceiver::parse(char input)
 {
 	if (input == 0xb0 || input == 0xb9)
