@@ -6,3 +6,6 @@
 [submodule "benchmark"]
 	path = benchmark
 	url = https://github.com/google/benchmark.git
+[submodule "bassline-junkie-interface"]
+	path = bassline-junkie-interface
+	url = https://github.com/lohisynths/bassline-junkie-interface.git
