@@ -8,22 +8,6 @@ endif ( NOT ALSA )
 
 
 
-
-
-set(BUILDROOT_SYSROOT "${RELOCATED_HOST_DIR}/arm-buildroot-linux-gnueabihf/sysroot")
-set(BUILDROOT_PKG_CONFIG_LIBDIR "${BUILDROOT_SYSROOT}/usr/lib/pkgconfig:${CMAKE_TOOLCHAIN_PATH}/lib/pkgconfig")
-
-set(ENV{PKG_CONFIG_DIR} "")
-set(ENV{PKG_CONFIG_LIBDIR} ${BUILDROOT_PKG_CONFIG_LIBDIR})
-set(ENV{PKG_CONFIG_SYSROOT_DIR} ${BUILDROOT_SYSROOT})
-
-
-
-#message(${BUILDROOT_PKG_CONFIG_LIBDIR})
-
-
-
-
 #message(MESSAGE_FATAL  ${BUILDROOT_ALSA_DIR})
 
 # Create the executable

@@ -31,12 +31,12 @@ elif [  "$1" = "gcc" ] ; then
     CC_BIN=`which gcc`
     CXX_BIN=`which g++`
     if [ -z $CC_BIN ]; then
-        clang_ver=`dpkg --get-selections | grep gcc | grep -v -m1 libclang | cut -f1 | cut -d '-' -f2`
-        CC_BIN="clang-$clang_ver"
-        CXX_BIN="clang++-$clang_ver"
+        gcc_ver=`dpkg --get-selections | grep gcc | grep -v -m1 libclang | cut -f1 | cut -d '-' -f2`
+        CC_BIN="gcc-$gcc_ver"
+        CXX_BIN="g++-$gcc_ver"
     fi
-    echo "Will use clang [$CC_BIN] and clang++ [$CXX_BIN]"
-    CMAKE_PRIVATE_FLAGS=$CMAKE_PRIVATE_FLAGS -DCMAKE_CXX_COMPILER=$CXX_BIN
+    echo "Will use gcc [$CC_BIN] and gcc++ [$CXX_BIN]"
+    CMAKE_PRIVATE_FLAGS="$CMAKE_PRIVATE_FLAGS -DCMAKE_CXX_COMPILER=$CXX_BIN"
     echo $CMAKE_PRIVATE_FLAGS
     echo "Will use gcc [$CC_BIN] and g++ [$CXX_BIN]"
 elif [  "$1" = "arm" ] ; then
