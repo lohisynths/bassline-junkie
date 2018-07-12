@@ -1,11 +1,30 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(rap VERSION 0.0.0 LANGUAGES CXX)
+project(bassline-junkie VERSION 0.0.0 LANGUAGES CXX)
 find_package(ALSA REQUIRED)
 if ( NOT ALSA )
     message(MESSAGE_FATAL "The process is not interrupted!")
 endif ( NOT ALSA )
 
+
+
+
+
+set(BUILDROOT_SYSROOT "${RELOCATED_HOST_DIR}/arm-buildroot-linux-gnueabihf/sysroot")
+set(BUILDROOT_PKG_CONFIG_LIBDIR "${BUILDROOT_SYSROOT}/usr/lib/pkgconfig:${CMAKE_TOOLCHAIN_PATH}/lib/pkgconfig")
+
+set(ENV{PKG_CONFIG_DIR} "")
+set(ENV{PKG_CONFIG_LIBDIR} ${BUILDROOT_PKG_CONFIG_LIBDIR})
+set(ENV{PKG_CONFIG_SYSROOT_DIR} ${BUILDROOT_SYSROOT})
+
+
+
+#message(${BUILDROOT_PKG_CONFIG_LIBDIR})
+
+
+
+
+#message(MESSAGE_FATAL  ${BUILDROOT_ALSA_DIR})
 
 # Create the executable
 add_executable(${PROJECT_NAME}

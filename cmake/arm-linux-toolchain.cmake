@@ -8,6 +8,19 @@ endif()
 set(CMAKE_TOOLCHAIN_PATH $ENV{TOOLCHAIN_PATH_DIR})
 
 
+
+
+
+
+
+
+
+
+
+
+#message(${CMAKE_TOOLCHAIN_PATH}/arm-buildroot-linux-gnueabihf/sysroot/usr/lib/pkgconfig)
+
+
 #
 # Automatically generated file;
 # CMake toolchain file for Buildroot
@@ -19,6 +32,10 @@ set(CMAKE_TOOLCHAIN_PATH $ENV{TOOLCHAIN_PATH_DIR})
 # All the other variables that need to refer to HOST_DIR will use the
 # RELOCATED_HOST_DIR variable.
 string(REPLACE "/share/buildroot" "" RELOCATED_HOST_DIR ${CMAKE_TOOLCHAIN_PATH})
+
+
+
+
 
 # Point cmake to the location where we have our custom modules,
 # so that it can find our custom platform description.
@@ -60,7 +77,7 @@ set(CMAKE_BUILD_TYPE Release CACHE STRING "Buildroot build configuration")
 set(CMAKE_INSTALL_SO_NO_EXE 0)
 
 set(CMAKE_PROGRAM_PATH "${RELOCATED_HOST_DIR}/bin")
-set(CMAKE_SYSROOT "${RELOCATED_HOST_DIR}/arm-buildroot-linux-gnueabihf/sysroot")
+set(BUILDROOT_SYSROOT "${RELOCATED_HOST_DIR}/arm-buildroot-linux-gnueabihf/sysroot")
 set(CMAKE_FIND_ROOT_PATH "${RELOCATED_HOST_DIR}/arm-buildroot-linux-gnueabihf/sysroot")
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
