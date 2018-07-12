@@ -40,16 +40,14 @@ elif [  "$1" = "gcc" ] ; then
     echo $CMAKE_PRIVATE_FLAGS
     echo "Will use gcc [$CC_BIN] and g++ [$CXX_BIN]"
 elif [  "$1" = "arm" ] ; then
-    echo "arm arm arm arm"
-    CMAKE_PRIVATE_FLAGS="$CMAKE_PRIVATE_FLAGS -DCMAKE_CXX_COMPILER=$CXX_BIN"
+    echo "Building for arm with buildroot toolchain"
+    CMAKE_PRIVATE_FLAGS="-DCMAKE_TOOLCHAIN_FILE=$TOOLCHAIN_FILE"
 else
     echo "Wrong compiler selected"
     abort
 fi
 
 mkdir -p build && cd build
-
-echo $CMAKE_PRIVATE_FLAGS
 
 
 if [ "$2" = "Release" ]; then
