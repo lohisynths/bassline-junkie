@@ -1,22 +1,41 @@
-#export TOOLCHAIN_PATH_DIR=/home/alax/git/lohi_buildroot/output/host
+string(ASCII 27 Esc)
+set(ColourReset "${Esc}[m")
+set(ColourBold  "${Esc}[1m")
+set(Red         "${Esc}[31m")
+set(Green       "${Esc}[32m")
+set(Yellow      "${Esc}[33m")
+set(Blue        "${Esc}[34m")
+set(Magenta     "${Esc}[35m")
+set(Cyan        "${Esc}[36m")
+set(White       "${Esc}[37m")
+set(BoldRed     "${Esc}[1;31m")
+set(BoldGreen   "${Esc}[1;32m")
+set(BoldYellow  "${Esc}[1;33m")
+set(BoldBlue    "${Esc}[1;34m")
+set(BoldMagenta "${Esc}[1;35m")
+set(BoldCyan    "${Esc}[1;36m")
+set(BoldWhite   "${Esc}[1;37m")
 
 if(NOT DEFINED ENV{TOOLCHAIN_PATH_DIR})
-    message("TOOLCHAIN_PATH_DIR not defined")
-    message(FATAL_ERROR "    example:  'export TOOLCHAIN_PATH_DIR=/home/alax/git/lohi_buildroot/output/host'")
+    message("
+
+
+
+
+    ")
+    message("${BoldRed}TOOLCHAIN_PATH_DIR not defined")
+    message(${BoldWhite} "example:")
+    message("export TOOLCHAIN_PATH_DIR=/home/alax/git/lohi_buildroot/output/host" ${ColourReset})
+    message("
+
+
+
+
+    ")
+    message(FATAL_ERROR)
 endif()
 
 set(CMAKE_TOOLCHAIN_PATH $ENV{TOOLCHAIN_PATH_DIR})
-
-
-
-
-
-
-
-
-
-
-
 
 #message(${CMAKE_TOOLCHAIN_PATH}/arm-buildroot-linux-gnueabihf/sysroot/usr/lib/pkgconfig)
 
@@ -32,10 +51,6 @@ set(CMAKE_TOOLCHAIN_PATH $ENV{TOOLCHAIN_PATH_DIR})
 # All the other variables that need to refer to HOST_DIR will use the
 # RELOCATED_HOST_DIR variable.
 string(REPLACE "/share/buildroot" "" RELOCATED_HOST_DIR ${CMAKE_TOOLCHAIN_PATH})
-
-
-
-
 
 # Point cmake to the location where we have our custom modules,
 # so that it can find our custom platform description.
