@@ -128,7 +128,7 @@ void updateOsc(Osc &osc, size_t osc_nr)
 
 
 	osc_freq += getModVal(osc_nr*OSC_MOD_COUNT) * env_range_in_notes;
-	osc_freq += osc_m[osc_nr].detune * 20;
+	osc_freq += osc_m[osc_nr].detune * 1;
 	osc_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (osc_freq - 57.0) / 12.0 );
 
 	osc.setFrequency(osc_freq);
