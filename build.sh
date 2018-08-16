@@ -4,7 +4,9 @@
 
 CMAKE_PRIVATE_FLAGS=
 
-TOOLCHAIN_FILE="cmake/arm-linux-toolchain.cmake"
+BUILD_SCRIPT_DIRECTORY=$(cd `dirname $0` && pwd)
+
+TOOLCHAIN_FILE=$BUILD_SCRIPT_DIRECTORY"/cmake/arm-linux-toolchain.cmake"
 
 function abort {
     echo "usage:"
@@ -46,6 +48,8 @@ fi
 
 mkdir -p build && cd build
 
+
+CMAKE_PRIVATE_FLAGS="$CMAKE_PRIVATE_FLAGS -DCMAKE_VERBOSE_MAKEFILES=YES"
 
 if [ "$2" = "Release" ]; then
     cmake $CMAKE_PRIVATE_FLAGS -DCMAKE_BUILD_TYPE=Release ../
