@@ -170,10 +170,6 @@ void controlCange(uint8_t param, uint8_t value)
 	const stk::StkFloat divider = 1. / 127.;
 
 	stk::StkFloat val=value;
-	if(param < 13)
-		if(param > 0)
-			if(val==0)
-				val=0.001*127.; // avoid pops and clicks
 
 	if(param >= OSC_OFFSET && param < OSC_OFFSET+(OSC_NUMBER * OSC_PARAMS) )
 	{

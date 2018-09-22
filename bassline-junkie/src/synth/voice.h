@@ -96,22 +96,19 @@ public:
 			m_modifiers.updateFilter(&filter);
 			///////////////////////////// FILTERS
 
-			sralinka output;
+			double output;
+            //sralinka output;
 			output = 0;
 
 			for(auto &wave : osc)
-				output += wave.tick() * 0.3;
+				output += std::tanh(wave.tick());
 
-			output = filter.process( output );
-
-
-			//writer.process(adsr_tick);
-
-			output *= m_modifiers.env[2].getOutput();
-
-			output *= m_modifiers.amp_mod_matrix.velocity; // velocity
+            output *= m_modifiers.amp_mod_matrix.velocity; // velocity
+            output *= m_modifiers.env[2].getOutput();
+			output = std::tanh(filter.process( output ));
 
 			sample = output;
+			//writer.process(adsr_tick);
 		}
 	}
 

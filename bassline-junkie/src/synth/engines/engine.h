@@ -88,7 +88,7 @@ public:
 		for (auto &voice : m_voices)
 		{
 			auto &voice_data = voice.get_array();
-			auto ciabej = [](stk::StkFloat &output, stk::StkFloat &input){ output += (input*0.6) ; return output;};
+			auto ciabej = [](stk::StkFloat &output, stk::StkFloat &input){ output += input; return output;};
 			std::transform(output_float.begin(), output_float.end(), voice_data.begin(),output_float.begin(),ciabej);
 		}
 		return output_float;
@@ -139,7 +139,7 @@ public:
 		auto msg = messager.getMessage();
 		if (msg)
 		{
-			//msg->print();
+			msg->print();
 
 			if (msg->m_type != MidiMessage::NO_MESSAGE)
 			{
