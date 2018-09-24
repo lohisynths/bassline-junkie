@@ -166,6 +166,21 @@ void updateFilter(MoogFilter *filter)
 	filter->setRes(flt_mod_matrix.resonance);
 }
 
+struct MyCout
+ {
+   std::stringstream s;
+
+   template <typename T>
+   MyCout& operator << (const T &x) {
+     s << x;
+     return *this;
+   }
+
+   ~MyCout() {
+     //std::cout << s.str();
+   }
+ };
+
 void controlCange(uint8_t param, uint8_t value)
 {
 	const stk::StkFloat divider = 1. / 127.;
@@ -180,32 +195,32 @@ void controlCange(uint8_t param, uint8_t value)
 		{
 			case 0:
 			{
-				std::cout << "osc " << +osc_number <<  " detune" << std::endl;
+			    MyCout() << "osc " << +osc_number <<  " detune\n";
                 this->osc_m[osc_number].detune = val*divider;
 				//this->osc_m[osc_number].octave = val*divider;
 			}
 			break;
 			case 1:
 			{
-				std::cout << "osc " << +osc_number <<  " sin level" << std::endl;
+			    MyCout() << "osc " << +osc_number <<  " sin level\n";
 				this->osc_m[osc_number].sin_level=(val*divider);
 			}
 			break;
 			case 2:
 			{
-				std::cout << "osc " << +osc_number <<  " saw level" << std::endl;
+			    MyCout() << "osc " << +osc_number <<  " saw level\n";
 				this->osc_m[osc_number].saw_level=(val*divider);
 			}
 			break;
 			case 3:
 			{
-				std::cout << "osc " << +osc_number <<  " sqr level" << std::endl;
+			    MyCout() << "osc " << +osc_number <<  " sqr level\n";
 				this->osc_m[osc_number].sqr_level=(val*divider);
 			}
 			break;
 			case 4:
 			{
-				std::cout << "osc " << +osc_number <<  " rnd level" << std::endl;
+			    MyCout() << "osc " << +osc_number <<  " rnd level\n";
 				this->osc_m[osc_number].rnd_level=(val*divider);
 			}
 			break;
@@ -226,31 +241,31 @@ void controlCange(uint8_t param, uint8_t value)
 
 			case 0:
 			{
-				std::cout << "adsr " << +adsr_number <<  " attack" << std::endl;
+			    MyCout() << "adsr " << +adsr_number <<  " attack\n";
 				this->env[adsr_number].setAttackRate(val*divider);
 			}
 			break;
 			case 1:
 			{
-				std::cout << "adsr " << +adsr_number <<  " decay" << std::endl;
+			    MyCout() << "adsr " << +adsr_number <<  " decay\n";
 				this->env[adsr_number].setDecayRate(val*divider);
 			}
 			break;
 			case 2:
 			{
-				std::cout << "adsr " << +adsr_number <<  " sustain" << std::endl;
+			    MyCout() << "adsr " << +adsr_number <<  " sustain\n";
 				this->env[adsr_number].setSustainLevel(val*divider);
 			}
 			break;
 			case 3:
 			{
-				std::cout << "adsr " << +adsr_number <<  " release" << std::endl;
+			    MyCout() << "adsr " << +adsr_number <<  " release\n";
 				this->env[adsr_number].setReleaseRate(val*divider);
 			}
             break;
             case 4:
             {
-                std::cout << "adsr " << +adsr_number <<  " loop" << std::endl;
+                MyCout() << "adsr " << +adsr_number <<  " loop\n";
                 //this->env[adsr_number].setReleaseRate(val*divider);
             }
 			break;
@@ -266,19 +281,19 @@ void controlCange(uint8_t param, uint8_t value)
 		{
 			case 0:
 			{
-				std::cout << "filter freq " << val << std::endl;
+			    MyCout() << "filter freq " << val << "\n";
 				this->flt_mod_matrix.frequency = val;
 			}
 			break;
 			case 1:
 			{
-				std::cout << "filter res " << val << std::endl;
+			    MyCout() << "filter res " << val << "\n";
 				this->flt_mod_matrix.resonance = val * divider;
 			}
 			break;
             case 2:
             {
-                std::cout << "filter shape " << val << std::endl;
+                MyCout() << "filter shape " << val << "\n";
                 this->flt_mod_matrix.resonance = val * divider;
             }
             break;
@@ -295,23 +310,18 @@ void controlCange(uint8_t param, uint8_t value)
 		{
 			case 0:
 			{
-                std::cout << "lfo " << +lfo_number <<  " frequency " <<  val << std::endl;
+			    MyCout() << "lfo " << +lfo_number <<  " frequency " <<  val << "\n";
                 this->lfo[lfo_number].setFrequency( (val*divider * 10.) + 0.0001);
 			}
 			break;
 			case 1:
 			{
-                std::cout << "lfo " << +lfo_number <<  " shape " << val << std::endl;
+			    MyCout() << "lfo " << +lfo_number <<  " shape " << val << "\n";
                 this->lfo[lfo_number].setShape(val*divider*4);
 			}
 			break;
 		}
 	}
-
-	
-
-
-
 
 	if(param >= MATRIX_MOD_OFFSET && param < MATRIX_MOD_OFFSET+(MATRIX_MOD_MATRIX_ITEMS * MATIRX_MOD_PARAMS_COUNT))
 	{
@@ -325,37 +335,37 @@ void controlCange(uint8_t param, uint8_t value)
 		switch (param_nr)
 		{
 			case 0: {
-		        std::cout << "env0_amt dst " << +mod_param_matrix_nr << " value " << val << std::endl;
+			    MyCout() << "env0_amt dst " << +mod_param_matrix_nr << " value " << val << "\n";
 				mod_matrix[mod_param_matrix_nr].env0_amt = val*divider;
 			}
 			break;
 			case 1: {
-                std::cout << "env1_amt dst " << +mod_param_matrix_nr << " value " << val << std::endl;
+			    MyCout() << "env1_amt dst " << +mod_param_matrix_nr << " value " << val << "\n";
 				mod_matrix[mod_param_matrix_nr].env1_amt = val*divider;
 			}
 			break;
 			case 2: {
-                std::cout << "env2_amt dst " << +mod_param_matrix_nr << " value " << val << std::endl;
+			    MyCout() << "env2_amt dst " << +mod_param_matrix_nr << " value " << val << "\n";
 				mod_matrix[mod_param_matrix_nr].env2_amt = val*divider;
 			}
 			break;
 			case 3: {
-                std::cout << "lfo0_amt dst " << +mod_param_matrix_nr << " value " << val << std::endl;
+			    MyCout() << "lfo0_amt dst " << +mod_param_matrix_nr << " value " << val << "\n";
 				mod_matrix[mod_param_matrix_nr].lfo0_amt = val*divider;
 			}
 			break;
 			case 4: {
-                std::cout << "lfo1_amt dst " << +mod_param_matrix_nr << " value " << val << std::endl;
+			    MyCout() << "lfo1_amt dst " << +mod_param_matrix_nr << " value " << val << "\n";
 				mod_matrix[mod_param_matrix_nr].lfo1_amt = val*divider;
 			}
 			break;
 			case 5: {
-                std::cout << "lfo2_amt dst " << +mod_param_matrix_nr << " value " << val << std::endl;
+			    MyCout() << "lfo2_amt dst " << +mod_param_matrix_nr << " value " << val << "\n";
 				mod_matrix[mod_param_matrix_nr].lfo2_amt = val*divider;
 			}
 			break;
 			default: {
-                std::cout << "error w huj dst " << +mod_param_matrix_nr << " value " << val << std::endl;
+			    MyCout() << "error w huj dst " << +mod_param_matrix_nr << " value " << val << "\n";
 
 			}
 		}
