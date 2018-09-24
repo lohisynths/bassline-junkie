@@ -52,7 +52,7 @@ mkdir -p build && cd build
 CMAKE_PRIVATE_FLAGS="$CMAKE_PRIVATE_FLAGS -DCMAKE_VERBOSE_MAKEFILES=YES"
 
 if [ "$2" = "Release" ]; then
-    cmake $CMAKE_PRIVATE_FLAGS -DCMAKE_BUILD_TYPE=Release ../
+    cmake $CMAKE_PRIVATE_FLAGS -DCMAKE_BUILD_TYPE=RelWithDebInfo ../
 elif [  "$2" = "Debug" ] ; then
     cmake $CMAKE_PRIVATE_FLAGS -DCMAKE_BUILD_TYPE=Debug ../
 else
@@ -63,7 +63,7 @@ fi
 
 
 if [ "$2" = "Release" ]; then
-    cmake -DCMAKE_BUILD_TYPE=Release $CMAKE_PRIVATE_FLAGS ../
+    cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo $CMAKE_PRIVATE_FLAGS ../
 elif [  "$2" = "Debug" ] ; then
     cmake -DCMAKE_BUILD_TYPE=Debug $CMAKE_PRIVATE_FLAGS ../
 else

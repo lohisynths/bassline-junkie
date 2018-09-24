@@ -19,15 +19,15 @@
 
 #define OSC_OFFSET 0
 #define OSC_NUMBER 3
-#define OSC_PARAMS 6
+#define OSC_PARAMS 5
 
 #define ADSR_OFFSET 18
 #define ADSR_NUMBER 3
-#define ADSR_PARAMS 4
+#define ADSR_PARAMS 5
 
-#define FLT_OFFSET  32
+#define FLT_OFFSET  33
 #define FLT_NUMBER  1
-#define FLT_PARAMS 2
+#define FLT_PARAMS 3
 
 #define LFO_OFFSET 36
 #define LFO_NUMBER 3
@@ -74,7 +74,7 @@ public:
 
 
 
-	mod_matrix_s mod_matrix[OSC_NUMBER*OSC_MOD_COUNT + FLT_MOD_COUNT];
+	mod_matrix_s mod_matrix[MATRIX_MOD_MATRIX_ITEMS];
 
 
 
@@ -122,9 +122,10 @@ void updateOsc(Osc &osc, size_t osc_nr)
 	// osc_mod.octave range (0:1)
 	// multiply by 5 and substract 2 for center pitch scale (zero in (-2:2) range)
 	// * 12 for octave multiply
-	auto octave = ( (uint_fast8_t)(osc_m[osc_nr].octave * 5)- 2) * 12;
+	//auto octave = ( (uint_fast8_t)(osc_m[osc_nr].octave * 5)- 2) * 12;
 
-	stk::StkFloat osc_freq = osc_m[osc_nr].freq + octave;
+	//stk::StkFloat osc_freq = osc_m[osc_nr].freq + octave;
+    stk::StkFloat osc_freq = osc_m[osc_nr].freq;
 
 
 	osc_freq += getModVal(osc_nr*OSC_MOD_COUNT) * env_range_in_notes;
@@ -158,7 +159,7 @@ void updateFilter(MoogFilter *filter)
 
 	flt_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (flt_freq - 57.0) / 12.0 );
 
-	if(flt_freq > 20000)flt_freq = 20000.; //moogfliter fixed upper limit to avoid aliasing
+	if(flt_freq > 15000)flt_freq = 15000.; //moogfliter fixed upper limit to avoid aliasing
 
 
 	filter->setCutoff(flt_freq);
@@ -179,38 +180,32 @@ void controlCange(uint8_t param, uint8_t value)
 		{
 			case 0:
 			{
-				//std::cout << "osc " << +osc_number <<  " octave" << std::endl;
-				this->osc_m[osc_number].octave = val*divider;
+				std::cout << "osc " << +osc_number <<  " detune" << std::endl;
+                this->osc_m[osc_number].detune = val*divider;
+				//this->osc_m[osc_number].octave = val*divider;
 			}
 			break;
 			case 1:
 			{
-				//std::cout << "osc " << +osc_number <<  " detune" << std::endl;
-				this->osc_m[osc_number].detune = val*divider;
+				std::cout << "osc " << +osc_number <<  " sin level" << std::endl;
+				this->osc_m[osc_number].sin_level=(val*divider);
 			}
 			break;
-
 			case 2:
 			{
-				//std::cout << "osc " << +osc_number <<  " sin level" << std::endl;
-				this->osc_m[osc_number].sin_level=(val*divider);
+				std::cout << "osc " << +osc_number <<  " saw level" << std::endl;
+				this->osc_m[osc_number].saw_level=(val*divider);
 			}
 			break;
 			case 3:
 			{
-				//std::cout << "osc " << +osc_number <<  " saw level" << std::endl;
-				this->osc_m[osc_number].saw_level=(val*divider);
+				std::cout << "osc " << +osc_number <<  " sqr level" << std::endl;
+				this->osc_m[osc_number].sqr_level=(val*divider);
 			}
 			break;
 			case 4:
 			{
-				//std::cout << "osc " << +osc_number <<  " sqr level" << std::endl;
-				this->osc_m[osc_number].sqr_level=(val*divider);
-			}
-			break;
-			case 5:
-			{
-				//std::cout << "osc " << +osc_number <<  " rnd level" << std::endl;
+				std::cout << "osc " << +osc_number <<  " rnd level" << std::endl;
 				this->osc_m[osc_number].rnd_level=(val*divider);
 			}
 			break;
@@ -231,33 +226,39 @@ void controlCange(uint8_t param, uint8_t value)
 
 			case 0:
 			{
-				//std::cout << "adsr " << +adsr_number <<  " attack" << std::endl;
+				std::cout << "adsr " << +adsr_number <<  " attack" << std::endl;
 				this->env[adsr_number].setAttackRate(val*divider);
 			}
 			break;
 			case 1:
 			{
-				//std::cout << "adsr " << +adsr_number <<  " decay" << std::endl;
+				std::cout << "adsr " << +adsr_number <<  " decay" << std::endl;
 				this->env[adsr_number].setDecayRate(val*divider);
 			}
 			break;
 			case 2:
 			{
-				//std::cout << "adsr " << +adsr_number <<  " sustain" << std::endl;
+				std::cout << "adsr " << +adsr_number <<  " sustain" << std::endl;
 				this->env[adsr_number].setSustainLevel(val*divider);
 			}
 			break;
 			case 3:
 			{
-				//std::cout << "adsr " << +adsr_number <<  " release" << std::endl;
+				std::cout << "adsr " << +adsr_number <<  " release" << std::endl;
 				this->env[adsr_number].setReleaseRate(val*divider);
 			}
+            break;
+            case 4:
+            {
+                std::cout << "adsr " << +adsr_number <<  " loop" << std::endl;
+                //this->env[adsr_number].setReleaseRate(val*divider);
+            }
 			break;
 		}
 	}
 
 
-	if(param >= FLT_OFFSET && param <= FLT_OFFSET+(FLT_NUMBER * FLT_PARAMS) )
+	if(param >= FLT_OFFSET && param < FLT_OFFSET+(FLT_NUMBER * FLT_PARAMS) )
 	{
 		uint_fast8_t tmp_param = param - FLT_OFFSET;
 		tmp_param = tmp_param % FLT_PARAMS;
@@ -265,16 +266,22 @@ void controlCange(uint8_t param, uint8_t value)
 		{
 			case 0:
 			{
-				//std::cout << "filter freq " << val << std::endl;
+				std::cout << "filter freq " << val << std::endl;
 				this->flt_mod_matrix.frequency = val;
 			}
 			break;
 			case 1:
 			{
-				//std::cout << "filter res" << std::endl;
+				std::cout << "filter res " << val << std::endl;
 				this->flt_mod_matrix.resonance = val * divider;
 			}
 			break;
+            case 2:
+            {
+                std::cout << "filter shape " << val << std::endl;
+                this->flt_mod_matrix.resonance = val * divider;
+            }
+            break;
 		}
 	}
 
@@ -288,14 +295,14 @@ void controlCange(uint8_t param, uint8_t value)
 		{
 			case 0:
 			{
-				//std::cout << "lfo " << lfo_number <<  " shape" << std::endl;
-				this->lfo[lfo_number].setShape(val*divider*4);
+                std::cout << "lfo " << +lfo_number <<  " frequency " <<  val << std::endl;
+                this->lfo[lfo_number].setFrequency( (val*divider * 10.) + 0.0001);
 			}
 			break;
 			case 1:
 			{
-				//std::cout << "lfo " << lfo_number <<  " frequency" << std::endl;
-				this->lfo[lfo_number].setFrequency( (val*divider * 10.) + 0.0001);
+                std::cout << "lfo " << +lfo_number <<  " shape " << val << std::endl;
+                this->lfo[lfo_number].setShape(val*divider*4);
 			}
 			break;
 		}
@@ -317,36 +324,40 @@ void controlCange(uint8_t param, uint8_t value)
 
 		switch (param_nr)
 		{
-			case 0:
-			{
+			case 0: {
+		        std::cout << "env0_amt dst " << +mod_param_matrix_nr << " value " << val << std::endl;
 				mod_matrix[mod_param_matrix_nr].env0_amt = val*divider;
 			}
 			break;
-			case 1:
-			{
+			case 1: {
+                std::cout << "env1_amt dst " << +mod_param_matrix_nr << " value " << val << std::endl;
 				mod_matrix[mod_param_matrix_nr].env1_amt = val*divider;
 			}
 			break;
-			case 2:
-			{
+			case 2: {
+                std::cout << "env2_amt dst " << +mod_param_matrix_nr << " value " << val << std::endl;
 				mod_matrix[mod_param_matrix_nr].env2_amt = val*divider;
 			}
 			break;
-			case 3:
-			{
+			case 3: {
+                std::cout << "lfo0_amt dst " << +mod_param_matrix_nr << " value " << val << std::endl;
 				mod_matrix[mod_param_matrix_nr].lfo0_amt = val*divider;
 			}
 			break;
-			case 4:
-			{
+			case 4: {
+                std::cout << "lfo1_amt dst " << +mod_param_matrix_nr << " value " << val << std::endl;
 				mod_matrix[mod_param_matrix_nr].lfo1_amt = val*divider;
 			}
 			break;
-			case 5:
-			{
+			case 5: {
+                std::cout << "lfo2_amt dst " << +mod_param_matrix_nr << " value " << val << std::endl;
 				mod_matrix[mod_param_matrix_nr].lfo2_amt = val*divider;
 			}
 			break;
+			default: {
+                std::cout << "error w huj dst " << +mod_param_matrix_nr << " value " << val << std::endl;
+
+			}
 		}
 	}
 

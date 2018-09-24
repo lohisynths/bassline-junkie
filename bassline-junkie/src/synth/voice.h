@@ -100,12 +100,13 @@ public:
             //sralinka output;
 			output = 0;
 
-			for(auto &wave : osc)
-				output += std::tanh(wave.tick());
+			for(auto &wave : osc) {
+				output = tanh(output + wave.tick());
+			}
 
             output *= m_modifiers.amp_mod_matrix.velocity; // velocity
             output *= m_modifiers.env[2].getOutput();
-			output = std::tanh(filter.process( output ));
+			output = filter.process( output );
 
 			sample = output;
 			//writer.process(adsr_tick);
