@@ -44,9 +44,38 @@
 
 #define MATRIX_MOD_MATRIX_ITEMS ( (OSC_NUMBER * OSC_MOD_COUNT) + FLT_MOD_COUNT )
 
+const char *MOD_SRC_NAMES[] = {
+        "osc 0 det",
+        "osc 0 sin",
+        "osc 0 saw",
+        "osc 0 sqr",
+        "osc 0 rnd",
+
+        "osc 1 det",
+        "osc 1 sin",
+        "osc 1 saw",
+        "osc 1 sqr",
+        "osc 1 rnd",
+
+        "osc 2 det",
+        "osc 2 sin",
+        "osc 2 saw",
+        "osc 2 sqr",
+        "osc 2 rnd",
+
+        "flt freq",
+        "flt res"
+};
 
 class modifiers{
 public:
+
+    int voice_index = 0;
+
+    void set_voice_index(int index) {
+        voice_index = index;
+    }
+
 	const stk::StkFloat env_range_in_notes = 12 * 4;
 
 	struct mod_matrix_s
@@ -72,11 +101,7 @@ public:
 		stk::StkFloat rnd_level=0;
 	};
 
-
-
 	mod_matrix_s mod_matrix[MATRIX_MOD_MATRIX_ITEMS];
-
-
 
 	struct flt_mod_struct
 	{
@@ -100,7 +125,6 @@ public:
 	amp_mod_struct amp_mod_matrix;
 
 
-
 stk::StkFloat  getModVal(int mod_nr)
 {
 	stk::StkFloat tmp;
@@ -113,8 +137,6 @@ stk::StkFloat  getModVal(int mod_nr)
 	tmp += lfo[2].get_value() * mod_matrix[mod_nr].lfo2_amt;
 	return tmp;
 }
-
-
 
 void updateOsc(Osc &osc, size_t osc_nr)
 {
@@ -176,9 +198,17 @@ struct MyCout
      return *this;
    }
 
-   ~MyCout() {
-     //std::cout << s.str();
+   MyCout(int index) {
+       if(index == 0) {
+           enabled = true;
+       }
    }
+   ~MyCout() {
+       if(enabled) {
+           std::cout << s.str();
+       }
+   }
+   bool enabled = false;
  };
 
 void controlCange(uint8_t param, uint8_t value)
@@ -195,32 +225,32 @@ void controlCange(uint8_t param, uint8_t value)
 		{
 			case 0:
 			{
-			    MyCout() << "osc " << +osc_number <<  " detune\n";
+			    MyCout(voice_index) << "osc " << +osc_number <<  " det:\t\t" << val << "\n";
                 this->osc_m[osc_number].detune = val*divider;
 				//this->osc_m[osc_number].octave = val*divider;
 			}
 			break;
 			case 1:
 			{
-			    MyCout() << "osc " << +osc_number <<  " sin level\n";
+			    MyCout(voice_index) << "osc " << +osc_number <<  " sin:\t\t" << val << "\n";
 				this->osc_m[osc_number].sin_level=(val*divider);
 			}
 			break;
 			case 2:
 			{
-			    MyCout() << "osc " << +osc_number <<  " saw level\n";
+			    MyCout(voice_index) << "osc " << +osc_number <<  " saw:\t\t" << val << "\n";
 				this->osc_m[osc_number].saw_level=(val*divider);
 			}
 			break;
 			case 3:
 			{
-			    MyCout() << "osc " << +osc_number <<  " sqr level\n";
+			    MyCout(voice_index) << "osc " << +osc_number <<  " sqr:\t\t" << val << "\n";
 				this->osc_m[osc_number].sqr_level=(val*divider);
 			}
 			break;
 			case 4:
 			{
-			    MyCout() << "osc " << +osc_number <<  " rnd level\n";
+			    MyCout(voice_index) << "osc " << +osc_number <<  " rnd:\t\t" << val << "\n";
 				this->osc_m[osc_number].rnd_level=(val*divider);
 			}
 			break;
@@ -241,31 +271,31 @@ void controlCange(uint8_t param, uint8_t value)
 
 			case 0:
 			{
-			    MyCout() << "adsr " << +adsr_number <<  " attack\n";
+			    MyCout(voice_index) << "adsr " << +adsr_number <<  " attack:\t\t" << val << "\n";
 				this->env[adsr_number].setAttackRate(val*divider);
 			}
 			break;
 			case 1:
 			{
-			    MyCout() << "adsr " << +adsr_number <<  " decay\n";
+			    MyCout(voice_index) << "adsr " << +adsr_number <<  " decay:\t\t" << val << "\n";
 				this->env[adsr_number].setDecayRate(val*divider);
 			}
 			break;
 			case 2:
 			{
-			    MyCout() << "adsr " << +adsr_number <<  " sustain\n";
+			    MyCout(voice_index) << "adsr " << +adsr_number <<  " sustain:\t\t" << val << "\n";
 				this->env[adsr_number].setSustainLevel(val*divider);
 			}
 			break;
 			case 3:
 			{
-			    MyCout() << "adsr " << +adsr_number <<  " release\n";
+			    MyCout(voice_index) << "adsr " << +adsr_number <<  " release:\t\t" << val << "\n";
 				this->env[adsr_number].setReleaseRate(val*divider);
 			}
             break;
             case 4:
             {
-                MyCout() << "adsr " << +adsr_number <<  " loop\n";
+                MyCout(voice_index) << "adsr " << +adsr_number <<  " loop:\t\t" << val << "\n";
                 //this->env[adsr_number].setReleaseRate(val*divider);
             }
 			break;
@@ -281,19 +311,19 @@ void controlCange(uint8_t param, uint8_t value)
 		{
 			case 0:
 			{
-			    MyCout() << "filter freq " << val << "\n";
+			    MyCout(voice_index) << "filter freq:\t\t" << val << "\n";
 				this->flt_mod_matrix.frequency = val;
 			}
 			break;
 			case 1:
 			{
-			    MyCout() << "filter res " << val << "\n";
+			    MyCout(voice_index) << "filter res:\t\t" << val << "\n";
 				this->flt_mod_matrix.resonance = val * divider;
 			}
 			break;
             case 2:
             {
-                MyCout() << "filter shape " << val << "\n";
+                MyCout(voice_index) << "filter shape:\t\t" << val << "\n";
                 this->flt_mod_matrix.resonance = val * divider;
             }
             break;
@@ -310,13 +340,13 @@ void controlCange(uint8_t param, uint8_t value)
 		{
 			case 0:
 			{
-			    MyCout() << "lfo " << +lfo_number <<  " frequency " <<  val << "\n";
+			    MyCout(voice_index) << "lfo " << +lfo_number <<  " freq:\t\t" <<  val << "\n";
                 this->lfo[lfo_number].setFrequency( (val*divider * 10.) + 0.0001);
 			}
 			break;
 			case 1:
 			{
-			    MyCout() << "lfo " << +lfo_number <<  " shape " << val << "\n";
+			    MyCout(voice_index) << "lfo " << +lfo_number <<  " shape:\t\t" << val << "\n";
                 this->lfo[lfo_number].setShape(val*divider*4);
 			}
 			break;
@@ -335,37 +365,37 @@ void controlCange(uint8_t param, uint8_t value)
 		switch (param_nr)
 		{
 			case 0: {
-			    MyCout() << "env0_amt dst " << +mod_param_matrix_nr << " value " << val << "\n";
+			    MyCout(voice_index) << MOD_SRC_NAMES[mod_param_matrix_nr] << " - env 0 amt:\t" << val << "\n";
 				mod_matrix[mod_param_matrix_nr].env0_amt = val*divider;
 			}
 			break;
 			case 1: {
-			    MyCout() << "env1_amt dst " << +mod_param_matrix_nr << " value " << val << "\n";
+			    MyCout(voice_index) << MOD_SRC_NAMES[mod_param_matrix_nr] << " - env 1 amt:\t" << val << "\n";
 				mod_matrix[mod_param_matrix_nr].env1_amt = val*divider;
 			}
 			break;
 			case 2: {
-			    MyCout() << "env2_amt dst " << +mod_param_matrix_nr << " value " << val << "\n";
+			    MyCout(voice_index) << MOD_SRC_NAMES[mod_param_matrix_nr] << " - env 2 amt:\t" << val << "\n";
 				mod_matrix[mod_param_matrix_nr].env2_amt = val*divider;
 			}
 			break;
 			case 3: {
-			    MyCout() << "lfo0_amt dst " << +mod_param_matrix_nr << " value " << val << "\n";
+			    MyCout(voice_index) << MOD_SRC_NAMES[mod_param_matrix_nr] << " - lfo 0 amt:\t" << val << "\n";
 				mod_matrix[mod_param_matrix_nr].lfo0_amt = val*divider;
 			}
 			break;
 			case 4: {
-			    MyCout() << "lfo1_amt dst " << +mod_param_matrix_nr << " value " << val << "\n";
+			    MyCout(voice_index) << MOD_SRC_NAMES[mod_param_matrix_nr] << " - lfo 1 amt:\t" << val << "\n";
 				mod_matrix[mod_param_matrix_nr].lfo1_amt = val*divider;
 			}
 			break;
 			case 5: {
-			    MyCout() << "lfo2_amt dst " << +mod_param_matrix_nr << " value " << val << "\n";
+			    MyCout(voice_index) << MOD_SRC_NAMES[mod_param_matrix_nr] << " - lfo 2 amt:\t" << val << "\n";
 				mod_matrix[mod_param_matrix_nr].lfo2_amt = val*divider;
 			}
 			break;
 			default: {
-			    MyCout() << "error w huj dst " << +mod_param_matrix_nr << " value " << val << "\n";
+			    MyCout(voice_index) << "error w dst " << MOD_SRC_NAMES[mod_param_matrix_nr] << ": value\t" << val << "\n";
 
 			}
 		}

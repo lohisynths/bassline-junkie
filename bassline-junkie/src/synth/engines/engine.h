@@ -51,6 +51,7 @@ public:
 			for(size_t j=0; j < max_voices_per_core ; j++)
 			{
 				int voice_nr = voices_count - voices_left;
+				m_voices[voice_nr].set_voice_index(voice_nr);
 				cores[core_count-1].add_voice(&m_voices[voice_nr]);
 				free_voices.push_back(voice_nr);
 				std::cout << "core " << core_nr << " voice " << voice_nr << " pushed" << std::endl;

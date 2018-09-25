@@ -33,6 +33,11 @@ template<size_t buffer_size>
 class Voice
 {
 public:
+
+    void set_voice_index(int index) {
+        m_modifiers.set_voice_index(index);
+    }
+
 	Voice()
 	{
 		m_modifiers.flt_mod_matrix.frequency = 64+32;
@@ -120,6 +125,8 @@ private:
 	std::array<Osc, 3> osc;
 	modifiers m_modifiers;
 	std::array<stk::StkFloat, buffer_size> array;
+
+
 };
 
 #endif /* SYNTH_H_ */
