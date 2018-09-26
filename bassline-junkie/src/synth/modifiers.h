@@ -198,9 +198,10 @@ void updateFilter(VAStateVariableFilter *filter)
     flt_freq += tmp * 48;
 
 
-    flt_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (flt_freq - 57.0) / 12.0 );
+    flt_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (flt_freq - 24.0) / 12.0 );
 
-    if(flt_freq > 15000)flt_freq = 15000.; //moogfliter fixed upper limit to avoid aliasing
+    if(flt_freq > 22000)
+        flt_freq = 22000.; //moogfliter fixed upper limit to avoid aliasing
 
 
     int filter_type = 0;
