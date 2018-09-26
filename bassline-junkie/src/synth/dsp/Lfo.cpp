@@ -22,8 +22,12 @@ void Lfo::setShape(int shape)
 		osc.setMode(Oscillator::OSCILLATOR_MODE_SINE);
 	else if(shape == 1)
 		osc.setMode(Oscillator::OSCILLATOR_MODE_SAW);
-	else if(shape == 2)
-		osc.setMode(Oscillator::OSCILLATOR_MODE_SQUARE);
+    else if(shape == 2)
+        osc.setMode(Oscillator::OSCILLATOR_MODE_TRIANGLE);
+    else if(shape == 3)
+            osc.setMode(Oscillator::OSCILLATOR_MODE_SQUARE);
+    else if(shape == 4)
+        std::cout << "Lfo::sync " << shape << std::endl;
 	else
 		std::cout << "Lfo::setShape - wrong shape selected. input = " << shape << std::endl;
 }

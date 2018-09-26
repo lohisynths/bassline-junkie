@@ -107,6 +107,7 @@ public:
 	{
 		stk::StkFloat frequency=0;
 		stk::StkFloat resonance=0;
+        int type=0;
 	};
 
 	struct amp_mod_struct
@@ -202,6 +203,16 @@ void updateFilter(VAStateVariableFilter *filter)
     if(flt_freq > 15000)flt_freq = 15000.; //moogfliter fixed upper limit to avoid aliasing
 
 
+    int filter_type = 0;
+    if(flt_mod_matrix.type == 0) {
+        filter_type = SVFLowpass;
+    } else if(flt_mod_matrix.type == 1) {
+        filter_type = SVFBandpass;
+    } else if(flt_mod_matrix.type == 2) {
+        filter_type = SVFHighpass;
+    }
+
+    filter->setFilterType(filter_type);
     filter->setCutoff(flt_freq);
     filter->setRes(flt_mod_matrix.resonance * 0.95);
 }
@@ -223,7 +234,7 @@ struct MyCout
    }
    ~MyCout() {
        if(enabled) {
-           ;//std::cout << s.str();
+           std::cout << s.str();
        }
    }
    bool enabled = false;
@@ -342,7 +353,7 @@ void controlCange(uint8_t param, uint8_t value)
             case 2:
             {
                 MyCout(voice_index) << "filter shape:\t\t" << val << "\n";
-                this->flt_mod_matrix.resonance = val * divider;
+                this->flt_mod_matrix.type = val;
             }
             break;
 		}
@@ -365,7 +376,7 @@ void controlCange(uint8_t param, uint8_t value)
 			case 1:
 			{
 			    MyCout(voice_index) << "lfo " << +lfo_number <<  " shape:\t\t" << val << "\n";
-                this->lfo[lfo_number].setShape(val*divider*4);
+                this->lfo[lfo_number].setShape(val);
 			}
 			break;
 		}
