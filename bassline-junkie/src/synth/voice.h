@@ -120,8 +120,8 @@ public:
 
 private:
 
-	MoogFilter filter;
-	//VAStateVariableFilter filter;
+	//MoogFilter filter;
+	VAStateVariableFilter filter;
 	std::array<Osc, 3> osc;
 	modifiers m_modifiers;
 	std::array<stk::StkFloat, buffer_size> array;

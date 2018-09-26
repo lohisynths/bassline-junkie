@@ -188,6 +188,24 @@ void updateFilter(MoogFilter *filter)
 	filter->setRes(flt_mod_matrix.resonance);
 }
 
+void updateFilter(VAStateVariableFilter *filter)
+{
+    stk::StkFloat flt_freq = flt_mod_matrix.frequency;
+
+    auto tmp = getModVal(FLT_MOD_OFFSET) ;
+
+    flt_freq += tmp * 48;
+
+
+    flt_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (flt_freq - 57.0) / 12.0 );
+
+    if(flt_freq > 15000)flt_freq = 15000.; //moogfliter fixed upper limit to avoid aliasing
+
+
+    filter->setCutoff(flt_freq);
+    filter->setRes(flt_mod_matrix.resonance * 0.95);
+}
+
 struct MyCout
  {
    std::stringstream s;
@@ -205,7 +223,7 @@ struct MyCout
    }
    ~MyCout() {
        if(enabled) {
-           std::cout << s.str();
+           ;//std::cout << s.str();
        }
    }
    bool enabled = false;
