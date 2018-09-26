@@ -35,7 +35,13 @@ public:
     void setTargetRatioA(stk::StkFloat targetRatio);
     void setTargetRatioDR(stk::StkFloat targetRatio);
     void reset(void);
-
+    void setLoopOn(bool enabled) {
+        loop = enabled;
+        if(!loop) {
+            state = env_release;
+        }
+    }
+    
     enum envState {
         env_idle = 0,
         env_attack,
@@ -61,6 +67,7 @@ protected:
     stk::StkFloat attackBase;
     stk::StkFloat decayBase;
     stk::StkFloat releaseBase;
+    bool loop;
  
     stk::StkFloat calcCoef(stk::StkFloat rate, stk::StkFloat targetRatio);
 };
@@ -78,9 +85,15 @@ inline stk::StkFloat ADSR::process() {
             break;
         case env_decay:
             output = decayBase + output * decayCoef;
-            if (output <= sustainLevel) {
-                output = sustainLevel;
-                state = env_sustain;
+            if(!loop) {
+                if (output <= sustainLevel) {
+                    output = sustainLevel;
+                    state = env_sustain;
+                }
+            } else {
+                if (output <= sustainLevel) {
+                    state = env_attack;
+                }
             }
             break;
         case env_sustain:
@@ -89,7 +102,11 @@ inline stk::StkFloat ADSR::process() {
             output = releaseBase + output * releaseCoef;
             if (output <= 0.0) {
                 output = 0.0;
-                state = env_idle;
+                if(loop) {
+                    state = env_attack;
+                } else {
+                    state = env_idle;
+                }
             }
 	}
 	return output;

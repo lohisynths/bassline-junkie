@@ -325,7 +325,7 @@ void controlCange(uint8_t param, uint8_t value)
             case 4:
             {
                 MyCout(voice_index) << "adsr " << +adsr_number <<  " loop:\t\t" << val << "\n";
-                //this->env[adsr_number].setReleaseRate(val*divider);
+                this->env[adsr_number].setLoopOn(val);
             }
 			break;
 		}
