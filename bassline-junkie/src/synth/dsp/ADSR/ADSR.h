@@ -113,10 +113,14 @@ inline stk::StkFloat ADSR::process() {
 }
 
 inline void ADSR::gate(int gate) {
-	if (gate)
-		state = env_attack;
-	else if (state != env_idle)
-        state = env_release;
+	if (gate) {
+        state = env_attack;
+	}
+	else if (state != env_idle) {
+	    if(!loop) {
+	        state = env_release;
+	    }
+	}
 }
 
 inline int ADSR::getState() {
