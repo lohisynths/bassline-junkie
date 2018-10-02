@@ -106,7 +106,7 @@ public:
 			output = 0;
 
 			for(auto &wave : osc) {
-				output = tanh(output + wave.tick());
+				output = output + wave.tick();
 			}
 
             output *= m_modifiers.amp_mod_matrix.velocity; // velocity

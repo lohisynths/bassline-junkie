@@ -7,7 +7,7 @@
 
 #include "MidiReceiverRt.h"
 
-MidiReceiverRt::MidiReceiverRt()
+MidiReceiverRt::MidiReceiverRt() : midiin(RtMidi::Api::LINUX_ALSA)
 {
 	  probe();
 

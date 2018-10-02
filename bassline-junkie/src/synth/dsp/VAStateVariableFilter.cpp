@@ -173,7 +173,7 @@ float VAStateVariableFilter::process(const float& input, const int& channelIndex
         // Selects which filter type this function will output.
         switch (filterType) {
         case SVFLowpass:
-            return tanh(LP);
+            return LP;
             break;
         case SVFBandpass:
             return BP;

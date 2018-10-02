@@ -44,6 +44,11 @@ public:
 		}
 	}
 
+    void mute()
+    {
+        dac->tick(0);
+    }
+
 private:
 	void setup()
 	{
