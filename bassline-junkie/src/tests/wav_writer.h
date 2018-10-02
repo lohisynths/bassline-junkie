@@ -104,6 +104,9 @@ class WavWriter {
       return false;
     }
     
+    uint16_t bits_per_sample = 32;
+    uint16_t bytes_per_sample = bits_per_sample / 8;
+
     // RIFF Header
     char riff_header[4] = {'R', 'I', 'F', 'F'};                             // Contains "RIFF"
     uint32_t wav_size = 36 + duration_ * sample_rate_ * 2 * num_channels_;  // Size of the wav portion of the file, which follows the first 8 bytes. File size - 8
@@ -115,13 +118,13 @@ class WavWriter {
     uint16_t audio_format = 1;                                              // Should be 1 for PCM. 3 for IEEE Float
     uint16_t num_channels = num_channels_;
     uint32_t sample_rate = sample_rate_;
-    uint32_t byte_rate = sample_rate * 2 * num_channels;                    // Number of bytes per second. sample_rate * num_channels * Bytes Per Sample
-    uint16_t sample_alignment = 2 * num_channels_;                                         // num_channels * Bytes Per Sample
-    uint16_t bit_depth = 16;                                                // Number of bits per sample
+    uint32_t byte_rate = sample_rate * bytes_per_sample * num_channels;     // Number of bytes per second. sample_rate * num_channels * Bytes Per Sample
+    uint16_t sample_alignment = bytes_per_sample * num_channels_;           // num_channels * Bytes Per Sample
+    uint16_t bit_depth = bits_per_sample;                                   // Number of bits per sample
 
     // Data
     char data_header[4] = {'d', 'a', 't', 'a'};                             // Contains "data " (includes trailing space)
-    uint32_t data_bytes  = duration_ * sample_rate_ * 2 * num_channels_;    // Number of bytes in data. Number of samples * num_channels * sample byte size
+    uint32_t data_bytes  = duration_ * sample_rate_ * bytes_per_sample * num_channels_;    // Number of bytes in data. Number of samples * num_channels * sample byte size
 
 
     send_char(riff_header, 4, fp_);     // 4
@@ -144,14 +147,14 @@ class WavWriter {
   }
   
   void Write(double* out, size_t size) {
-    int16_t* short_buffer = (int16_t*)(calloc(size, sizeof(int16_t)));
+    int32_t* short_buffer = (int32_t*)(calloc(size, sizeof(int32_t)));
     for (size_t i = 0; i < size; ++i) {
       double x = out[i];
       if (x >= 1.0f) x = 1.0f;
       if (x <= -1.0f) x = -1.0f;
-      short_buffer[i] = static_cast<int16_t>(x * 32767.0f);
+      short_buffer[i] = static_cast<int32_t>(x * 2147483647.);
     }
-    fwrite(short_buffer, sizeof(int16_t), size, fp_);
+    fwrite(short_buffer, sizeof(int32_t), size, fp_);
   }
 
  private:
