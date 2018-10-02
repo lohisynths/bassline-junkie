@@ -5,6 +5,7 @@
 #include "BlitSaw.h"
 #include "dsp/PolyBLEPOscillator/PolyBLEPOscillator.h"
 #include "oscillator.h"
+#include "wav_writer.h"
 
 const size_t buffer_size = 128;
 const size_t sample_rate = 96000;
@@ -64,15 +65,40 @@ void render_sweep(double (*f)(double), AudioDeviceRt<buffer_size> &device) {
     }
 }
 
+void render_sweep(double (*f)(double)) {
+    stmlib::WavWriter pisacz(1, sample_rate,30);
+    static int count = 0;
+
+    std::string name("piesek");
+    name = name + std::to_string(count);
+    count ++;
+    pisacz.Open2(name.c_str());
+
+    bool play = true;
+    double freq = 12;
+    std::array<double, buffer_size> output;
+    while (play) {
+        for (int i = 0; i < buffer_size; i++) {
+            freq += 0.00005;
+            double osc_freq = (stk::StkFloat) 440.0 * pow(2.0, (freq - 69.0) / 12.0);
+            if (osc_freq > 20000.) {
+                play = false;
+            }
+            output[i] = f(osc_freq);
+        }
+        pisacz.Write(&output[0], buffer_size);
+    }
+}
+
 int main() {
     stk::Stk::setSampleRate(sample_rate);
     stk::Stk::showWarnings(true);
 
     AudioDeviceRt<buffer_size> device;
 
-    render_sweep(tick_stk_blit, device);
-    render_sweep(tick_stmlib_bleep, device);
-    render_sweep(tick_poly_bleep, device);
+    render_sweep(tick_stk_blit);
+    render_sweep(tick_stmlib_bleep);
+    render_sweep(tick_poly_bleep);
 
     return 0;
 }

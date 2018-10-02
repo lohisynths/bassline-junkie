@@ -49,6 +49,10 @@ public:
         dac->tick(0);
     }
 
+    void close() {
+        dac->stop();
+    }
+
 private:
 	void setup()
 	{
@@ -60,10 +64,6 @@ private:
 		  // TODO: think whats next
 		exit( 1 );
 	  }
-	}
-	void close()
-	{
-		delete dac;
 	}
 
 	stk::RtWvOut *dac=nullptr;
