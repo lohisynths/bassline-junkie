@@ -109,7 +109,7 @@ class WavWriter {
 
     // RIFF Header
     char riff_header[4] = {'R', 'I', 'F', 'F'};                             // Contains "RIFF"
-    uint32_t wav_size = 36 + duration_ * sample_rate_ * 2 * num_channels_;  // Size of the wav portion of the file, which follows the first 8 bytes. File size - 8
+    uint32_t wav_size = 36 + duration_ * sample_rate_ * bytes_per_sample * num_channels_;  // Size of the wav portion of the file, which follows the first 8 bytes. File size - 8
     char wave_header[4] = {'W', 'A', 'V', 'E'};                             // Contains "WAVE"
 
     // Format Header

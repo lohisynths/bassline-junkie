@@ -11,6 +11,7 @@
 // PolyBLEP by Tale
 // (slightly modified)
 // http://www.kvraudio.com/forum/viewtopic.php?t=375517
+// http://www.martin-finke.de/blog/articles/audio-plugins-018-polyblep-oscillator/
 stk::StkFloat PolyBLEPOscillator::poly_blep(stk::StkFloat t)
 {
 	stk::StkFloat dt = mPhaseIncrement / twoPI;
