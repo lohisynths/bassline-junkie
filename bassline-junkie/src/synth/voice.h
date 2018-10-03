@@ -101,7 +101,7 @@ public:
 			m_modifiers.updateFilter(&filter);
 			///////////////////////////// FILTERS
 
-			double output;
+			stk::StkFloat output;
             //sralinka output;
 			output = 0;
 

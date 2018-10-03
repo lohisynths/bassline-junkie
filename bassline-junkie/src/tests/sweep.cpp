@@ -47,7 +47,7 @@ double tick_poly_bleep(double osc_freq) {
 void render_sweep(double (*f)(double), AudioDeviceRt<buffer_size> &device) {
     bool play = true;
     double freq = 12;
-    std::array<double, buffer_size> output;
+    std::array<stk::StkFloat, buffer_size> output;
     while (play) {
         for (int i = 0; i < buffer_size; i++) {
             freq += 0.00005;
@@ -94,7 +94,7 @@ int main() {
     stk::Stk::setSampleRate(sample_rate);
     stk::Stk::showWarnings(true);
 
-    AudioDeviceRt<buffer_size> device;
+   // AudioDeviceRt<buffer_size> device;
 
     render_sweep(tick_stk_blit);
     render_sweep(tick_stmlib_bleep);
