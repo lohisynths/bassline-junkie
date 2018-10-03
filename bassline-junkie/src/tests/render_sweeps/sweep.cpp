@@ -3,8 +3,8 @@
 #include "utils/AudioDeviceRt.h"
 #include "Stk.h"
 #include "BlitSaw.h"
+#include "dsp/stmlib_polybleep.h"
 #include "dsp/PolyBLEPOscillator/PolyBLEPOscillator.h"
-#include "oscillator.h"
 #include "wav_writer.h"
 
 const size_t buffer_size = 128;
@@ -94,7 +94,7 @@ int main() {
     stk::Stk::setSampleRate(sample_rate);
     stk::Stk::showWarnings(true);
 
-   // AudioDeviceRt<buffer_size> device;
+    AudioDeviceRt<buffer_size> device;
 
     render_sweep(tick_stk_blit);
     render_sweep(tick_stmlib_bleep);
