@@ -30,7 +30,7 @@ MidiReceiver::~MidiReceiver()
 }
 
 
-int MidiReceiver::parse(char input)
+int MidiReceiver::parse(uint8_t input)
 {
 	if (input == 0xb0 || input == 0xb9)
 	{

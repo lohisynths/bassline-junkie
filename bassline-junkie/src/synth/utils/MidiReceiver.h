@@ -26,7 +26,7 @@ private:
 	MidiMessage msg, msg_out;
 
 	snd_rawmidi_t* midiin = NULL;
-	int parse(char input);
+	int parse(uint8_t input);
 
 
 

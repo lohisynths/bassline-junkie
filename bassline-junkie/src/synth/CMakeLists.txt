@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 3.5)
 
 project(bassline-junkie VERSION 0.0.0 LANGUAGES CXX)
 find_package(ALSA REQUIRED)
-if ( NOT ALSA )
-    message(MESSAGE_FATAL "The process is not interrupted!")
-endif ( NOT ALSA )
+if( NOT ALSA_FOUND )
+    message(FATAL_ERROR "The process is not interrupted!")
+endif()
 
 # Create the executable
 add_executable(${PROJECT_NAME}
