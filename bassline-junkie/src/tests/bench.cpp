@@ -36,6 +36,7 @@ void BlitSquare_tick(benchmark::State& state)
 		benchmark::DoNotOptimize(osc.tick());
 	}
 }
+
 BENCHMARK (BlitSquare_tick)->Arg(110)->Arg(440)->Arg(880);
 
 

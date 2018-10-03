@@ -31,6 +31,7 @@ message(${BUILDROOT_PKG_CONFIG_LIBDIR})
 
 
 IF(CMAKE_TOOLCHAIN_PATH)
+    message("cipciaaa")
   IF(DEPENDS_DIR) #Otherwise use System pkg-config path
     SET(ENV{PKG_CONFIG_PATH} "$ENV{PKG_CONFIG_PATH}:${DEPENDS_DIR}/libusb/lib/pkgconfig")
   ENDIF()

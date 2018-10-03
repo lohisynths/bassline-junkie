@@ -52,9 +52,9 @@ mkdir -p build && cd build
 CMAKE_PRIVATE_FLAGS="$CMAKE_PRIVATE_FLAGS -DBASSLINE_JUNKIE_TESTING_ENABLED=ON"
 
 if [ "$2" = "Release" ]; then
-    cmake $CMAKE_PRIVATE_FLAGS -DCMAKE_BUILD_TYPE=RelWithDebInfo ../
+    cmake CXXFLAGS="-Wno-psabi" $CMAKE_PRIVATE_FLAGS -DCMAKE_BUILD_TYPE=RelWithDebInfo ../
 elif [  "$2" = "Debug" ] ; then
-    cmake $CMAKE_PRIVATE_FLAGS -DCMAKE_BUILD_TYPE=Debug ../
+    cmake CXXFLAGS="-Wno-psabi" $CMAKE_PRIVATE_FLAGS -DCMAKE_BUILD_TYPE=Debug ../
 else
     echo "Wrong build configuration selected"
     abort

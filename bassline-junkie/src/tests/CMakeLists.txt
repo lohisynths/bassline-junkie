@@ -1,1 +1,2 @@
 add_subdirectory(render_sweeps)
+add_subdirectory(benchmark_osc)

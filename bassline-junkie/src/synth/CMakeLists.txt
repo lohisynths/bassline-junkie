@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.5)
 project(bassline-junkie VERSION 0.0.0 LANGUAGES CXX)
 find_package(ALSA REQUIRED)
 if( NOT ALSA_FOUND )
-    message(FATAL_ERROR "The process is not interrupted!")
+    #message(FATAL_ERROR "The process is not interrupted!")
 endif()
 
 # Create the executable
@@ -26,11 +26,15 @@ add_executable(${PROJECT_NAME}
 	utils/AudioDevice.cpp
 )
 
+if(NOT CMAKE_SYSTEM_PROCESSOR MATCHES armv7l)
+    set(ADITIONAL_LIBS jack)
+endif()
+
 target_link_libraries(${PROJECT_NAME}
     lohi::stk
     asound
     pthread
-    jack
+    ${ADITIONAL_LIBS}
 )
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_11 cxx_thread_local)

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(benchmark_osc VERSION 0.0.0 LANGUAGES CXX)
+project(render_sweeps VERSION 0.0.0 LANGUAGES CXX)
 find_package(ALSA REQUIRED)
 if(NOT ALSA_FOUND )
     message(MESSAGE_FATAL "The process is not interrupted!")
@@ -10,7 +10,7 @@ endif()
 add_executable(${PROJECT_NAME}
 	../../synth/dsp/PolyBLEPOscillator/Oscillator.cpp
 	../../synth/dsp/PolyBLEPOscillator/PolyBLEPOscillator.cpp
-	sweep.cpp
+	bench.cpp
 )
 
 
