@@ -1,4 +1,4 @@
-#include <benchmark/benchmark_api.h>
+#include <benchmark/benchmark.h>
 
 #include "BlitSaw.h"
 #include "Blit.h"
@@ -14,7 +14,7 @@ void BlitSaw_tick(benchmark::State& state)
 	}
 	  state.SetComplexityN(state.range(0));
 }
-BENCHMARK (BlitSaw_tick)->Arg(110)->Arg(440)->Arg(880);
+BENCHMARK(BlitSaw_tick)->Arg(110)->Arg(440)->Arg(880);
 
 void Blit_tick(benchmark::State& state)
 {
@@ -25,7 +25,7 @@ void Blit_tick(benchmark::State& state)
 		benchmark::DoNotOptimize(osc.tick());
 	}
 }
-BENCHMARK (Blit_tick)->Arg(110)->Arg(440)->Arg(880);
+BENCHMARK(Blit_tick)->Arg(110)->Arg(440)->Arg(880);
 
 void BlitSquare_tick(benchmark::State& state)
 {
@@ -37,8 +37,7 @@ void BlitSquare_tick(benchmark::State& state)
 	}
 }
 
-BENCHMARK (BlitSquare_tick)->Arg(110)->Arg(440)->Arg(880);
+BENCHMARK(BlitSquare_tick)->Arg(110)->Arg(440)->Arg(880);
 
 
-BENCHMARK_MAIN()
-
+BENCHMARK_MAIN();

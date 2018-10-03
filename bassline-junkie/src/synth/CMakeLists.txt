@@ -38,3 +38,10 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_11 cxx_thread_local)
+
+target_compile_options(${PROJECT_NAME}
+    PRIVATE $<$<STREQUAL:$<CONFIGURATION>,Release>:
+        -ffast-math -fno-unsafe-math-optimizations -Wall -Wno-psabi > #-Wno-psabi in gcc 7.1 https://stackoverflow.com/a/48149400
+    PRIVATE $<$<STREQUAL:$<CONFIGURATION>,Debug>:
+        -Wall >
+)

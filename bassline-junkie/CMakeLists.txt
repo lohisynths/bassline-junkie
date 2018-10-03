@@ -1,7 +1,7 @@
-add_subdirectory(src/synth)
-
 if(BASSLINE_JUNKIE_TESTING_ENABLED)
 	add_subdirectory(src/tests)
+else()
+	add_subdirectory(src/synth)
 endif()
 
 function(print_target_properties tgt)

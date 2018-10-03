@@ -23,9 +23,9 @@ void sine_test(OP op, benchmark::State& state, std::string func) {
             T index = i*one_over_length*_PI*(T)(2);
             output[i] = op(index);
         }
-        benchmark::DoNotOptimize(output);
     }
-#if !DUMP_RESULTS
+    benchmark::DoNotOptimize(output);
+#if DUMP_RESULTS
     std::string filename(func);
     filename += "_data_";
     filename += std::to_string(state.range(0));

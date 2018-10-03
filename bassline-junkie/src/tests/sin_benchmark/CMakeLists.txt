@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(render_sweeps VERSION 0.0.0 LANGUAGES CXX)
+project(sin_benchmark VERSION 0.0.0 LANGUAGES CXX)
 find_package(ALSA REQUIRED)
 if(NOT ALSA_FOUND )
     message(MESSAGE_FATAL "The process is not interrupted!")
@@ -10,7 +10,7 @@ endif()
 add_executable(${PROJECT_NAME}
 	../../synth/dsp/PolyBLEPOscillator/Oscillator.cpp
 	../../synth/dsp/PolyBLEPOscillator/PolyBLEPOscillator.cpp
-	bench.cpp
+	sin_bench.cpp
 )
 
 
@@ -31,3 +31,10 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 	../../synth/utils
 )
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_11 cxx_thread_local)
+
+target_compile_options(${PROJECT_NAME}
+    PRIVATE $<$<STREQUAL:$<CONFIGURATION>,Release>:
+         -ftree-vectorize -ftree-vectorizer-verbose=1 -mcpu=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -fno-unsafe-math-optimizations -Wno-psabi > #-Wno-psabi in gcc 7.1 https://stackoverflow.com/a/48149400
+    PRIVATE $<$<STREQUAL:$<CONFIGURATION>,Debug>:
+        -Wall >
+)

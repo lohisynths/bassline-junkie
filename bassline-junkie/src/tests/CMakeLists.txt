@@ -1,2 +1,3 @@
 add_subdirectory(render_sweeps)
 add_subdirectory(sin_benchmark)
+add_subdirectory(osc_benchmark)
