@@ -48,8 +48,8 @@ fi
 
 mkdir -p build && cd build
 
-
-CMAKE_PRIVATE_FLAGS="$CMAKE_PRIVATE_FLAGS -DCMAKE_VERBOSE_MAKEFILES=YES"
+#CMAKE_PRIVATE_FLAGS="$CMAKE_PRIVATE_FLAGS -DCMAKE_VERBOSE_MAKEFILE=ON -DBASSLINE_JUNKIE_TESTING_ENABLED=ON"
+CMAKE_PRIVATE_FLAGS="$CMAKE_PRIVATE_FLAGS -DBASSLINE_JUNKIE_TESTING_ENABLED=ON"
 
 if [ "$2" = "Release" ]; then
     cmake $CMAKE_PRIVATE_FLAGS -DCMAKE_BUILD_TYPE=RelWithDebInfo ../
@@ -59,18 +59,6 @@ else
     echo "Wrong build configuration selected"
     abort
 fi
-
-
-
-if [ "$2" = "Release" ]; then
-    cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo $CMAKE_PRIVATE_FLAGS ../
-elif [  "$2" = "Debug" ] ; then
-    cmake -DCMAKE_BUILD_TYPE=Debug $CMAKE_PRIVATE_FLAGS ../
-else
-    echo "Wrong build configuration selected"
-    abort
-fi
-
 
 make -j 8
 
