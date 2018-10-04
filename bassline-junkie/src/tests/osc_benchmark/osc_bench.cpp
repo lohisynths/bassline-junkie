@@ -1,6 +1,6 @@
 #include <benchmark/benchmark.h>
 #include <fstream>
-#define DUMP_RESULTS 1
+//#define DUMP_RESULTS 1
 
 #include "BlitSaw.h"
 #include "Blit.h"
@@ -9,7 +9,7 @@
 #include "dsp/PolyBLEP/PolyBLEP.h"
 #include "dsp/stmlib_polybleep.h"
 
-#define ARR_SIZE 1025
+#define ARR_SIZE 512
 
 void BlitSaw_tick(benchmark::State& state)
 {
@@ -71,7 +71,7 @@ void StmPolyBleepOsc_tick(benchmark::State& state)
     while (state.KeepRunning()) {
         for(int i=0; i<ARR_SIZE; i++) {
             float out;
-            osc.Render<true>((state.range(0) / 96000.), (state.range(0) / 2. / 96000.), 0.5f, 0.0f, &out, 1);
+            osc.Render<true>((state.range(0) / 96000.), 0.5f, 0.0f, &out, 1);
             output[i] = out;
         }
         benchmark::DoNotOptimize(output);
