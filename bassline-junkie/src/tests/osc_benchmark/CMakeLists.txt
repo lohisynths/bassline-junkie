@@ -10,6 +10,7 @@ endif()
 add_executable(${PROJECT_NAME}
 	../../synth/dsp/PolyBLEPOscillator/Oscillator.cpp
 	../../synth/dsp/PolyBLEPOscillator/PolyBLEPOscillator.cpp
+	../../synth/dsp/PolyBLEP/PolyBLEP.cpp
 	osc_bench.cpp
 )
 
@@ -31,10 +32,3 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 	../../synth/utils
 )
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_11 cxx_thread_local)
-
-target_compile_options(${PROJECT_NAME}
-    PRIVATE $<$<STREQUAL:$<CONFIGURATION>,Release>:
-         -ftree-vectorize -ftree-vectorizer-verbose=1 -mcpu=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -fno-unsafe-math-optimizations -Wno-psabi > #-Wno-psabi in gcc 7.1 https://stackoverflow.com/a/48149400
-    PRIVATE $<$<STREQUAL:$<CONFIGURATION>,Debug>:
-        -Wall >
-)

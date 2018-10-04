@@ -10,6 +10,7 @@ endif()
 add_executable(${PROJECT_NAME}
 	../../synth/dsp/PolyBLEPOscillator/Oscillator.cpp
 	../../synth/dsp/PolyBLEPOscillator/PolyBLEPOscillator.cpp
+	../../synth/dsp/PolyBLEP/PolyBLEP.cpp
 	sweep.cpp
 )
 
