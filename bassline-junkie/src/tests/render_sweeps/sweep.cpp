@@ -47,13 +47,8 @@ double tick_poly_bleep(double osc_freq) {
 }
 
 double tick_PolyBleep(double osc_freq) {
-    static PolyBLEP osc(96000, PolyBLEP::MODIFIED_SQUARE, 440);
-
-    static bool init = false;
-    float out;
+    static PolyBLEP osc(96000, PolyBLEP::SAWTOOTH, 440);
     osc.setFrequency(osc_freq);
-    osc.setPulseWidth(0.1);
-
     return osc.getAndInc();
 }
 
