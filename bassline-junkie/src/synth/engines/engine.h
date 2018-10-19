@@ -22,8 +22,8 @@ private:
 	std::array<stk::StkFloat, buffer_size> output_float;
 	std::array<Voice<buffer_size>, voices_count> m_voices;
 
-	//SerialReceiver messager;
-	MidiReceiverRt messager;
+	SerialReceiver messager;
+	//MidiReceiverRt messager;
 	std::vector<std::pair<MidiMessage, int>> notes;
 	std::vector<int> free_voices;
 

@@ -27,7 +27,7 @@ inline void check_clipping(std::array<stk::StkFloat, 512> input, const char* fun
 	});
 }
 
-struct sralinka
+struct debug_double
 {
     operator stk::StkFloat()
     {

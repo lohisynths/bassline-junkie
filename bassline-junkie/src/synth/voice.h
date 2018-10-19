@@ -101,12 +101,11 @@ public:
 			m_modifiers.updateFilter(&filter);
 			///////////////////////////// FILTERS
 
-			stk::StkFloat output;
-            //sralinka output;
+            debug_double output;
 			output = 0;
 
 			for(auto &wave : osc) {
-				output = output + wave.tick();
+				output = output + wave.tick() * 0.3;
 			}
 
             output *= m_modifiers.amp_mod_matrix.velocity; // velocity
