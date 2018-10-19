@@ -96,7 +96,11 @@ void SerialReceiver::stop()
 
 void SerialReceiver::writeBytes(const uint8_t *data, size_t size)
 {
-	write(fd, data, size);           // send 7 character greeting
+    size_t ret = write(fd, data, size);
+    if(ret != size) {
+        printf("ret != size\n");
+
+    }
 }
 
 std::deque<uint8_t> &SerialReceiver::getBuffer()
