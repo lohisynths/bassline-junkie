@@ -8,8 +8,6 @@
 #ifndef SRC_LFO_H_
 #define SRC_LFO_H_
 
-#include <memory>
-
 #include "Stk.h"
 #include "PolyBLEPOscillator/PolyBLEPOscillator.h"
 

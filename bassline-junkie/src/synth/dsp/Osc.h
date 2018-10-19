@@ -8,7 +8,6 @@
 #ifndef OSC_H_
 #define OSC_H_
 
-#include <memory>
 #include "Stk.h"
 #include "BlitSaw.h"
 #include "BlitSquare.h"
