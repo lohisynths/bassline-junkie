@@ -70,6 +70,9 @@ public:
 	void noteOn(stk::StkFloat note, stk::StkFloat vel)
 	{
 		m_modifiers.noteOn(note, vel);
+        for (auto &lfo : m_modifiers.lfo)  {
+            lfo.noteOn();
+        }
 	}
 
 	void noteOff(stk::StkFloat note, stk::StkFloat vel)
@@ -110,7 +113,7 @@ public:
 
             output *= m_modifiers.amp_mod_matrix.velocity; // velocity
             output *= m_modifiers.env[2].getOutput();
-			output = filter.process( output );
+			output = tanh(filter.process( output ));
 
 			sample = output;
 			//writer.process(adsr_tick);

@@ -21,11 +21,12 @@ public:
 
 	stk::StkFloat tick();
 	stk::StkFloat get_value();
-
+	void noteOn();
 	void reset();
 
 private:
 	PolyBLEPOscillator osc;
+	bool sync = false;
 
 };
 

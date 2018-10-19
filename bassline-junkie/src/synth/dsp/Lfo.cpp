@@ -26,8 +26,10 @@ void Lfo::setShape(int shape)
         osc.setMode(Oscillator::OSCILLATOR_MODE_TRIANGLE);
     else if(shape == 3)
             osc.setMode(Oscillator::OSCILLATOR_MODE_SQUARE);
-    else if(shape == 4)
-        std::cout << "Lfo::sync " << shape << std::endl;
+    else if(shape == 4) {
+        sync ^= 1;
+        std::cout << "Lfo::sync " << sync << std::endl;
+    }
 	else
 		std::cout << "Lfo::setShape - wrong shape selected. input = " << shape << std::endl;
 }
@@ -38,6 +40,11 @@ void Lfo::setFrequency(stk::StkFloat freq)
 	osc.setFrequency(static_cast<float>(freq));
 }
 
+void Lfo::noteOn() {
+    if(sync) {
+        osc.reset();
+    }
+}
 
 stk::StkFloat Lfo::tick()
 {
