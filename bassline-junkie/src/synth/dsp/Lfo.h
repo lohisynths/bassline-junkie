@@ -23,6 +23,9 @@ public:
 	stk::StkFloat get_value();
 	void noteOn();
 	void reset();
+    void set_sync(bool input) {
+        sync = input;
+    }
 
 private:
 	PolyBLEPOscillator osc;

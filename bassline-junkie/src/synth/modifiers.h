@@ -31,7 +31,7 @@
 
 #define LFO_OFFSET 36
 #define LFO_NUMBER 3
-#define LFO_PARAMS 2
+#define LFO_PARAMS 3
 
 
 #define OSC_MOD_COUNT   5
@@ -374,12 +374,18 @@ void controlCange(uint8_t param, uint8_t value)
                 this->lfo[lfo_number].setFrequency( (val*divider * 10.) + 0.0001);
 			}
 			break;
-			case 1:
-			{
-			    MyCout(voice_index) << "lfo " << +lfo_number <<  " shape:\t\t" << val << "\n";
+            case 1:
+            {
+                MyCout(voice_index) << "lfo " << +lfo_number <<  " shape:\t\t" << val << "\n";
                 this->lfo[lfo_number].setShape(val);
-			}
-			break;
+            }
+            break;
+            case 2:
+            {
+                MyCout(voice_index) << "lfo " << +lfo_number <<  " sync:\t\t" << val << "\n";
+                this->lfo[lfo_number].set_sync(val);
+            }
+            break;
 		}
 	}
 

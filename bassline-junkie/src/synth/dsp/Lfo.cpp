@@ -26,10 +26,6 @@ void Lfo::setShape(int shape)
         osc.setMode(Oscillator::OSCILLATOR_MODE_TRIANGLE);
     else if(shape == 3)
             osc.setMode(Oscillator::OSCILLATOR_MODE_SQUARE);
-    else if(shape == 4) {
-        sync ^= 1;
-        std::cout << "Lfo::sync " << sync << std::endl;
-    }
 	else
 		std::cout << "Lfo::setShape - wrong shape selected. input = " << shape << std::endl;
 }
