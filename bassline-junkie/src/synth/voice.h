@@ -115,6 +115,7 @@ public:
             output *= m_modifiers.env[2].getOutput();
 			output = tanh(filter.process( output ));
 
+			output *= m_modifiers.master_vol;
 			sample = output;
 			//writer.process(adsr_tick);
 		}

@@ -115,6 +115,7 @@ public:
 		stk::StkFloat velocity=0;
 	};
 
+    stk::StkFloat master_vol=0;
 
 	std::array<Lfo, 3> lfo;
 	std::array<ADSR, 3> env;
@@ -388,6 +389,12 @@ void controlCange(uint8_t param, uint8_t value)
             break;
 		}
 	}
+
+
+    if(param == 95 ) {
+        MyCout(voice_index) << " vol:\t\t" << val << "\n";
+        this->master_vol = val*divider;
+    }
 
 	if(param >= MATRIX_MOD_OFFSET && param < MATRIX_MOD_OFFSET+(MATRIX_MOD_MATRIX_ITEMS * MATIRX_MOD_PARAMS_COUNT))
 	{
