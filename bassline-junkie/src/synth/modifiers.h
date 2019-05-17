@@ -219,6 +219,7 @@ void updateFilter(VAStateVariableFilter *filter)
     filter->setRes(flt_mod_matrix.resonance * 0.95);
 }
 
+#define DEBUG_MODIFIERS false
 struct MyCout
  {
    std::stringstream s;
@@ -231,7 +232,7 @@ struct MyCout
 
    MyCout(int index) {
        if(index == 0) {
-           enabled = true;
+           enabled = DEBUG_MODIFIERS;
        }
    }
    ~MyCout() {
