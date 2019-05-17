@@ -24,7 +24,7 @@ SerialReceiver::SerialReceiver() : running(true)
 		return;
 	}
 
-	set_interface_attribs(fd, B115200, 0); // set speed to 115,200 bps, 8n1 (no parity)
+	set_interface_attribs(fd, B460800, 0); // set speed to 115,200 bps, 8n1 (no parity)
 	set_blocking(fd, 0);                // set no blocking
 
 	start();
@@ -49,7 +49,7 @@ void SerialReceiver::worker_thread()
 {
 	stick_this_thread_to_core(0);
 
-	uint8_t buf[100];
+	uint8_t buf[256];
 
 	while(running)
 	{
