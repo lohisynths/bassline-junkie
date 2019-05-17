@@ -216,7 +216,7 @@ void updateFilter(VAStateVariableFilter *filter)
 
     filter->setFilterType(filter_type);
     filter->setCutoff(flt_freq);
-    filter->setRes(flt_mod_matrix.resonance * 0.95);
+    filter->setRes(flt_mod_matrix.resonance);
 }
 
 #define DEBUG_MODIFIERS false
