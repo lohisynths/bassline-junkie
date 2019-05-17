@@ -103,8 +103,8 @@ public:
 			///////////////////////////// FILTERS
 			m_modifiers.updateFilter(&filter);
 			///////////////////////////// FILTERS
-
-            debug_double output;
+			//debug_double output;
+            StkFloat output;
 			output = 0;
 
 			for(auto &wave : osc) {
