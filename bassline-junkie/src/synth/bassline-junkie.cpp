@@ -25,7 +25,7 @@ int main()
 	stick_this_thread_to_core(1);
 	set_pthread_params();
 
-	Stk::setSampleRate( 96000.0 );
+	Stk::setSampleRate( 48000.0 );
 	Stk::showWarnings( true );
 
 	AudioDeviceRt<buffer_size> device;
