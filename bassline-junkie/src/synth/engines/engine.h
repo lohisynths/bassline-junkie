@@ -28,44 +28,21 @@ private:
 	std::vector<int> free_voices;
 
 public:
-	Engine()
-	{
-		if(voices_count > max_cores*max_voices_per_core)
-		{
-			std::cerr << "more voice requested than possible to get from max_cores*max_voices_per_core."
-					<< std::endl << "edit config.h"<< std::endl;
-			exit(1);
+	Engine() {
+		for(int i = 0; i < max_cores; i++) {
+	        cores[i].set_cpu_affinity(i+first_cpu);
 		}
 
-		int voices_left=voices_count;
-		size_t core_count=0;
-
-		while(voices_left)
-		{
-			core_count++;
-			int core_nr = max_cores - core_count + first_cpu;
-		
-			std::cout << "new thread created on core " << core_nr << std::endl;
-			
-
-			for(size_t j=0; j < max_voices_per_core ; j++)
-			{
-				int voice_nr = voices_count - voices_left;
-				m_voices[voice_nr].set_voice_index(voice_nr);
-				cores[core_count-1].add_voice(&m_voices[voice_nr]);
-				free_voices.push_back(voice_nr);
-				std::cout << "core " << core_nr << " voice " << voice_nr << " pushed" << std::endl;
-
-				voices_left--;
-				if(voices_left==0)
-					break;
-			}
-			cores[core_count-1].set_cpu_affinity(core_nr);
-
+		for(int voice_nr = 0; voice_nr < voices_count; voice_nr++) {
+		  int core_nr = (max_cores - (voice_nr % max_cores));
+          std::cout << "new thread created on core " << core_nr << std::endl;
+          m_voices[voice_nr].set_voice_index(voice_nr);
+          cores[core_nr - first_cpu].add_voice(&m_voices[voice_nr]);
+          free_voices.push_back(voice_nr);
+          std::cout << "core " << core_nr << " voice " << voice_nr << " pushed" << std::endl;
 		}
 
-		for(auto &core: cores)
-		{
+		for(auto &core: cores) {
 			std::cout << "core started" << std::endl;
 			core.start();
 		}
