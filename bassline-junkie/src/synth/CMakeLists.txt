@@ -23,7 +23,6 @@ add_executable(${PROJECT_NAME}
 	utils/cpucounter.cpp
 	utils/MidiReceiver.cpp
 	utils/MidiParser.cpp
-	utils/AudioDevice.cpp
 )
 
 if(NOT CMAKE_SYSTEM_PROCESSOR MATCHES armv7l)
