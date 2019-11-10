@@ -77,7 +77,7 @@ public:
 
 	void noteOff(stk::StkFloat note, stk::StkFloat vel)
 	{
-		m_modifiers.noteOff();
+		m_modifiers.noteOff(note, vel);
 	}
 
 	void process()

@@ -219,7 +219,7 @@ void updateFilter(VAStateVariableFilter *filter)
     filter->setRes(flt_mod_matrix.resonance * 0.99);
 }
 
-#define DEBUG_MODIFIERS false
+#define DEBUG_MODIFIERS true
 struct MyCout
  {
    std::stringstream s;
@@ -451,6 +451,10 @@ const stk::StkFloat divider = 1. / 127.;
 
 void noteOn(stk::StkFloat note, stk::StkFloat vel)
 {
+#if DEBUG_MODIFIERS
+    std::cout << "noteOn: " << note << ", velocity: " << vel << "\n";
+#endif
+
 	for(auto &osc_ : osc_m )
 	{
 		osc_.freq = note;
@@ -461,8 +465,11 @@ void noteOn(stk::StkFloat note, stk::StkFloat vel)
 		ads.gate(1);
 }
 
-void noteOff()
+void noteOff(stk::StkFloat note, stk::StkFloat vel)
 {
+#if DEBUG_MODIFIERS
+    std::cout << "noteOff: " << note << ", velocity: " << vel << "\n";
+#endif
 	for(auto &ads : env)
 		ads.gate(0);
 }
