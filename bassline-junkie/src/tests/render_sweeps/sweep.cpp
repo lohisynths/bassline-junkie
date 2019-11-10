@@ -55,11 +55,11 @@ double tick_PolyBleep(double osc_freq) {
 void render_sweep(double (*f)(double), AudioDeviceRt<buffer_size> &device) {
     bool play = true;
     double freq = 12;
-    std::array<stk::StkFloat, buffer_size> output;
+    std::array<double, buffer_size> output;
     while (play) {
         for (int i = 0; i < buffer_size; i++) {
             freq += 0.00005;
-            double osc_freq = (stk::StkFloat) 440.0 * pow(2.0, (freq - 69.0) / 12.0);
+            double osc_freq = (double) 440.0 * pow(2.0, (freq - 69.0) / 12.0);
             if (osc_freq > 20000.) {
                 play = false;
             }
@@ -84,11 +84,11 @@ void render_sweep(double (*f)(double)) {
 
     bool play = true;
     double freq = 12;
-    std::array<stk::StkFloat, buffer_size> output;
+    std::array<double, buffer_size> output;
     while (play) {
         for (int i = 0; i < buffer_size; i++) {
             freq += 0.00005;
-            double osc_freq = (stk::StkFloat) 440.0 * pow(2.0, (freq - 69.0) / 12.0);
+            double osc_freq = (double) 440.0 * pow(2.0, (freq - 69.0) / 12.0);
             if (osc_freq > 20000.) {
                 play = false;
             }

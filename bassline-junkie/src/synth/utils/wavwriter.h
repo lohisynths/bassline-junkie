@@ -9,7 +9,6 @@
 #define WAVWRITER_H_
 
 #include <array>
-#include "FileWvOut.h"
 
 class wav_writer
 {
@@ -17,7 +16,7 @@ public:
 	wav_writer();
 	virtual ~wav_writer();
 
-	void tick(std::array<stk::StkFloat, 512> &output);
+	void tick(std::array<double, 512> &output);
 
 private:
 	stk::FileWvOut wave_output;

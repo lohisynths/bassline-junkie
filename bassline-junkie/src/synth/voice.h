@@ -9,14 +9,10 @@
 #define SYNTH_H_
 
 #include <array>
-#include <BlitSaw.h>
-#include <BlitSquare.h>
-#include <SineWave.h>
 
 #include "dsp/ADSR/ADSR.h"
 #include "dsp/Lfo.h"
 #include "dsp/MoogFilter.h"
-#include "dsp/Osc.h"
 
 #include "dsp/VAStateVariableFilter.h"
 
@@ -25,9 +21,9 @@
 #include "utils/MidiReceiver.h"
 #include "utils/clipping.h"
 
-const stk::StkFloat divider = 1. / 127.;
-const stk::StkFloat env_range_in_notes = 12 * 4;
-const stk::StkFloat lfo_range_in_notes = 12 * 2;
+const double divider = 1. / 127.;
+const double env_range_in_notes = 12 * 4;
+const double lfo_range_in_notes = 12 * 2;
 
 template<size_t buffer_size>
 class Voice
@@ -57,17 +53,17 @@ public:
 
 	~Voice(){};
 
-	std::array<stk::StkFloat, buffer_size>& get_array()
+	std::array<double, buffer_size>& get_array()
 	{
 		return array;
 	}
 
-	void cc(stk::StkFloat param, stk::StkFloat val)
+	void cc(double param, double val)
 	{
 		m_modifiers.controlCange(param, val);
 	}
 
-	void noteOn(stk::StkFloat note, stk::StkFloat vel)
+	void noteOn(double note, double vel)
 	{
 		m_modifiers.noteOn(note, vel);
         for (auto &lfo : m_modifiers.lfo)  {
@@ -75,7 +71,7 @@ public:
         }
 	}
 
-	void noteOff(stk::StkFloat note, stk::StkFloat vel)
+	void noteOff(double note, double vel)
 	{
 		m_modifiers.noteOff(note, vel);
 	}
@@ -104,18 +100,18 @@ public:
 			m_modifiers.updateFilter(&filter);
 			///////////////////////////// FILTERS
 			//debug_double output;
-            StkFloat output;
+            double output;
 			output = 0;
 
 			for(auto &wave : osc) {
 				output = output + wave.tick() * 0.3;
 			}
 
-            output *= m_modifiers.amp_mod_matrix.velocity; // velocity
-            output *= m_modifiers.env[2].getOutput();
-			output = filter.process( output );
-
-			output *= m_modifiers.master_vol;
+//            output *= m_modifiers.amp_mod_matrix.velocity; // velocity
+//            output *= m_modifiers.env[2].getOutput();
+//			output = filter.process( output );
+//
+//			output *= m_modifiers.master_vol;
 			sample = output;
 			//writer.process(adsr_tick);
 		}
@@ -127,7 +123,7 @@ private:
 	VAStateVariableFilter filter;
 	std::array<Osc, 3> osc;
 	modifiers m_modifiers;
-	std::array<stk::StkFloat, buffer_size> array;
+	std::array<double, buffer_size> array;
 
 
 };

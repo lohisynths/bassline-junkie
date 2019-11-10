@@ -10,11 +10,8 @@
 #include <algorithm>
 
 #include "utils/AudioDevice.h"
-#include "utils/AudioDeviceRt.h"
 #include "utils/cpucounter.h"
-#include "utils/wavwriter.h"
 #include "utils/concurency_helpers.h"
-#include <RtWvOut.h>
 #include "engines/engine.h"
 
 int main()
@@ -25,11 +22,8 @@ int main()
 	stick_this_thread_to_core(1);
 	set_pthread_params();
 
-	Stk::setSampleRate( 44100.0 );
-	Stk::showWarnings( true );
 
-	AudioDeviceRt<buffer_size> device;
-	
+	AudioDevice<buffer_size> device;
 	//wav_writer wav_out;
 	cpu_counter licznik;
 

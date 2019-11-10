@@ -12,9 +12,9 @@
 // (slightly modified)
 // http://www.kvraudio.com/forum/viewtopic.php?t=375517
 // http://www.martin-finke.de/blog/articles/audio-plugins-018-polyblep-oscillator/
-stk::StkFloat PolyBLEPOscillator::poly_blep(stk::StkFloat t)
+double PolyBLEPOscillator::poly_blep(double t)
 {
-	stk::StkFloat dt = mPhaseIncrement / twoPI;
+	double dt = mPhaseIncrement / twoPI;
     // 0 <= t < 1
     if (t < dt) {
         t /= dt;
@@ -29,13 +29,13 @@ stk::StkFloat PolyBLEPOscillator::poly_blep(stk::StkFloat t)
     else return 0.0;
 }
 
-stk::StkFloat PolyBLEPOscillator::getSample() {
+double PolyBLEPOscillator::getSample() {
 	return outputOutput;
 }
 
-stk::StkFloat PolyBLEPOscillator::nextSample() {
-	stk::StkFloat value = 0.0;
-	stk::StkFloat t = mPhase / twoPI;
+double PolyBLEPOscillator::nextSample() {
+	double value = 0.0;
+	double t = mPhase / twoPI;
     
     if (mOscillatorMode == OSCILLATOR_MODE_SINE) {
         value = naiveWaveformForMode(OSCILLATOR_MODE_SINE);
@@ -46,7 +46,7 @@ stk::StkFloat PolyBLEPOscillator::nextSample() {
     } else {
         value = naiveWaveformForMode(OSCILLATOR_MODE_SQUARE);
         value += poly_blep(t);
-        value -= poly_blep(stk::math::fmod(t + 0.5, 1.0));
+        value -= poly_blep(fmod(t + 0.5, 1.0));
         if (mOscillatorMode == OSCILLATOR_MODE_TRIANGLE) {
             // Leaky integrator: y[n] = A * x[n] + (1 - A) * y[n-1]
             value = mPhaseIncrement * value + (1 - mPhaseIncrement) * lastOutput;

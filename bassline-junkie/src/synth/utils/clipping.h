@@ -18,10 +18,10 @@ inline void check_clipping(double input, const char* function, int line)
 	else if(input < -1)
 		std::cout << function << ":" << line << "\tCLIP < -1\n";
 }
-inline void check_clipping(std::array<stk::StkFloat, 512> input, const char* function, int line)
+inline void check_clipping(std::array<double, 512> input, const char* function, int line)
 {
 	std::for_each(std::begin(input), std::end(input),
-	[&] (stk::StkFloat &element)
+	[&] (double &element)
 	{
 		check_clipping(element, function, line);
 	});
@@ -29,37 +29,37 @@ inline void check_clipping(std::array<stk::StkFloat, 512> input, const char* fun
 
 struct debug_double
 {
-    operator stk::StkFloat()
+    operator double()
     {
 		check_clipping(data, __FILE__, __LINE__);
     	return data;
     }
 
-	void operator<<(stk::StkFloat in)
+	void operator<<(double in)
 	{
 		data=in;
 		check_clipping(data, __FILE__, __LINE__);
 	}
-	 stk::StkFloat operator=(stk::StkFloat in)
+	 double operator=(double in)
 	{
 		data=in;
 		check_clipping(data, __FILE__, __LINE__);
 		return data;
 	}
 
-	void operator+=(stk::StkFloat in)
+	void operator+=(double in)
 	{
 		data+=in;
 		check_clipping(data, __FILE__, __LINE__);
 	}
 
-	void operator*=(stk::StkFloat in)
+	void operator*=(double in)
 	{
 		data*=in;
 		check_clipping(data, __FILE__, __LINE__);
 	}
 
-	stk::StkFloat data;
+	double data;
 };
 
 

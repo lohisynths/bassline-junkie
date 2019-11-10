@@ -19,21 +19,20 @@
 #ifndef ADRS_h
 #define ADRS_h
 
-#include <Stk.h>
 class ADSR {
 public:
 	ADSR(void);
 	~ADSR(void);
-	stk::StkFloat process(void);
-    stk::StkFloat getOutput(void);
+	double process(void);
+    double getOutput(void);
     int getState(void);
 	void gate(int on);
-    void setAttackRate(stk::StkFloat rate);
-    void setDecayRate(stk::StkFloat rate);
-    void setReleaseRate(stk::StkFloat rate);
-	void setSustainLevel(stk::StkFloat level);
-    void setTargetRatioA(stk::StkFloat targetRatio);
-    void setTargetRatioDR(stk::StkFloat targetRatio);
+    void setAttackRate(double rate);
+    void setDecayRate(double rate);
+    void setReleaseRate(double rate);
+	void setSustainLevel(double level);
+    void setTargetRatioA(double targetRatio);
+    void setTargetRatioDR(double targetRatio);
     void reset(void);
     void setLoopOn(bool enabled) {
         loop = enabled;
@@ -51,28 +50,28 @@ public:
     };
 
 protected:
-    stk::StkFloat sample_rate;
-	stk::StkFloat max_time;
+    double sample_rate;
+	double max_time;
 	int state;
-	stk::StkFloat output;
-	stk::StkFloat attackRate;
-	stk::StkFloat decayRate;
-	stk::StkFloat releaseRate;
-	stk::StkFloat attackCoef;
-	stk::StkFloat decayCoef;
-	stk::StkFloat releaseCoef;
-	stk::StkFloat sustainLevel;
-    stk::StkFloat targetRatioA;
-    stk::StkFloat targetRatioDR;
-    stk::StkFloat attackBase;
-    stk::StkFloat decayBase;
-    stk::StkFloat releaseBase;
+	double output;
+	double attackRate;
+	double decayRate;
+	double releaseRate;
+	double attackCoef;
+	double decayCoef;
+	double releaseCoef;
+	double sustainLevel;
+    double targetRatioA;
+    double targetRatioDR;
+    double attackBase;
+    double decayBase;
+    double releaseBase;
     bool loop;
  
-    stk::StkFloat calcCoef(stk::StkFloat rate, stk::StkFloat targetRatio);
+    double calcCoef(double rate, double targetRatio);
 };
 
-inline stk::StkFloat ADSR::process() {
+inline double ADSR::process() {
 	switch (state) {
         case env_idle:
             break;
@@ -132,7 +131,7 @@ inline void ADSR::reset() {
     output = 0.0;
 }
 
-inline stk::StkFloat ADSR::getOutput() {
+inline double ADSR::getOutput() {
 	return output;
 }
 

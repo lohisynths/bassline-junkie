@@ -6,10 +6,11 @@
  */
 
 #include "Lfo.h"
+#include <iostream>
 
 Lfo::Lfo()
 {
-	osc.setSampleRate(stk::Stk::sampleRate());
+	osc.setSampleRate(48000);
 	osc.setMode(Oscillator::OSCILLATOR_MODE_SINE);
 	osc.setFrequency(1.);
 }
@@ -31,7 +32,7 @@ void Lfo::setShape(int shape)
 }
 
 
-void Lfo::setFrequency(stk::StkFloat freq)
+void Lfo::setFrequency(double freq)
 {
 	osc.setFrequency(static_cast<float>(freq));
 }
@@ -42,13 +43,13 @@ void Lfo::noteOn() {
     }
 }
 
-stk::StkFloat Lfo::tick()
+double Lfo::tick()
 {
 	auto output = osc.nextSample();
 	return output;
 }
 
-stk::StkFloat Lfo::get_value()
+double Lfo::get_value()
 {
 	return osc.getSample();
 }

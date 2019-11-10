@@ -8,7 +8,7 @@
 
 #include "Oscillator.h"
 
-stk::StkFloat Oscillator::mSampleRate = 48000.0;
+double Oscillator::mSampleRate = 48000.0;
 
 Oscillator::~Oscillator(){};
 
@@ -17,22 +17,22 @@ void Oscillator::setMode(OscillatorMode mode) {
     mOscillatorMode = mode;
 }
 
-void Oscillator::setFrequency(stk::StkFloat frequency) {
+void Oscillator::setFrequency(double frequency) {
     mFrequency = frequency;
     updateIncrement();
 }
 
-void Oscillator::setSampleRate(stk::StkFloat sampleRate) {
+void Oscillator::setSampleRate(double sampleRate) {
     mSampleRate = sampleRate;
     updateIncrement();
 }
 
-void Oscillator::generate(stk::StkFloat* buffer, int nFrames) {
-    const stk::StkFloat twoPI = 2 * mPI;
+void Oscillator::generate(double* buffer, int nFrames) {
+    const double twoPI = 2 * mPI;
     switch (mOscillatorMode) {
         case OSCILLATOR_MODE_SINE:
             for (int i = 0; i < nFrames; i++) {
-                buffer[i] = stk::math::sin(mPhase);
+                buffer[i] = sin(mPhase);
                 mPhase += mPhaseIncrement;
                 while (mPhase >= twoPI) {
                     mPhase -= twoPI;
@@ -63,8 +63,8 @@ void Oscillator::generate(stk::StkFloat* buffer, int nFrames) {
             break;
         case OSCILLATOR_MODE_TRIANGLE:
             for (int i = 0; i < nFrames; i++) {
-            	stk::StkFloat value = -1.0 + (2.0 * mPhase / twoPI);
-                buffer[i] = 2.0 * (stk::math::fabs(value) - 0.5);
+            	double value = -1.0 + (2.0 * mPhase / twoPI);
+                buffer[i] = 2.0 * (fabs(value) - 0.5);
                 mPhase += mPhaseIncrement;
                 while (mPhase >= twoPI) {
                     mPhase -= twoPI;
@@ -78,8 +78,8 @@ void Oscillator::generate(stk::StkFloat* buffer, int nFrames) {
     }
 }
 
-stk::StkFloat Oscillator::nextSample() {
-	stk::StkFloat value = naiveWaveformForMode(mOscillatorMode);
+double Oscillator::nextSample() {
+	double value = naiveWaveformForMode(mOscillatorMode);
     mPhase += mPhaseIncrement;
     while (mPhase >= twoPI) {
         mPhase -= twoPI;
@@ -87,7 +87,7 @@ stk::StkFloat Oscillator::nextSample() {
     return value;
 }
 
-void Oscillator::setPitchMod(stk::StkFloat amount) {
+void Oscillator::setPitchMod(double amount) {
     mPitchMod = amount;
     updateIncrement();
 }
@@ -95,19 +95,19 @@ void Oscillator::setPitchMod(stk::StkFloat amount) {
 
 
 void Oscillator::updateIncrement() {
-	stk::StkFloat pitchModAsFrequency = stk::math::pow(2.0, stk::math::fabs(mPitchMod) * 14.0) - 1;
+	double pitchModAsFrequency = pow(2.0, fabs(mPitchMod) * 14.0) - 1;
     if (mPitchMod < 0) {
         pitchModAsFrequency = -pitchModAsFrequency;
     }
-    stk::StkFloat calculatedFrequency = fmin(fmax(mFrequency + pitchModAsFrequency, 0), mSampleRate/2.0);
+    double calculatedFrequency = fmin(fmax(mFrequency + pitchModAsFrequency, 0), mSampleRate/2.0);
     mPhaseIncrement = calculatedFrequency * 2 * mPI / mSampleRate;
 }
 
-stk::StkFloat Oscillator::naiveWaveformForMode(OscillatorMode mode) {
-	stk::StkFloat value=0;
+double Oscillator::naiveWaveformForMode(OscillatorMode mode) {
+	double value=0;
     switch (mode) {
         case OSCILLATOR_MODE_SINE:
-            value = stk::math::sin(static_cast<stk::StkFloat>(mPhase));
+            value = sin(static_cast<double>(mPhase));
             break;
         case OSCILLATOR_MODE_SAW:
             value = (2.0 * mPhase / twoPI) - 1.0;
@@ -121,7 +121,7 @@ stk::StkFloat Oscillator::naiveWaveformForMode(OscillatorMode mode) {
             break;
         case OSCILLATOR_MODE_TRIANGLE:
             value = -1.0 + (2.0 * mPhase / twoPI);
-            value = 2.0 * (stk::math::fabs(value) - 0.5);
+            value = 2.0 * (fabs(value) - 0.5);
             break;
         default:
             break;

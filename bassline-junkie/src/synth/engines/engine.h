@@ -8,7 +8,6 @@
 
 #include "../utils/SerialReceiver.h"
 #include "../utils/MidiReceiver.h"
-#include "../utils/MidiReceiverRt.h"
 #include "../config.h"
 #include "../voice.h"
 #include "thread.h"
@@ -19,11 +18,10 @@ class Engine {
 
 private:
 	std::array<thread<buffer_size>, max_cores> cores;
-	std::array<stk::StkFloat, buffer_size> output_float;
+	std::array<double, buffer_size> output_float;
 	std::array<Voice<buffer_size>, voices_count> m_voices;
 
 	SerialReceiver messager;
-	//MidiReceiverRt messager;
 	std::vector<std::pair<MidiMessage, int>> notes;
 	std::vector<int> free_voices;
 
@@ -48,7 +46,7 @@ public:
 		}
 	}
 
-	std::array<stk::StkFloat, buffer_size> &process()
+	std::array<double, buffer_size> &process()
 	{
 		for(auto &core : cores)
 			core.request();
@@ -66,7 +64,7 @@ public:
 		for (auto &voice : m_voices)
 		{
 			auto &voice_data = voice.get_array();
-			auto ciabej = [](stk::StkFloat &output, stk::StkFloat &input){ output += input; return output;};
+			auto ciabej = [](double &output, double &input){ output += input; return output;};
 			std::transform(output_float.begin(), output_float.end(), voice_data.begin(),output_float.begin(),ciabej);
 		}
 		return output_float;

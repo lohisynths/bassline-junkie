@@ -21,7 +21,7 @@ wav_writer::~wav_writer()
 
 }
 
-void wav_writer::tick(std::array<stk::StkFloat, 512> &output)
+void wav_writer::tick(std::array<double, 512> &output)
 {
 	for (auto &sample : output)
 	{

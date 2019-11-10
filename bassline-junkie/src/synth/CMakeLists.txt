@@ -16,8 +16,6 @@ add_executable(${PROJECT_NAME}
 	dsp/PolyBLEPOscillator/Oscillator.cpp
 	dsp/MoogFilter.cpp
 	dsp/ADSR/ADSR.cpp
-	utils/wavwriter.cpp
-	utils/MidiReceiverRt.cpp
 	utils/array_writer.cpp
 	utils/SerialReceiver.cpp
 	utils/cpucounter.cpp
@@ -30,7 +28,6 @@ if(NOT CMAKE_SYSTEM_PROCESSOR MATCHES armv7l)
 endif()
 
 target_link_libraries(${PROJECT_NAME}
-    lohi::stk
     asound
     pthread
     ${ADITIONAL_LIBS}

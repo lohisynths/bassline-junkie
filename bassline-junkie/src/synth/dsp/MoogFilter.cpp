@@ -2,11 +2,10 @@
 from http://www.musicdsp.org/showone.php?id=24 */
 
 #include "MoogFilter.h"
-#include "Stk.h"
 
 MoogFilter::MoogFilter()
 {
-	fs=1./stk::Stk::sampleRate();
+	fs=1./48000;
 	init();
 }
 MoogFilter::~MoogFilter() { }
