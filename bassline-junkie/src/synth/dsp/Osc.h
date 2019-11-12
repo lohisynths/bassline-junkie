@@ -32,7 +32,7 @@ private:
 		double sqr_level;
 		double rnd_level;
 	};
-	waves_level m_osc_ctrl;
+	waves_level m_osc_ctrl = {};
 
 	PolyBLEPOscillator m_sine;
 	PolyBLEPOscillator m_saw;

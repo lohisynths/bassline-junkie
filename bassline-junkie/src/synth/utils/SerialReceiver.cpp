@@ -62,7 +62,7 @@ void SerialReceiver::worker_thread()
 			while(n--)
 			{
 				uint8_t datadata = (uint8_t)(*tmp_buff);
-				//std::cout << "pushed  " << std::hex << (uint16_t)datadata << std::dec << std::endl;
+				std::cout << "pushed  " << std::hex << (uint16_t)datadata << std::dec << std::endl;
 				vector_char.push_back(datadata);
 				tmp_buff++;
 			}
