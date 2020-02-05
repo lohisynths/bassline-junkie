@@ -42,6 +42,8 @@
 #define MATRIX_MOD_OFFSET  96
 #define MATIRX_MOD_PARAMS_COUNT  6
 
+#define MASTER_VOL 95
+
 #define MATRIX_MOD_MATRIX_ITEMS ( (OSC_NUMBER * OSC_MOD_COUNT) + FLT_MOD_COUNT )
 
 const char *MOD_SRC_NAMES[] = {
@@ -392,7 +394,7 @@ void controlCange(uint8_t param, uint8_t value)
 	}
 
 
-    if(param == 95 ) {
+    if(param == MASTER_VOL ) {
         MyCout(voice_index) << " vol:\t\t" << val << "\n";
         this->master_vol = val*divider;
     }
