@@ -24,7 +24,7 @@ SerialReceiver::SerialReceiver() : running(true)
 		return;
 	}
 
-	set_interface_attribs(fd, B460800, 0); // set speed to 115,200 bps, 8n1 (no parity)
+    set_interface_attribs(fd, B1000000, 0); // set speed to 1000000 bps, 8n1 (no parity)
 	set_blocking(fd, 0);                // set no blocking
 
 	start();
