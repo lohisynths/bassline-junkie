@@ -16,6 +16,7 @@
 
 #include "Stk.h"
 #include "RtWvOut.h"
+#include "../config.h"
 
 
 template<size_t buffer_size>
@@ -35,10 +36,15 @@ public:
 	{
 		for(auto &it : output)
 		{
+		    if (!g_play)
+		    {
+		    	dac->stop();
+		    	return;
+		    }
 		    try {
 		      dac->tick( it );
 		     }
-		    catch ( stk::StkError & ) {
+		     catch ( stk::StkError & ) {
 		    	std::cout << "errrorrorororororoo n''n'n'n'\n\\n\n\n\n";
 		    }
 		}
@@ -49,9 +55,11 @@ public:
         dac->tick(0);
     }
 
-    void close() {
-        dac->stop();
-    }
+	void close() {
+		if (dac) {
+			dac->stop();
+		}
+	}
 
 private:
 	void setup()

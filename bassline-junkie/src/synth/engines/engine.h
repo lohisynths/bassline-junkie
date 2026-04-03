@@ -50,10 +50,22 @@ public:
 
 	std::array<stk::StkFloat, buffer_size> &process()
 	{
+		if (!g_play)
+		{
+			std::fill(std::begin(output_float), std::end(output_float), 0);
+			return output_float;
+		}
+
 		for(auto &core : cores)
 			core.request();
 		for(auto &core : cores)
 			core.wait();
+
+		if (!g_play)
+		{
+			std::fill(std::begin(output_float), std::end(output_float), 0);
+			return output_float;
+		}
 
 		for(int i=0;i<100;i++)
 		{
