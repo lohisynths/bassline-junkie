@@ -9,6 +9,7 @@
 #define SRC_SYNTH_UTILS_ARRAY_WRITER_H_
 
 #include <array>
+#include <cstddef>
 
 class ArrayWriter {
 public:
