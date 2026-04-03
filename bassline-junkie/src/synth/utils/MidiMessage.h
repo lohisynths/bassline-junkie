@@ -1,6 +1,7 @@
 #ifndef MIDIMESSAGE_H_
 #define MIDIMESSAGE_H_
 #include <iostream>
+#include <cstdint>
 
 class MidiMessage
 {
