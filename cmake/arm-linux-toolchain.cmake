@@ -104,6 +104,6 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-psabi")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-psabi")
 
 # This toolchain file can be used both inside and outside Buildroot.
-set(CMAKE_C_COMPILER "${RELOCATED_HOST_DIR}/bin/arm-linux-gnueabihf-gcc")
-set(CMAKE_CXX_COMPILER "${RELOCATED_HOST_DIR}/bin/arm-linux-gnueabihf-g++")
+set(CMAKE_C_COMPILER "${RELOCATED_HOST_DIR}/bin/arm-linux-gcc")
+set(CMAKE_CXX_COMPILER "${RELOCATED_HOST_DIR}/bin/arm-linux-g++")
 
