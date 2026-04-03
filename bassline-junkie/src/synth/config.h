@@ -8,13 +8,18 @@
 #ifndef SRC_CONFIG_H_
 #define SRC_CONFIG_H_
 
+#include <signal.h>
+#include <unistd.h>
 
-static bool play = true;
+static volatile sig_atomic_t g_play = 1;
 
 static void finish(int ignore)
 {
-	printf("finish finish finish finish finish finish\n");
-	play = false;
+	(void)ignore;
+	static const char msg[] = "finish finish finish finish finish finish\n";
+	write(STDERR_FILENO, msg, sizeof(msg) - 1);
+	g_play = 0;
+	_exit(0);
 }
 
 const size_t overall_voices_count = 8;

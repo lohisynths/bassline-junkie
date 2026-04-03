@@ -7,6 +7,7 @@
 //============================================================================
 #include <signal.h>
 #include <sys/mman.h>
+#include <cstdio>
 #include <algorithm>
 
 #include "utils/AudioDevice.h"
@@ -19,25 +20,28 @@
 
 int main()
 {
-	mlockall(MCL_FUTURE | MCL_CURRENT);
-
 	signal(SIGINT, finish);
-	stick_this_thread_to_core(1);
-	set_pthread_params();
 
 	Stk::setSampleRate( 44100.0 );
 	Stk::showWarnings( true );
 
 	AudioDeviceRt<buffer_size> device;
-	
-	//wav_writer wav_out;
 	cpu_counter licznik;
 
 	Engine<overall_voices_count, buffer_size> engine;
 
-	play = true;
+	// Lock memory only after the audio/worker threads are alive.
+	// MCL_FUTURE can make thread creation fail on constrained Pi setups.
+	if (mlockall(MCL_CURRENT) != 0) {
+		perror("mlockall");
+	}
 
-	while ( play )
+	stick_this_thread_to_core(1);
+	set_pthread_params();
+
+	g_play = 1;
+
+	while ( g_play )
 	{
 
 		// start reporting time
@@ -45,6 +49,10 @@ int main()
 		{
 		// process data and send buffer to soundcard
 		auto &output = engine.process();
+		if (!g_play)
+		{
+			break;
+		}
 		device.play(output);
 		// stop time reporting
 		// write buffer to file
@@ -54,5 +62,6 @@ int main()
 		// if(!licznik.update())
 			;// play=false;
 	}
+	device.close();
 	return 0;
 }

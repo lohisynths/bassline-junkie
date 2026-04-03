@@ -11,6 +11,7 @@
 #include <vector>
 #include <thread>
 #include <condition_variable>
+#include <chrono>
 #include "../voice.h"
 #include "../config.h"
 #include "../utils/concurency_helpers.h"
@@ -41,12 +42,22 @@ public:
 		std::cout << __PRETTY_FUNCTION__ << " on cpu " << +m_cpu << std::endl;
 		stick_this_thread_to_core(m_cpu);
 		// Wait until main() sends data
-		while (1)
+		while (g_play)
 		{
 			std::unique_lock<std::mutex> lk(m);
 
-			cv.wait(lk, [this]
-			{	return ready;});
+			cv.wait_for(lk, std::chrono::milliseconds(10), [this]
+			{	return ready || !g_play;});
+
+			if (!g_play)
+			{
+				break;
+			}
+
+			if (!ready)
+			{
+				continue;
+			}
 
 			for (auto &voice : m_voices)
 			{
@@ -66,6 +77,10 @@ public:
 
 	void request()
 	{
+		if (!g_play)
+		{
+			return;
+		}
 		std::lock_guard<std::mutex> lk(m);
 		ready = true;
 		processed = false;
@@ -74,8 +89,10 @@ public:
 	void wait()
 	{
 		std::unique_lock<std::mutex> lk(m);
-		cv.wait(lk, [this]
-		{	return processed;});
+		while (g_play && !processed)
+		{
+			cv.wait_for(lk, std::chrono::milliseconds(10));
+		}
 	}
 
 	void add_voice(Voice<buffer_size>* voice)
