@@ -56,6 +56,11 @@ public:
 			return output_float;
 		}
 
+		for(int i=0;i<100;i++)
+		{
+			updateMessages();
+		}
+
 		for(auto &core : cores)
 			core.request();
 		for(auto &core : cores)
@@ -65,11 +70,6 @@ public:
 		{
 			std::fill(std::begin(output_float), std::end(output_float), 0);
 			return output_float;
-		}
-
-		for(int i=0;i<100;i++)
-		{
-			updateMessages();
 		}
 
 		// reset buffer
