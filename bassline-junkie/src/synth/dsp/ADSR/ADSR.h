@@ -66,6 +66,7 @@ protected:
     stk::StkFloat targetRatioDR;
     stk::StkFloat attackBase;
     stk::StkFloat decayBase;
+    stk::StkFloat decayBaseLoop;
     stk::StkFloat releaseBase;
     bool loop;
  
@@ -84,14 +85,15 @@ inline stk::StkFloat ADSR::process() {
             }
             break;
         case env_decay:
-            output = decayBase + output * decayCoef;
+            output = (loop ? decayBaseLoop : decayBase) + output * decayCoef;
             if(!loop) {
                 if (output <= sustainLevel) {
                     output = sustainLevel;
                     state = env_sustain;
                 }
             } else {
-                if (output <= sustainLevel) {
+                if (output <= 0.0) {
+                    output = 0.0;
                     state = env_attack;
                 }
             }

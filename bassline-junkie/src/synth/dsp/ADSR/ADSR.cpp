@@ -48,6 +48,7 @@ void ADSR::setDecayRate(stk::StkFloat rate) {
     decayRate = rate;
     decayCoef = calcCoef(rate, targetRatioDR);
     decayBase = (sustainLevel - targetRatioDR) * (1.0 - decayCoef);
+    decayBaseLoop = -targetRatioDR * (1.0 - decayCoef);
 }
 
 void ADSR::setReleaseRate(stk::StkFloat rate) {
@@ -81,5 +82,6 @@ void ADSR::setTargetRatioDR(stk::StkFloat targetRatio) {
     decayCoef = calcCoef(decayRate, targetRatioDR);
     releaseCoef = calcCoef(releaseRate, targetRatioDR);
     decayBase = (sustainLevel - targetRatioDR) * (1.0 - decayCoef);
+    decayBaseLoop = -targetRatioDR * (1.0 - decayCoef);
     releaseBase = -targetRatioDR * (1.0 - releaseCoef);
 }
