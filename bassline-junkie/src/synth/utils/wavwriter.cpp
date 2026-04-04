@@ -12,7 +12,7 @@ wav_writer::wav_writer()
 	wave_output.openFile("bassline.wav", 1, stk::FileWrite::FILE_WAV,
 			stk::Stk::STK_FLOAT64);
 	wave_output.printErrors(true);
-	output_frames.resize(512, 1);
+	output_frames.resize(buffer_size, 1);
 
 }
 
@@ -21,7 +21,7 @@ wav_writer::~wav_writer()
 
 }
 
-void wav_writer::tick(std::array<stk::StkFloat, 512> &output)
+void wav_writer::tick(std::array<stk::StkFloat, buffer_size> &output)
 {
 	for (auto &sample : output)
 	{
