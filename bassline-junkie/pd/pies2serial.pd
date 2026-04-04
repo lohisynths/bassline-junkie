@@ -283,7 +283,7 @@
 -1 -1 0 1;
 #X text 557 635 resonance;
 #X obj 884 484 send notes;
-#X obj 647 58 36;
+#X obj 647 58 37;
 #X obj 415 217 ctlout, f 19;
 #X obj 19 558 send notes;
 #X obj 155 759 s output;
