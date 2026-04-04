@@ -3,6 +3,7 @@
 #include <thread>
 #include <mutex>
 #include <condition_variable>
+#include <chrono>
 #include <vector>
 #include <array>
 
@@ -18,6 +19,18 @@ template<size_t voices_count,size_t buffer_size>
 class Engine {
 
 private:
+	static constexpr int preset_sync_retry_interval_ms = 500;
+	static constexpr uint8_t preset_dump_request_channel = 15;
+	static constexpr uint8_t preset_dump_request_control = 127;
+	static constexpr uint8_t preset_dump_request_value = 127;
+	static constexpr size_t expected_preset_sync_cc_count =
+			(OSC_NUMBER * OSC_PARAMS) +
+			(ADSR_NUMBER * ADSR_PARAMS) +
+			(FLT_NUMBER * FLT_PARAMS) +
+			(LFO_NUMBER * LFO_PARAMS) +
+			(MATRIX_MOD_MATRIX_ITEMS * MATIRX_MOD_PARAMS_COUNT) +
+			1U; // VOL adds one extra master-volume CC to the preset dump.
+
 	std::array<thread<buffer_size>, max_cores> cores;
 	std::array<stk::StkFloat, buffer_size> output_float;
 	std::array<Voice<buffer_size>, voices_count> m_voices;
@@ -26,6 +39,10 @@ private:
 	//MidiReceiverRt messager;
 	std::vector<std::pair<MidiMessage, int>> notes;
 	std::vector<int> free_voices;
+	bool preset_sync_complete_ = false;
+	size_t preset_sync_cc_count_ = 0;
+	size_t preset_sync_request_count_ = 0;
+	std::chrono::steady_clock::time_point last_preset_sync_request_at_ = std::chrono::steady_clock::time_point::min();
 
 public:
 	Engine() {
@@ -55,6 +72,8 @@ public:
 			std::fill(std::begin(output_float), std::end(output_float), 0);
 			return output_float;
 		}
+
+		maybe_request_preset_dump_();
 
 		for(int i=0;i<100;i++)
 		{
@@ -155,6 +174,16 @@ public:
 				}
 				case MidiMessage::Type::CC:
 				{
+					if (!preset_sync_complete_) {
+						++preset_sync_cc_count_;
+						if (preset_sync_cc_count_ >= expected_preset_sync_cc_count) {
+							preset_sync_complete_ = true;
+							std::cout << "preset sync complete after "
+							          << preset_sync_request_count_
+							          << " request(s)" << std::endl;
+						}
+					}
+
 					for(auto &voice : m_voices) {
 						if(msg->channel == 2) {
 							voice.cc(msg->m_val_1+96,msg->m_val_2);
@@ -170,5 +199,30 @@ public:
 				};
 			}
 		}
+	}
+
+	void maybe_request_preset_dump_()
+	{
+		if (preset_sync_complete_) {
+			return;
+		}
+
+		const auto now = std::chrono::steady_clock::now();
+		if ((preset_sync_request_count_ != 0U) &&
+		    ((now - last_preset_sync_request_at_) < std::chrono::milliseconds(preset_sync_retry_interval_ms))) {
+			return;
+		}
+
+		const uint8_t request_msg[3] = {
+			static_cast<uint8_t>(0xB0U | preset_dump_request_channel),
+			preset_dump_request_control,
+			preset_dump_request_value,
+		};
+		messager.writeBytes(request_msg, sizeof(request_msg));
+		last_preset_sync_request_at_ = now;
+		++preset_sync_request_count_;
+		preset_sync_cc_count_ = 0U;
+		std::cout << "requesting preset dump via MIDI CC (" << preset_sync_request_count_
+		          << ")" << std::endl;
 	}
 };
