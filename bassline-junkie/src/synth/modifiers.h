@@ -27,9 +27,9 @@
 
 #define FLT_OFFSET  33
 #define FLT_NUMBER  1
-#define FLT_PARAMS 3
+#define FLT_PARAMS 4
 
-#define LFO_OFFSET 36
+#define LFO_OFFSET 37
 #define LFO_NUMBER 3
 #define LFO_PARAMS 3
 
@@ -107,6 +107,8 @@ public:
 	{
 		stk::StkFloat frequency=0;
 		stk::StkFloat resonance=0;
+		// 0..1 amount of keyboard tracking applied in note-space.
+		stk::StkFloat kbtrack=0;
         int type=0;
 	};
 
@@ -115,7 +117,9 @@ public:
 		stk::StkFloat velocity=0;
 	};
 
-    stk::StkFloat master_vol=0;
+	stk::StkFloat master_vol=0;
+	// MIDI note used as the tracking source for the active voice.
+	stk::StkFloat current_note=57;
 
 	std::array<Lfo, 3> lfo;
 	std::array<ADSR, 3> env;
@@ -179,6 +183,7 @@ void updateFilter(MoogFilter *filter)
 	auto tmp = getModVal(FLT_MOD_OFFSET) ;
 
 	flt_freq += tmp * 48;
+	flt_freq += (current_note - 57) * flt_mod_matrix.kbtrack;
 
 
 	flt_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (flt_freq - 57.0) / 12.0 );
@@ -197,6 +202,7 @@ void updateFilter(VAStateVariableFilter *filter)
     auto tmp = getModVal(FLT_MOD_OFFSET) ;
 
     flt_freq += tmp * 48;
+	flt_freq += (current_note - 57) * flt_mod_matrix.kbtrack;
 
 
     flt_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (flt_freq - 57.0) / 12.0 );
@@ -349,13 +355,19 @@ void controlCange(uint8_t param, uint8_t value)
 			break;
 			case 1:
 			{
-			    MyCout(voice_index) << "filter res:\t\t" << val << "\n";
+				MyCout(voice_index) << "filter res:\t\t" << val << "\n";
 				this->flt_mod_matrix.resonance = val * divider;
 			}
 			break;
-            case 2:
+			case 2:
+			{
+				MyCout(voice_index) << "filter kbtrack:\t\t" << val << "\n";
+				this->flt_mod_matrix.kbtrack = val * divider;
+			}
+			break;
+			case 3:
             {
-                MyCout(voice_index) << "filter shape:\t\t" << val << "\n";
+                MyCout(voice_index) << "filter type:\t\t" << val << "\n";
                 this->flt_mod_matrix.type = val;
             }
             break;
@@ -363,7 +375,7 @@ void controlCange(uint8_t param, uint8_t value)
 	}
 
 
-	if(param >= LFO_OFFSET && param <= LFO_OFFSET+(LFO_NUMBER*LFO_PARAMS) )
+	if(param >= LFO_OFFSET && param < LFO_OFFSET+(LFO_NUMBER*LFO_PARAMS) )
 	{
 		uint_fast8_t tmp_param = param - LFO_OFFSET;
 		uint_fast8_t lfo_number = tmp_param / LFO_PARAMS;
@@ -451,6 +463,7 @@ const stk::StkFloat divider = 1. / 127.;
 
 void noteOn(stk::StkFloat note, stk::StkFloat vel)
 {
+	current_note = note;
 	for(auto &osc_ : osc_m )
 	{
 		osc_.freq = note;
