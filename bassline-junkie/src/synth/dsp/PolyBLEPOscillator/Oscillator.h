@@ -36,7 +36,7 @@ public:
     mPhase(0.0) { updateIncrement(); };
     virtual ~Oscillator();
 
-    void reset() { mPhase = 0.0; }
+    virtual void reset() { mPhase = 0.0; }
     void setPitchMod(stk::StkFloat amount);
 protected:
     stk::StkFloat naiveWaveformForMode(OscillatorMode mode);
