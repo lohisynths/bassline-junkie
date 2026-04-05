@@ -58,7 +58,7 @@ private:
 	std::deque<uint8_t> vector_char;
 	std::deque<uint8_t> &getBuffer();
 
-	bool running;
+	std::atomic<bool> running;
 
 	int fd;
 };
