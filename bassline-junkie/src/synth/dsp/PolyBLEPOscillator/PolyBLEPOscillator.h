@@ -16,6 +16,7 @@ public:
     PolyBLEPOscillator() : lastOutput(0.0) { updateIncrement(); };
     stk::StkFloat nextSample();
     stk::StkFloat getSample();
+    void reset() override;
 
 private:
     stk::StkFloat poly_blep(stk::StkFloat t);

@@ -33,6 +33,12 @@ stk::StkFloat PolyBLEPOscillator::getSample() {
 	return outputOutput;
 }
 
+void PolyBLEPOscillator::reset() {
+    Oscillator::reset();
+    lastOutput = 0.0;
+    outputOutput = 0.0;
+}
+
 stk::StkFloat PolyBLEPOscillator::nextSample() {
 	stk::StkFloat value = 0.0;
 	stk::StkFloat t = mPhase / twoPI;
