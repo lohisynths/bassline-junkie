@@ -51,13 +51,12 @@ void SerialReceiver::worker_thread()
 
 	uint8_t buf[256];
 
-	while(running)
+	while(running.load())
 	{
-		std::unique_lock<std::mutex> lock(m, std::defer_lock);
-
 		int n = read(fd, &buf, sizeof(buf));// read up to 100 characters if ready to read
 		if(n>0)
 		{
+			std::lock_guard<std::mutex> lock(m);
 			uint8_t *tmp_buff = buf;
 			while(n--)
 			{
@@ -90,8 +89,7 @@ void SerialReceiver::start()
 
 void SerialReceiver::stop()
 {
-    std::unique_lock<std::mutex> lock(m, std::defer_lock);
-    running = false;
+	running.store(false);
 }
 
 void SerialReceiver::writeBytes(const uint8_t *data, size_t size)
@@ -111,13 +109,19 @@ std::deque<uint8_t> &SerialReceiver::getBuffer()
 MidiMessage* SerialReceiver::getMessage()
 {
 	MidiMessage* output= nullptr;
+	std::deque<uint8_t> local_buffer;
 
-	//TODO: IMPORTANT better parsing
-	// conditional insteadf of lock
-    std::unique_lock<std::mutex> lock(m, std::defer_lock);
+	{
+		std::lock_guard<std::mutex> lock(m);
+		local_buffer.swap(vector_char);
+	}
 
-    midi_parser.midiHandler(getBuffer());
-    output = midi_parser.getMessage();
+	if (!local_buffer.empty())
+	{
+		midi_parser.midiHandler(local_buffer);
+	}
+
+	output = midi_parser.getMessage();
 
 	return output;
 }
