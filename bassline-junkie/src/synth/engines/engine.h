@@ -54,7 +54,9 @@ public:
 			return output_float;
 		}
 
-		for(int i=0;i<100;i++)
+		// Keep MIDI/control handling bounded so preset dumps do not steal the
+		// entire audio budget from the render path.
+		for(int i=0;i<8;i++)
 		{
 			updateMessages();
 		}

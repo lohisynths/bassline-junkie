@@ -56,15 +56,18 @@ void SerialReceiver::worker_thread()
 		int n = read(fd, &buf, sizeof(buf));// read up to 100 characters if ready to read
 		if(n>0)
 		{
-			std::lock_guard<std::mutex> lock(m);
+			std::deque<uint8_t> local_buffer;
 			uint8_t *tmp_buff = buf;
 			while(n--)
 			{
-				uint8_t datadata = (uint8_t)(*tmp_buff);
-				//std::cout << "pushed  " << std::hex << (uint16_t)datadata << std::dec << std::endl;
-				vector_char.push_back(datadata);
+				local_buffer.push_back(static_cast<uint8_t>(*tmp_buff));
 				tmp_buff++;
 			}
+
+			// Parse bytes on the worker thread so the audio thread only pops
+			// already-decoded MIDI messages.
+			std::lock_guard<std::mutex> lock(m);
+			midi_parser.midiHandler(local_buffer);
 		}
 		else if( n == -1)
 		{
@@ -108,22 +111,8 @@ std::deque<uint8_t> &SerialReceiver::getBuffer()
 
 MidiMessage* SerialReceiver::getMessage()
 {
-	MidiMessage* output= nullptr;
-	std::deque<uint8_t> local_buffer;
-
-	{
-		std::lock_guard<std::mutex> lock(m);
-		local_buffer.swap(vector_char);
-	}
-
-	if (!local_buffer.empty())
-	{
-		midi_parser.midiHandler(local_buffer);
-	}
-
-	output = midi_parser.getMessage();
-
-	return output;
+	std::lock_guard<std::mutex> lock(m);
+	return midi_parser.getMessage();
 }
 
 
