@@ -4,16 +4,29 @@
 
 #include "dsp/fast_trig.h"
 #include "dsp/BlitSaw.h"
+#include "dsp/BlitSquare.h"
 #include "dsp/stmlib_polybleep.h"
 #include "dsp/PolyBLEPOscillator/PolyBLEPOscillator.h"
 #include "dsp/PolyBLEP/PolyBLEP.h"
 #include "wav_writer.h"
 
 const size_t buffer_size = 128;
-const size_t sample_rate = 96000;
+const size_t sample_rate = 44100;
 
-double tick_stk_blit(double osc_freq) {
+double tick_stk_blit_saw(double osc_freq) {
     static bassline::dsp::BlitSaw osc;
+    static bool init = false;
+    if (!init) {
+        osc.setSampleRate(sample_rate);
+        init = true;
+    }
+    osc.setFrequency(osc_freq);
+    return osc.tick();
+}
+
+
+double tick_stk_blit_square(double osc_freq) {
+    static bassline::dsp::BlitSquare osc;
     static bool init = false;
     if (!init) {
         osc.setSampleRate(sample_rate);
@@ -82,10 +95,11 @@ void render_sweep(double (*f)(double), std::string name) {
 
 int main() {
     //AudioDeviceRt<buffer_size> device;
-    render_sweep(tick_stk_blit, "tick_stk_blit");
-    render_sweep(tick_stmlib_bleep, "tick_stmlib_bleep");
-    render_sweep(tick_PolyBleep, "tick_PolyBleep");
-    render_sweep(tick_poly_bleep, "tick_poly_bleep");
+    render_sweep(tick_stk_blit_saw, "stk_blit_saw");
+    render_sweep(tick_stk_blit_square, "stk_blit_square");
+    render_sweep(tick_stmlib_bleep, "stmlib_bleep");
+    render_sweep(tick_PolyBleep, "PolyBleep");
+    render_sweep(tick_poly_bleep, "poly_bleep");
 
     return 0;
 }
