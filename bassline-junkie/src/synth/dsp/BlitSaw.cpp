@@ -57,12 +57,18 @@ void BlitSaw::setSampleRate(double sampleRate) {
 
 double BlitSaw::tick() {
     double tmp;
+    const double blend = (nHarmonics_ == 0) ? (0.5 * p_ - bassline::math::floor(0.5 * p_)) : 1.0;
     const double denominator = bassline::math::sin(phase_);
     if (bassline::math::fabs(denominator) <= std::numeric_limits<double>::epsilon()) {
         tmp = a_;
     } else {
         tmp = bassline::math::sin(static_cast<double>(m_) * phase_);
         tmp /= p_ * denominator;
+    }
+
+    if (nHarmonics_ == 0 && m_ > 1 && blend < 1.0) {
+        tmp -= (1.0 - blend) *
+               (2.0 * bassline::math::cos((static_cast<double>(m_) - 1.0) * phase_)) / p_;
     }
 
     tmp += state_ - c2_;
