@@ -19,7 +19,6 @@ static void finish(int ignore)
 	static const char msg[] = "finish finish finish finish finish finish\n";
 	write(STDERR_FILENO, msg, sizeof(msg) - 1);
 	g_play = 0;
-	_exit(0);
 }
 
 const size_t overall_voices_count = 8;
