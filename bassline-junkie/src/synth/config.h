@@ -10,17 +10,17 @@
 
 #include <signal.h>
 #include <unistd.h>
+#include <atomic>
 
-static volatile sig_atomic_t g_play = 1;
+extern std::atomic<sig_atomic_t> g_play;
 
-static void finish(int ignore) __attribute__((unused));
-static void finish(int ignore)
+inline void finish(int ignore)
 {
 	(void)ignore;
 	static const char msg[] = "finish finish finish finish finish finish\n";
 	const ssize_t ignored = write(STDERR_FILENO, msg, sizeof(msg) - 1);
 	(void)ignored;
-	g_play = 0;
+	g_play.store(0, std::memory_order_relaxed);
 }
 
 const size_t overall_voices_count = 8;
