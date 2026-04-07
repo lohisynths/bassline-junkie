@@ -74,6 +74,8 @@ public:
 
 	void noteOff(double note, double vel)
 	{
+		(void)note;
+		(void)vel;
 		m_modifiers.noteOff();
 	}
 
