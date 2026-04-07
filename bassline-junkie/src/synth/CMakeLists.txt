@@ -36,7 +36,7 @@ target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_11 cxx_thread_local)
 
 target_compile_options(${PROJECT_NAME}
     PRIVATE $<$<STREQUAL:$<CONFIGURATION>,RelWithDebInfo>:
-        -Ofast -flto -Wall>
+        -Ofast -flto -Wall -Wextra -Wpedantic>
     PRIVATE $<$<STREQUAL:$<CONFIGURATION>,Debug>:
         -Wall >
 )
