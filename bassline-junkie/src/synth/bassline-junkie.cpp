@@ -16,6 +16,8 @@
 #include "utils/concurency_helpers.h"
 #include "engines/engine.h"
 
+std::atomic<sig_atomic_t> g_play{1};
+
 int main()
 {
 	signal(SIGINT, finish);
