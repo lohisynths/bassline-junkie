@@ -10,6 +10,7 @@
 
 
 #include <cmath>
+#include <cstdint>
 
 namespace bassline
 {
@@ -17,30 +18,15 @@ namespace math
 {
 
 
-// https://www.gamedev.net/forums/topic/621589-extremely-fast-sin-approximation/
-union el
-{
-    double z1;
-    int z2;
-};
-
-
 inline double fast_sin(double x) {
-    int k;
+    int32_t k;
     double y;
     double z;
-
-    el zz;
 
     z  = x;
     z *= 0.3183098861837907;
     z += 6755399441055744.0;
-
-    zz.z1 = z;
-
-    //k  = *((int *) &z);
-    k = zz.z2;
-
+    k  = *((int32_t *) &z);
     z  = k;
     z *= 3.1415926535897932;
     x -= z;
