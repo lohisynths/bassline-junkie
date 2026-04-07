@@ -1,8 +1,7 @@
 #include <algorithm>
 
 #include "utils/AudioDeviceRt.h"
-#include "Stk.h"
-#include "BlitSaw.h"
+#include "dsp/BlitSaw.h"
 #include "dsp/stmlib_polybleep.h"
 #include "dsp/PolyBLEPOscillator/PolyBLEPOscillator.h"
 #include "dsp/PolyBLEP/PolyBLEP.h"
@@ -12,7 +11,12 @@ const size_t buffer_size = 128;
 const size_t sample_rate = 96000;
 
 double tick_stk_blit(double osc_freq) {
-    static stk::BlitSaw osc;
+    static bassline::dsp::BlitSaw osc;
+    static bool init = false;
+    if (!init) {
+        osc.setSampleRate(sample_rate);
+        init = true;
+    }
     osc.setFrequency(osc_freq);
     return osc.tick();
 }
@@ -99,9 +103,6 @@ void render_sweep(double (*f)(double)) {
 }
 
 int main() {
-    stk::Stk::setSampleRate(sample_rate);
-    stk::Stk::showWarnings(true);
-
     //AudioDeviceRt<buffer_size> device;
     render_sweep(tick_stk_blit);
     render_sweep(tick_stmlib_bleep);

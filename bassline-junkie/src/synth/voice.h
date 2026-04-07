@@ -9,9 +9,6 @@
 #define SYNTH_H_
 
 #include <array>
-#include <BlitSaw.h>
-#include <BlitSquare.h>
-#include <SineWave.h>
 
 #include "dsp/ADSR/ADSR.h"
 #include "dsp/Lfo.h"

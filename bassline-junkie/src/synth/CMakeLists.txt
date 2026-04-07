@@ -9,14 +9,17 @@ endif()
 # Create the executable
 add_executable(${PROJECT_NAME}
 	bassline-junkie.cpp
+	dsp/BlitSaw.cpp
+	dsp/BlitSquare.cpp
 	dsp/VAStateVariableFilter.cpp
 	dsp/Lfo.cpp
+	dsp/Noise.cpp
 	dsp/Osc.cpp
 	dsp/PolyBLEPOscillator/PolyBLEPOscillator.cpp
 	dsp/PolyBLEPOscillator/Oscillator.cpp
+	dsp/SineWave.cpp
 	dsp/MoogFilter.cpp
 	dsp/ADSR/ADSR.cpp
-	utils/wavwriter.cpp
 	utils/MidiReceiverRt.cpp
 	utils/array_writer.cpp
 	utils/SerialReceiver.cpp
