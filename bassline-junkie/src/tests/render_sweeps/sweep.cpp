@@ -2,6 +2,7 @@
 #include <cmath>
 #include <string>
 
+#include "dsp/fast_trig.h"
 #include "dsp/BlitSaw.h"
 #include "dsp/stmlib_polybleep.h"
 #include "dsp/PolyBLEPOscillator/PolyBLEPOscillator.h"
@@ -52,18 +53,15 @@ double tick_poly_bleep(double osc_freq) {
 }
 
 double tick_PolyBleep(double osc_freq) {
-    static PolyBLEP osc(96000, PolyBLEP::SAWTOOTH, 440);
+    static PolyBLEP osc(sample_rate, PolyBLEP::SAWTOOTH, 440);
     osc.setFrequency(osc_freq);
     return osc.getAndInc();
 }
 
-void render_sweep(double (*f)(double)) {
+void render_sweep(double (*f)(double), std::string name) {
     stmlib::WavWriter pisacz(1, sample_rate,30);
-    static int count = 0;
 
-    std::string name("piesek");
-    name = name + std::to_string(count);
-    count ++;
+    name = name + std::string(".wav");
     pisacz.Open2(name.c_str());
 
     bool play = true;
@@ -72,7 +70,7 @@ void render_sweep(double (*f)(double)) {
     while (play) {
         for (int i = 0; i < buffer_size; i++) {
             freq += 0.00005;
-            double osc_freq = (double) 440.0 * pow(2.0, (freq - 69.0) / 12.0);
+            double osc_freq = (double) 440.0 * bassline::math::pow(2.0, (freq - 69.0) / 12.0);
             if (osc_freq > 20000.) {
                 play = false;
             }
@@ -84,10 +82,10 @@ void render_sweep(double (*f)(double)) {
 
 int main() {
     //AudioDeviceRt<buffer_size> device;
-    render_sweep(tick_stk_blit);
-    render_sweep(tick_stmlib_bleep);
-    render_sweep(tick_PolyBleep);
-    render_sweep(tick_poly_bleep);
+    render_sweep(tick_stk_blit, "tick_stk_blit");
+    render_sweep(tick_stmlib_bleep, "tick_stmlib_bleep");
+    render_sweep(tick_PolyBleep, "tick_PolyBleep");
+    render_sweep(tick_poly_bleep, "tick_poly_bleep");
 
     return 0;
 }
