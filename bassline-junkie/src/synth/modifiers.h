@@ -251,13 +251,14 @@ struct MyCout
 void controlCange(uint8_t param, uint8_t value)
 {
 	const double divider = 1. / 127.;
+	const int param_index = param;
 
 	double val=value;
 
-	if(param >= OSC_OFFSET && param < OSC_OFFSET+(OSC_NUMBER * OSC_PARAMS) )
+	if(param_index >= OSC_OFFSET && param_index < OSC_OFFSET + (OSC_NUMBER * OSC_PARAMS) )
 	{
-		uint_fast8_t tmp_param = (param - OSC_OFFSET)%OSC_PARAMS;
-		uint_fast8_t osc_number = (param - OSC_OFFSET) / OSC_PARAMS;
+		uint_fast8_t tmp_param = (param_index - OSC_OFFSET)%OSC_PARAMS;
+		uint_fast8_t osc_number = (param_index - OSC_OFFSET) / OSC_PARAMS;
 		switch (tmp_param)
 		{
 			case 0:
