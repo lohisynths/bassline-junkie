@@ -34,6 +34,8 @@ public:
 		cv.notify_all();
 		if (t && t->joinable())
 			t->join();
+		delete t;
+		t = nullptr;
 	}
 
 	virtual ~thread()
