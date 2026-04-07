@@ -20,6 +20,7 @@
 //
 
 #include "ADSR.h"
+#include "../fast_trig.h"
 
 ADSR::ADSR(void) {
 	sample_rate = stk::Stk::sampleRate();
@@ -59,7 +60,7 @@ void ADSR::setReleaseRate(double rate) {
 }
 
 double ADSR::calcCoef(double rate, double targetRatio) {
-    return (rate <= 0) ? 0.0 : stk::math::exp(-stk::math::log((1.0 + targetRatio) / targetRatio) / rate);
+    return (rate <= 0) ? 0.0 : bassline::math::exp(-bassline::math::log((1.0 + targetRatio) / targetRatio) / rate);
 }
 
 void ADSR::setSustainLevel(double level) {

@@ -15,7 +15,7 @@
 #include "dsp/Osc.h"
 
 #include "utils/MidiReceiver.h"
-
+#include "dsp/fast_trig.h"
 
 #define OSC_OFFSET 0
 #define OSC_NUMBER 3
@@ -157,7 +157,7 @@ void updateOsc(Osc &osc, size_t osc_nr)
 
 	osc_freq += getModVal(osc_nr*OSC_MOD_COUNT) * env_range_in_notes;
 	osc_freq += osc_m[osc_nr].detune * 1;
-	osc_freq = (double) 220.0 * stk::math::pow( 2.0, (osc_freq - 57.0) / 12.0 );
+	osc_freq = (double) 220.0 * bassline::math::pow( 2.0, (osc_freq - 57.0) / 12.0 );
 
 	osc.setFrequency(osc_freq);
 
@@ -185,7 +185,7 @@ void updateFilter(MoogFilter *filter)
 	flt_freq += (current_note - 57) * flt_mod_matrix.kbtrack;
 
 
-	flt_freq = (double) 220.0 * stk::math::pow( 2.0, (flt_freq - 57.0) / 12.0 );
+	flt_freq = (double) 220.0 * bassline::math::pow( 2.0, (flt_freq - 57.0) / 12.0 );
 
 	if(flt_freq > 15000)flt_freq = 15000.; //moogfliter fixed upper limit to avoid aliasing
 
@@ -204,7 +204,7 @@ void updateFilter(VAStateVariableFilter *filter)
 	flt_freq += (current_note - 57) * flt_mod_matrix.kbtrack;
 
 
-    flt_freq = (double) 220.0 * stk::math::pow( 2.0, (flt_freq - 57.0) / 12.0 );
+    flt_freq = (double) 220.0 * bassline::math::pow( 2.0, (flt_freq - 57.0) / 12.0 );
 
     if(flt_freq > 22000)
         flt_freq = 22000.; //moogfliter fixed upper limit to avoid aliasing
