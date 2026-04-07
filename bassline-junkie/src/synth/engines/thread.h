@@ -11,7 +11,6 @@
 #include <vector>
 #include <thread>
 #include <condition_variable>
-#include <chrono>
 #include "../voice.h"
 #include "../config.h"
 #include "../utils/concurency_helpers.h"
@@ -30,8 +29,17 @@ public:
 		{	return worker_thread();});
 	}
 
+	void stop()
+	{
+		cv.notify_all();
+		if (t && t->joinable())
+			t->join();
+	}
+
 	virtual ~thread()
-	{};
+	{
+		stop();
+	};
 
 	void set_cpu_affinity(uint8_t cpu)
 	{
@@ -46,7 +54,7 @@ public:
 		{
 			std::unique_lock<std::mutex> lk(m);
 
-			cv.wait_for(lk, std::chrono::milliseconds(10), [this]
+			cv.wait(lk, [this]
 			{	return ready || !g_play;});
 
 			if (!g_play)
@@ -89,10 +97,8 @@ public:
 	void wait()
 	{
 		std::unique_lock<std::mutex> lk(m);
-		while (g_play && !processed)
-		{
-			cv.wait_for(lk, std::chrono::milliseconds(10));
-		}
+		cv.wait(lk, [this]
+		{	return processed || !g_play;});
 	}
 
 	void add_voice(Voice<buffer_size>* voice)
