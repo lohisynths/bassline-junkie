@@ -107,7 +107,7 @@ inline double floor(double x)
 
 inline double abs(double x)
 {
-    return std::floor(x);
+    return std::fabs(x);
 }
 
 inline double sqrt(double x)
