@@ -56,7 +56,7 @@ class WavWriter {
  public:
   WavWriter(size_t num_channels,
       size_t sample_rate,
-      size_t duration) : num_channels_(num_channels), sample_rate_(sample_rate), duration_(duration), fp_(NULL), samples_written_(0) { }
+      size_t duration) : num_channels_(num_channels), sample_rate_(sample_rate), duration_(duration), samples_written_(0), fp_(NULL) { }
 
   ~WavWriter() {
     Close();

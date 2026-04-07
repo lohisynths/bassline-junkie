@@ -1,4 +1,5 @@
 cmake_minimum_required (VERSION 3.5)
+project(bassline-junkie LANGUAGES C CXX)
 
 option(BASSLINE_JUNKIE_TESTING_ENABLED "Enable unit tests and benchmarks")
 

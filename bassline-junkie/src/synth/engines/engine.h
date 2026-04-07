@@ -27,12 +27,12 @@ private:
 
 public:
 	Engine() {
-		for(int i = 0; i < max_cores; i++) {
+		for (size_t i = 0; i < max_cores; ++i) {
 	        cores[i].set_cpu_affinity(i+first_cpu);
 		}
 
-		for(int voice_nr = 0; voice_nr < voices_count; voice_nr++) {
-		  int core_nr = (max_cores - (voice_nr % max_cores));
+		for (size_t voice_nr = 0; voice_nr < voices_count; ++voice_nr) {
+		  size_t core_nr = (max_cores - (voice_nr % max_cores));
           std::cout << "new thread created on core " << core_nr << std::endl;
           m_voices[voice_nr].set_voice_index(voice_nr);
           cores[core_nr - first_cpu].add_voice(&m_voices[voice_nr]);
