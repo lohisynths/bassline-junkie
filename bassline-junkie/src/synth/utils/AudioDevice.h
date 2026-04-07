@@ -224,7 +224,7 @@ public:
       err = snd_pcm_hw_params_set_period_size(handle, params, size, 0);
       if (err < 0)
       {
-          printf("Unable to set period size %u for playback: %s\n", period_size,
+          printf("Unable to set period size %zu for playback: %s\n", period_size,
                   snd_strerror(err));
           return err;
       }
