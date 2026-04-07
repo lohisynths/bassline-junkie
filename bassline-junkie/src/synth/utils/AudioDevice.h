@@ -11,6 +11,7 @@
 #include <alsa/asoundlib.h>
 #include <string>
 #include <array>
+#include <vector>
 
 #include <algorithm>
 #include <iostream>
@@ -433,7 +434,7 @@ public:
               first = 1;
           }
 
-          int32_t *data[channels];
+          std::vector<int32_t *> data(channels);
 
           for (unsigned int chn = 0; chn < channels; chn++)
           {
