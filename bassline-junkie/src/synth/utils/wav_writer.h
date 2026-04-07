@@ -31,7 +31,9 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <cstdint>
 #include <iostream>
+#include <vector>
 
 template<typename T>
 void send_char(T *data, size_t size, FILE* fp_) {
@@ -54,12 +56,10 @@ class WavWriter {
  public:
   WavWriter(size_t num_channels,
       size_t sample_rate,
-      size_t duration) : num_channels_(num_channels), sample_rate_(sample_rate), duration_(duration), fp_(NULL) { }
+      size_t duration) : num_channels_(num_channels), sample_rate_(sample_rate), duration_(duration), fp_(NULL), samples_written_(0) { }
 
   ~WavWriter() {
-    if (fp_) {
-      fclose(fp_);
-    }
+    Close();
   }
   
   bool Open(const char* file_name) {
@@ -103,13 +103,46 @@ class WavWriter {
     if (!fp_) {
       return false;
     }
+    samples_written_ = 0;
     
+    WriteHeader(duration_ * sample_rate_ * bytes_per_sample() * num_channels_);
+    return true;
+  }
+
+  void Close() {
+    if (!fp_) {
+      return;
+    }
+
+    PatchHeader();
+    fclose(fp_);
+    fp_ = NULL;
+  }
+
+  void Write(double* out, size_t size) {
+    std::vector<int32_t> short_buffer(size);
+    for (size_t i = 0; i < size; ++i) {
+      double x = out[i];
+      if (x >= 1.0f) x = 1.0f;
+      if (x <= -1.0f) x = -1.0f;
+      short_buffer[i] = static_cast<int32_t>(x * 2147483647.);
+    }
+    fwrite(short_buffer.data(), sizeof(int32_t), size, fp_);
+    samples_written_ += size;
+  }
+
+ private:
+  uint16_t bytes_per_sample() const {
+    return 32 / 8;
+  }
+
+  void WriteHeader(uint32_t data_bytes) {
     uint16_t bits_per_sample = 32;
     uint16_t bytes_per_sample = bits_per_sample / 8;
 
     // RIFF Header
     char riff_header[4] = {'R', 'I', 'F', 'F'};                             // Contains "RIFF"
-    uint32_t wav_size = 36 + duration_ * sample_rate_ * bytes_per_sample * num_channels_;  // Size of the wav portion of the file, which follows the first 8 bytes. File size - 8
+    uint32_t wav_size = 36 + data_bytes;                                    // Size of the wav portion of the file, which follows the first 8 bytes. File size - 8
     char wave_header[4] = {'W', 'A', 'V', 'E'};                             // Contains "WAVE"
 
     // Format Header
@@ -124,7 +157,6 @@ class WavWriter {
 
     // Data
     char data_header[4] = {'d', 'a', 't', 'a'};                             // Contains "data " (includes trailing space)
-    uint32_t data_bytes  = duration_ * sample_rate_ * bytes_per_sample * num_channels_;    // Number of bytes in data. Number of samples * num_channels * sample byte size
 
 
     send_char(riff_header, 4, fp_);     // 4
@@ -143,24 +175,29 @@ class WavWriter {
 
     send_char(data_header, 4, fp_);     // 4
     send(data_bytes, fp_);      // 4
-    return true;
   }
-  
-  void Write(double* out, size_t size) {
-    int32_t* short_buffer = (int32_t*)(calloc(size, sizeof(int32_t)));
-    for (size_t i = 0; i < size; ++i) {
-      double x = out[i];
-      if (x >= 1.0f) x = 1.0f;
-      if (x <= -1.0f) x = -1.0f;
-      short_buffer[i] = static_cast<int32_t>(x * 2147483647.);
+
+  void PatchHeader() {
+    long current_pos = ftell(fp_);
+    if (current_pos < 0) {
+      current_pos = 0;
     }
-    fwrite(short_buffer, sizeof(int32_t), size, fp_);
+
+    uint32_t data_bytes = static_cast<uint32_t>(samples_written_ * bytes_per_sample());
+    uint32_t wav_size = 36 + data_bytes;
+
+    fseek(fp_, 4, SEEK_SET);
+    send(wav_size, fp_);
+    fseek(fp_, 40, SEEK_SET);
+    send(data_bytes, fp_);
+    fseek(fp_, current_pos, SEEK_SET);
   }
 
  private:
   size_t num_channels_;
   size_t sample_rate_;
   size_t duration_;
+  size_t samples_written_;
   FILE* fp_;
 };
 

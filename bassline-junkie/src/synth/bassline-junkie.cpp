@@ -10,9 +10,11 @@
 #include <cstdio>
 #include <algorithm>
 
+#include <Stk.h>
+
 #include "utils/AudioDevice.h"
 #include "utils/cpucounter.h"
-#include "utils/wavwriter.h"
+#include "utils/wav_writer.h"
 #include "utils/concurency_helpers.h"
 #include <RtWvOut.h>
 #include "engines/engine.h"
@@ -22,6 +24,11 @@ int main()
 	signal(SIGINT, finish);
 
 	AudioDevice<buffer_size> device;
+//	stmlib::WavWriter wav_out(1, sample_rate, 0);
+//	if (!wav_out.Open2("bassline.wav")) {
+//		perror("bassline.wav");
+//		return 1;
+//	}
 	cpu_counter licznik;
 
 	Engine<overall_voices_count, buffer_size> engine;
@@ -50,9 +57,7 @@ int main()
 			break;
 		}
 		device.play(output);
-		// stop time reporting
-		// write buffer to file
-		// wav_out.tick(output);
+//		wav_out.Write(output.data(), buffer_size);
 		}
 
 		// if(!licznik.update())
