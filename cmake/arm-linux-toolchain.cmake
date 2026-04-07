@@ -72,8 +72,8 @@ set(CMAKE_SYSTEM_NAME Generic)
 #   screwed up and there is nothing Buildroot can do about that :(
 #set(CMAKE_C_FLAGS_DEBUG "" CACHE STRING "Debug CFLAGS")
 #set(CMAKE_CXX_FLAGS_DEBUG "" CACHE STRING "Debug CXXFLAGS")
-#set(CMAKE_C_FLAGS_RELEASE " -DNDEBUG" CACHE STRING "Release CFLAGS")
-#set(CMAKE_CXX_FLAGS_RELEASE " -DNDEBUG" CACHE STRING "Release CXXFLAGS")
+set(CMAKE_C_FLAGS_RELWITHDEBINFO "-g" CACHE STRING "RelWithDebInfo CFLAGS" FORCE)
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g" CACHE STRING "RelWithDebInfo CXXFLAGS" FORCE)
 
 # Build type from the Buildroot configuration
 set(CMAKE_BUILD_TYPE Release CACHE STRING "Buildroot build configuration")
@@ -103,4 +103,3 @@ set(ENV{PKG_CONFIG_SYSROOT_DIR} "${RELOCATED_HOST_DIR}/arm-buildroot-linux-gnuea
 # This toolchain file can be used both inside and outside Buildroot.
 set(CMAKE_C_COMPILER "${RELOCATED_HOST_DIR}/bin/arm-linux-gcc")
 set(CMAKE_CXX_COMPILER "${RELOCATED_HOST_DIR}/bin/arm-linux-g++")
-

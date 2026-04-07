@@ -42,5 +42,6 @@ target_compile_options(${PROJECT_NAME}
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
+    LINK_FLAGS_RELWITHDEBINFO "-flto"
     LINK_FLAGS_RELEASE "-flto"
 )
