@@ -7,6 +7,7 @@
 //
 
 #include "Oscillator.h"
+#include "../fast_trig.h"
 
 double Oscillator::mSampleRate = 48000.0;
 
@@ -32,7 +33,7 @@ void Oscillator::generate(double* buffer, int nFrames) {
     switch (mOscillatorMode) {
         case OSCILLATOR_MODE_SINE:
             for (int i = 0; i < nFrames; i++) {
-                buffer[i] = stk::math::sin(mPhase);
+                buffer[i] = bassline::math::sin(mPhase);
                 mPhase += mPhaseIncrement;
                 while (mPhase >= twoPI) {
                     mPhase -= twoPI;
@@ -64,7 +65,7 @@ void Oscillator::generate(double* buffer, int nFrames) {
         case OSCILLATOR_MODE_TRIANGLE:
             for (int i = 0; i < nFrames; i++) {
             	double value = -1.0 + (2.0 * mPhase / twoPI);
-                buffer[i] = 2.0 * (stk::math::fabs(value) - 0.5);
+                buffer[i] = 2.0 * (bassline::math::fabs(value) - 0.5);
                 mPhase += mPhaseIncrement;
                 while (mPhase >= twoPI) {
                     mPhase -= twoPI;
@@ -95,7 +96,7 @@ void Oscillator::setPitchMod(double amount) {
 
 
 void Oscillator::updateIncrement() {
-	double pitchModAsFrequency = stk::math::pow(2.0, stk::math::fabs(mPitchMod) * 14.0) - 1;
+	double pitchModAsFrequency = bassline::math::pow(2.0, bassline::math::fabs(mPitchMod) * 14.0) - 1;
     if (mPitchMod < 0) {
         pitchModAsFrequency = -pitchModAsFrequency;
     }
@@ -107,7 +108,7 @@ double Oscillator::naiveWaveformForMode(OscillatorMode mode) {
 	double value=0;
     switch (mode) {
         case OSCILLATOR_MODE_SINE:
-            value = stk::math::sin(static_cast<double>(mPhase));
+            value = bassline::math::sin(static_cast<double>(mPhase));
             break;
         case OSCILLATOR_MODE_SAW:
             value = (2.0 * mPhase / twoPI) - 1.0;
@@ -121,7 +122,7 @@ double Oscillator::naiveWaveformForMode(OscillatorMode mode) {
             break;
         case OSCILLATOR_MODE_TRIANGLE:
             value = -1.0 + (2.0 * mPhase / twoPI);
-            value = 2.0 * (stk::math::fabs(value) - 0.5);
+            value = 2.0 * (bassline::math::fabs(value) - 0.5);
             break;
         default:
             break;

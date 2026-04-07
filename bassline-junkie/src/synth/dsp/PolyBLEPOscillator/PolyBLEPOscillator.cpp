@@ -7,6 +7,7 @@
 //
 
 #include "PolyBLEPOscillator.h"
+#include "../fast_trig.h"
 
 // PolyBLEP by Tale
 // (slightly modified)
@@ -52,7 +53,7 @@ double PolyBLEPOscillator::nextSample() {
     } else {
         value = naiveWaveformForMode(OSCILLATOR_MODE_SQUARE);
         value += poly_blep(t);
-        value -= poly_blep(stk::math::fmod(t + 0.5, 1.0));
+        value -= poly_blep(bassline::math::fmod(t + 0.5, 1.0));
         if (mOscillatorMode == OSCILLATOR_MODE_TRIANGLE) {
             // Leaky integrator: y[n] = A * x[n] + (1 - A) * y[n-1]
             value = mPhaseIncrement * value + (1 - mPhaseIncrement) * lastOutput;
