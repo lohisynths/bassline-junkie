@@ -52,7 +52,7 @@ private:
 
 	void start();
 	void stop();
-	std::thread *t;
+	std::thread *t = nullptr;
 	std::mutex m;
 
 	std::deque<uint8_t> vector_char;

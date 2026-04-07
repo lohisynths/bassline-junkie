@@ -13,23 +13,21 @@
 #define SERIAL_PRINT_FUNCTION std::cout << "[SerialReceiver] "<< __PRETTY_FUNCTION__ << std::endl;
 #define SERIAL_PRINT(a) std::cout << "[SerialReceiver] \t"<< __func__ << "\t\t " << (a) << std::endl;
 
-SerialReceiver::SerialReceiver() : running(true)
+SerialReceiver::SerialReceiver() : running(false), fd(-1)
 {
 	const char *portname = "/dev/ttyAMA0";
 
 	fd = open(portname, O_RDWR | O_NOCTTY | O_SYNC);
 	if (fd < 0) {
-		printf("SerialReceiver  error %d opening %s", errno, portname);
-		exit(1);
+		printf("SerialReceiver  warning: error %d opening %s (serial MIDI unavailable)\n", errno, portname);
 		return;
 	}
 
+	running.store(true);
     set_interface_attribs(fd, B1000000, 0); // set speed to 1000000 bps, 8n1 (no parity)
 	set_blocking(fd, 0);                // set no blocking
 
 	start();
-
-
 }
 
 SerialReceiver::~SerialReceiver()
@@ -37,11 +35,18 @@ SerialReceiver::~SerialReceiver()
 	SERIAL_PRINT_FUNCTION;
 	SERIAL_PRINT("break worker thread while loop");
 	stop();
-	SERIAL_PRINT("t->join()");
-    t->join();
-	SERIAL_PRINT("t joinined");
-	SERIAL_PRINT("delete t");
-	delete t;
+	if (t) {
+		SERIAL_PRINT("t->join()");
+		t->join();
+		SERIAL_PRINT("t joinined");
+		SERIAL_PRINT("delete t");
+		delete t;
+		t = nullptr;
+	}
+	if (fd >= 0) {
+		::close(fd);
+		fd = -1;
+	}
 }
 
 
@@ -111,6 +116,9 @@ std::deque<uint8_t> &SerialReceiver::getBuffer()
 
 MidiMessage SerialReceiver::getMessage()
 {
+	if (fd < 0) {
+		return MidiMessage();
+	}
 	std::lock_guard<std::mutex> lock(m);
 	return midi_parser.getMessage();
 }
