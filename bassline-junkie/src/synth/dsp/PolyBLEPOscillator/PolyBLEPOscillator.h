@@ -14,14 +14,14 @@
 class PolyBLEPOscillator: public Oscillator {
 public:
     PolyBLEPOscillator() : lastOutput(0.0) { updateIncrement(); };
-    stk::StkFloat nextSample();
-    stk::StkFloat getSample();
+    double nextSample();
+    double getSample();
     void reset() override;
 
 private:
-    stk::StkFloat poly_blep(stk::StkFloat t);
-    stk::StkFloat lastOutput;
-    stk::StkFloat outputOutput;
+    double poly_blep(double t);
+    double lastOutput;
+    double outputOutput;
 };
 
 #endif /* defined(__SpaceBass__PolyBLEPOscillator__) */

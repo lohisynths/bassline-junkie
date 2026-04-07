@@ -13,48 +13,45 @@ Osc::Osc() : m_osc_ctrl( waves_level{0,1,0,0} )
 
 Osc::~Osc(){}
 
-StkFloat Osc::tick()
+double Osc::tick()
 {
-	StkFloat output;
+    double output;
 
 	output = m_sine.tick() * m_osc_ctrl.sin_level;
 	output += m_saw.tick() * m_osc_ctrl.saw_level;
 	output += m_square.tick() * m_osc_ctrl.sqr_level;
 	output += m_noise.tick() * m_osc_ctrl.rnd_level * 0.5;
 
-	StkFloat div =  m_osc_ctrl.sin_level+m_osc_ctrl.saw_level+m_osc_ctrl.sqr_level+m_osc_ctrl.rnd_level;
+	double div =  m_osc_ctrl.sin_level+m_osc_ctrl.saw_level+m_osc_ctrl.sqr_level+m_osc_ctrl.rnd_level;
 	if(div<1) div=1;
 	output /= div;
 
 	return output ;
 }
 
-const stk::StkFloat env_range_in_notes = 12 * 4;
-const stk::StkFloat lfo_range_in_notes = 12 * 2;
-
-void Osc::setFrequency(StkFloat freq)
+void Osc::setFrequency(double freq)
 {
 	m_saw.setFrequency(freq);
 	m_square.setFrequency(freq);
 	m_sine.setFrequency(freq);
 }
 
-void Osc::set_sin_level(StkFloat level)
+void Osc::set_sin_level(double level)
 {
 	m_osc_ctrl.sin_level=level;
 }
 
-void Osc::set_saw_level(StkFloat level)
+void Osc::set_saw_level(double level)
 {
 	m_osc_ctrl.saw_level=level;
 }
 
-void Osc::set_sqr_level(StkFloat level)
+void Osc::set_sqr_level(double level)
 {
 	m_osc_ctrl.sqr_level=level;
 }
 
-void Osc::set_noise_level(StkFloat level)
+void Osc::set_noise_level(double level)
 {
 	m_osc_ctrl.rnd_level=level;
 }

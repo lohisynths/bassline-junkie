@@ -36,14 +36,14 @@ ADSR::ADSR(void) {
 ADSR::~ADSR(void) {
 }
 
-void ADSR::setAttackRate(stk::StkFloat rate) {
+void ADSR::setAttackRate(double rate) {
 	rate=rate*sample_rate*max_time;
     attackRate = rate;
     attackCoef = calcCoef(rate, targetRatioA);
     attackBase = (1.0 + targetRatioA) * (1.0 - attackCoef);
 }
 
-void ADSR::setDecayRate(stk::StkFloat rate) {
+void ADSR::setDecayRate(double rate) {
 	rate=rate*sample_rate*max_time;
     decayRate = rate;
     decayCoef = calcCoef(rate, targetRatioDR);
@@ -51,23 +51,23 @@ void ADSR::setDecayRate(stk::StkFloat rate) {
     decayBaseLoop = -targetRatioDR * (1.0 - decayCoef);
 }
 
-void ADSR::setReleaseRate(stk::StkFloat rate) {
+void ADSR::setReleaseRate(double rate) {
 	rate=rate*sample_rate	*max_time;
     releaseRate = rate;
     releaseCoef = calcCoef(rate, targetRatioDR);
     releaseBase = -targetRatioDR * (1.0 - releaseCoef);
 }
 
-stk::StkFloat ADSR::calcCoef(stk::StkFloat rate, stk::StkFloat targetRatio) {
+double ADSR::calcCoef(double rate, double targetRatio) {
     return (rate <= 0) ? 0.0 : stk::math::exp(-stk::math::log((1.0 + targetRatio) / targetRatio) / rate);
 }
 
-void ADSR::setSustainLevel(stk::StkFloat level) {
+void ADSR::setSustainLevel(double level) {
     sustainLevel = level;
     decayBase = (sustainLevel - targetRatioDR) * (1.0 - decayCoef);
 }
 
-void ADSR::setTargetRatioA(stk::StkFloat targetRatio) {
+void ADSR::setTargetRatioA(double targetRatio) {
     if (targetRatio < 0.000000001)
         targetRatio = 0.000000001;  // -180 dB
     targetRatioA = targetRatio;
@@ -75,7 +75,7 @@ void ADSR::setTargetRatioA(stk::StkFloat targetRatio) {
     attackBase = (1.0 + targetRatioA) * (1.0 - attackCoef);
 }
 
-void ADSR::setTargetRatioDR(stk::StkFloat targetRatio) {
+void ADSR::setTargetRatioDR(double targetRatio) {
     if (targetRatio < 0.000000001)
         targetRatio = 0.000000001;  // -180 dB
     targetRatioDR = targetRatio;

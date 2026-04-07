@@ -18,7 +18,7 @@ public:
 	wav_writer();
 	virtual ~wav_writer();
 
-	void tick(std::array<stk::StkFloat, buffer_size> &output);
+	void tick(std::array<double, buffer_size> &output);
 
 private:
 	stk::FileWvOut wave_output;
