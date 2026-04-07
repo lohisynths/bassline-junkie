@@ -8,8 +8,6 @@
 #ifndef SRC_SYNTH_DSP_FILTERTEMPLATE_H_
 #define SRC_SYNTH_DSP_FILTERTEMPLATE_H_
 
-#include "Stk.h"
-
 class Filter
 {
 public:

@@ -8,7 +8,6 @@
 #ifndef SRC_LFO_H_
 #define SRC_LFO_H_
 
-#include "Stk.h"
 #include "PolyBLEPOscillator/PolyBLEPOscillator.h"
 
 class Lfo {
