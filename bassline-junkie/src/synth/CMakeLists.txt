@@ -20,7 +20,6 @@ add_executable(${PROJECT_NAME}
 	dsp/SineWave.cpp
 	dsp/MoogFilter.cpp
 	dsp/ADSR/ADSR.cpp
-	utils/MidiReceiverRt.cpp
 	utils/array_writer.cpp
 	utils/SerialReceiver.cpp
 	utils/cpucounter.cpp
@@ -28,15 +27,9 @@ add_executable(${PROJECT_NAME}
 	utils/MidiParser.cpp
 )
 
-if(NOT CMAKE_SYSTEM_PROCESSOR MATCHES armv7l)
-    set(ADITIONAL_LIBS jack)
-endif()
-
 target_link_libraries(${PROJECT_NAME}
-    lohi::stk
     asound
     pthread
-    ${ADITIONAL_LIBS}
 )
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_11 cxx_thread_local)

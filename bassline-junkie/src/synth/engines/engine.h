@@ -8,7 +8,6 @@
 
 #include "../utils/SerialReceiver.h"
 #include "../utils/MidiReceiver.h"
-#include "../utils/MidiReceiverRt.h"
 #include "../config.h"
 #include "../voice.h"
 #include "thread.h"
@@ -23,7 +22,6 @@ private:
 	std::array<Voice<buffer_size>, voices_count> m_voices;
 
 	SerialReceiver messager;
-	//MidiReceiverRt messager;
 	std::vector<std::pair<MidiMessage, int>> notes;
 	std::vector<int> free_voices;
 
