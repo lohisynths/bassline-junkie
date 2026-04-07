@@ -69,6 +69,10 @@ void BlitSquare::setSampleRate(double sampleRate) {
 
 double BlitSquare::tick() {
     const double temp = lastBlitOutput_;
+    const double blend =
+        (nHarmonics_ == 0 && p_ > 1.0)
+            ? (0.5 * (p_ - 1.0) - bassline::math::floor(0.5 * (p_ - 1.0)))
+            : 1.0;
     const double denominator = bassline::math::sin(phase_);
     if (bassline::math::fabs(denominator) < std::numeric_limits<double>::epsilon()) {
         if (phase_ < 0.1 || phase_ > kTwoPi - 0.1) {
@@ -79,6 +83,12 @@ double BlitSquare::tick() {
     } else {
         lastBlitOutput_ = bassline::math::sin(static_cast<double>(m_) * phase_);
         lastBlitOutput_ /= p_ * denominator;
+    }
+
+    if (nHarmonics_ == 0 && m_ > 2 && blend < 1.0) {
+        lastBlitOutput_ -=
+            (1.0 - blend) *
+            (2.0 * bassline::math::cos((static_cast<double>(m_) - 1.0) * phase_)) / p_;
     }
 
     lastBlitOutput_ += temp;
@@ -101,8 +111,11 @@ void BlitSquare::updateFrequencyState() {
 
 void BlitSquare::updateHarmonics() {
     if (nHarmonics_ == 0) {
+        const double harmonicLimit = 0.5 * (p_ - 1.0);
         const unsigned int maxHarmonics =
-            static_cast<unsigned int>(bassline::math::floor(0.5 * p_));
+            harmonicLimit > 0.0
+                ? static_cast<unsigned int>(bassline::math::floor(harmonicLimit))
+                : 0;
         m_ = 2 * (maxHarmonics + 1);
     } else {
         m_ = 2 * (nHarmonics_ + 1);
