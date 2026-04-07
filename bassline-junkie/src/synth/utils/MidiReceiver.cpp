@@ -85,7 +85,7 @@ MidiMessage* MidiReceiver::getMessage()
 	{
 		std::cout << "Problem reading MIDI input: " << snd_strerror(status);
 	}
-	else if (buffer[0] >= 0 && (status != -EAGAIN))
+	else if (status > 0)
 	{
 		//std::cout << "0x" << std::hex << +buffer[0] << " " << std::dec;
 		if (parse(buffer[0]))
@@ -108,6 +108,7 @@ MidiMessage* MidiReceiver::getMessage()
 
 void MidiReceiver::printMsg(MidiMessage *message)
 {
+	(void)message;
 
 }
 
@@ -431,6 +432,7 @@ void list_subdevice_info(snd_ctl_t *ctl, int card, int device) {
 //
 
 int is_input(snd_ctl_t *ctl, int card, int device, int sub) {
+   (void)card;
    snd_rawmidi_info_t *info;
    int status;
 
@@ -456,6 +458,7 @@ int is_input(snd_ctl_t *ctl, int card, int device, int sub) {
 //
 
 int is_output(snd_ctl_t *ctl, int card, int device, int sub) {
+   (void)card;
    snd_rawmidi_info_t *info;
    int status;
 
@@ -487,6 +490,5 @@ void error(const char *format, ...) {
    va_end(ap);
    putc('\n', stderr);
 }
-
 
 
