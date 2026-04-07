@@ -22,10 +22,6 @@
 #include "utils/MidiReceiver.h"
 #include "utils/clipping.h"
 
-const double divider = 1. / 127.;
-const double env_range_in_notes = 12 * 4;
-const double lfo_range_in_notes = 12 * 2;
-
 template<size_t buffer_size>
 class Voice
 {
