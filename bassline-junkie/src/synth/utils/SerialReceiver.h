@@ -41,7 +41,7 @@ public:
 
 	void readBytes();
 
-	MidiMessage* getMessage();
+	MidiMessage getMessage();
 
 	MidiMessage* midiHandler(std::deque<uint8_t> &bytes);
 

@@ -133,47 +133,43 @@ public:
 	void updateMessages()
 	{
 		auto msg = messager.getMessage();
-		if (msg)
+
+		if (msg.m_type != MidiMessage::NO_MESSAGE)
 		{
-			//msg->print();
-
-			if (msg->m_type != MidiMessage::NO_MESSAGE)
+			switch (msg.m_type)
 			{
-				switch (msg->m_type)
-				{
 
-				case MidiMessage::Type::NOTE_ON:
+			case MidiMessage::Type::NOTE_ON:
+			{
+				if(msg.m_val_2!=0)
 				{
-					if(msg->m_val_2!=0)
-					{
-						noteOn(msg);
-						break;
-					}
-					noteOff(msg);
+					noteOn(&msg);
 					break;
 				}
-				case MidiMessage::Type::NOTE_OFF:
-				{
-					noteOff(msg);
-
-					break;       // and exits the switchNOTE_ON
-				}
-				case MidiMessage::Type::CC:
-				{
-					for(auto &voice : m_voices) {
-						if(msg->channel == 2) {
-							voice.cc(msg->m_val_1+96,msg->m_val_2);
-						} else {
-							voice.cc(msg->m_val_1,msg->m_val_2);
-						}
-					}
-
-					break;       // and exits the switchNOTE_ON
-				}
-				case MidiMessage::Type::NO_MESSAGE:
-					break;       // and exits the switchNOTE_ON
-				};
+				noteOff(&msg);
+				break;
 			}
+			case MidiMessage::Type::NOTE_OFF:
+			{
+				noteOff(&msg);
+
+				break;       // and exits the switchNOTE_ON
+			}
+			case MidiMessage::Type::CC:
+			{
+				for(auto &voice : m_voices) {
+					if(msg.channel == 2) {
+						voice.cc(msg.m_val_1+96,msg.m_val_2);
+					} else {
+						voice.cc(msg.m_val_1,msg.m_val_2);
+					}
+				}
+
+				break;       // and exits the switchNOTE_ON
+			}
+			case MidiMessage::Type::NO_MESSAGE:
+				break;       // and exits the switchNOTE_ON
+			};
 		}
 	}
 };
