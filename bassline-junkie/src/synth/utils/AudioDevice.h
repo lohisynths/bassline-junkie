@@ -12,8 +12,11 @@
 #include <string>
 #include <array>
 
-#include "Stk.h"
 #include <algorithm>
+#include <iostream>
+#include <math.h>
+
+#include "../config.h"
 
 
 template<size_t period_size>
@@ -38,7 +41,7 @@ public:
 
 
       format = SND_PCM_FORMAT_S32; /* sample format */
-      rate = stk::Stk::sampleRate(); /* stream rate */
+      rate = sample_rate; /* stream rate */
       channels = 2; /* count of channels */
       //desired_buffer_size = 1024; /* desired buffer size */
       //desired_period_count = 2;

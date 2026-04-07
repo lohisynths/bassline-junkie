@@ -9,7 +9,7 @@
 */
 
 #include "VAStateVariableFilter.h"
-#include "Stk.h"
+#include "../config.h"
 
 //==============================================================================
 double resonanceToQ(double resonance)
@@ -25,7 +25,7 @@ double pitchToFreq(double pitch)
 VAStateVariableFilter::VAStateVariableFilter()
 {
 	shelfGain=1;
-    sampleRate = stk::Stk::sampleRate();				// default sample rate when constructed
+    sampleRate = sample_rate;				// default sample rate when constructed
     filterType = SVFLowpass;			// lowpass filter by default
 
     gCoeff = 1.0f;

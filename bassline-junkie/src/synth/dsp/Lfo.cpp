@@ -6,10 +6,12 @@
  */
 
 #include "Lfo.h"
+#include "../config.h"
+#include <iostream>
 
 Lfo::Lfo()
 {
-	osc.setSampleRate(stk::Stk::sampleRate());
+	osc.setSampleRate(sample_rate);
 	osc.setMode(Oscillator::OSCILLATOR_MODE_SINE);
 	osc.setFrequency(1.);
 }
