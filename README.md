@@ -1,26 +1,43 @@
 # bassline-junkie
 
-sudo apt install libasound2-dev autoconf
+`bassline-junkie` is a C++ synth and benchmark project built with CMake. The main executable links against ALSA and pthread, and the optional benchmark suite is pulled in through CMake when enabled.
 
+## Requirements
 
-init 
-	- export toolchain path (toolchain from raspi tool respo)
-	in ~/.bashrc add
-		export PATH=/home/alax/rpi/tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf/bin:$PATH
-		* replace /home/alax/* with your path (sybolic links and '~/file*' won't work)
-	- initialize subrepos and look check toolchain
-		./init.sh
-	- crosscompile application
-		./build
-	- binary is located in bassline-junkie/arm_debug folder; copy to 'home' raspi and run
-	- create plots folder in bassline junkie
-	- copy '*.bin' from 'home' raspi to bassline/plots
-	- run python script
-		python plot.py
-	- results will be located in plots/* newly created folders 
+- Linux
+- CMake 3.5 or newer
+- A C++11 compiler (`gcc` or `clang`)
+- ALSA development headers, for example `libasound2-dev` on Debian/Ubuntu
+- `pkg-config`
+- `python3`, `numpy`, and `matplotlib` for the plotting scripts
+- For ARM cross-builds, a Buildroot toolchain exposed through `TOOLCHAIN_PATH_DIR`
 
-	- in eclipse > window > preferences > C/C++ > Build > Environment add
-		/home/alax/rpi/tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf/bin
-		* replace /home/alax/* with your path ( sybolic links and '~/file*' won't work)
-	  and make sure that 'Append variables to native environment' is selected below
-	
+## Build
+
+From the repository root:
+
+```bash
+# Debug build with GCC
+./build.sh gcc Debug
+
+# Optimized host build with GCC
+./build.sh gcc Release
+
+# Debug build with Clang
+./build.sh clang Debug
+
+# ARM cross-build
+export TOOLCHAIN_PATH_DIR=/path/to/buildroot/output/host
+./build.sh arm Release
+```
+
+`build.sh` creates a `build/` directory and runs CMake there. The `Release` option maps to CMake `RelWithDebInfo`.
+
+## Run
+
+The main executable is built as `bassline-junkie` inside the `build/` tree. Run it from there or copy it to the target device.
+
+## Benchmarks And Tests
+
+Unit tests and benchmarks are only added when `BASSLINE_JUNKIE_TESTING_ENABLED` is enabled in CMake. When that option is on, CMake also downloads Google Benchmark automatically.
+
