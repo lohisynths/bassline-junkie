@@ -58,20 +58,28 @@ inline double fastPow(double a, double b) {
 
 
 //https://stackoverflow.com/a/1640399
-static unsigned long x=123456789, y=362436069, z=521288629;
+struct FastRandState {
+    unsigned long x=123456789, y=362436069, z=521288629;
+};
+
+inline FastRandState& getFastRandState() {
+    static thread_local FastRandState state;
+    return state;
+}
 
 inline unsigned long fastRand(void) {          //period 2^96-1
-unsigned long t;
-    x ^= x << 16;
-    x ^= x >> 5;
-    x ^= x << 1;
+    auto &s = getFastRandState();
+    unsigned long t;
+    s.x ^= s.x << 16;
+    s.x ^= s.x >> 5;
+    s.x ^= s.x << 1;
 
-   t = x;
-   x = y;
-   y = z;
-   z = t ^ x ^ y;
+    t = s.x;
+    s.x = s.y;
+    s.y = s.z;
+    s.z = t ^ s.x ^ s.y;
 
-  return z;
+    return s.z;
 }
 
 //http://nghiaho.com/?p=997
