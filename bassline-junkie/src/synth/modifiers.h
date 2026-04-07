@@ -44,7 +44,7 @@
 
 #define MATRIX_MOD_MATRIX_ITEMS ( (OSC_NUMBER * OSC_MOD_COUNT) + FLT_MOD_COUNT )
 
-const char *MOD_SRC_NAMES[] = {
+static const char *const MOD_SRC_NAMES[] = {
         "osc 0 det",
         "osc 0 sin",
         "osc 0 saw",
