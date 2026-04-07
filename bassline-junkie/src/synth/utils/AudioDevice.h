@@ -33,8 +33,8 @@ public:
       //device = "hw:HDMI,3"; /* playback device */
       //device = "default"; /* playback device */
 
-  #ifndef __arm__
-      device = "hw:PCH,0"; /* playback device */
+  #if defined(__arm__) || defined(__aarch64__)
+      device = "hw:0,0"; /* playback device - HifiBerry DAC on RPi */
   #else
       device = "default"; /* playback device */
   #endif
