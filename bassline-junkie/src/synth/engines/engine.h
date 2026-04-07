@@ -46,6 +46,12 @@ public:
 		}
 	}
 
+	void stop()
+	{
+		for (auto &core : cores)
+			core.stop();
+	}
+
 	std::array<double, buffer_size> &process()
 	{
 		if (!g_play)

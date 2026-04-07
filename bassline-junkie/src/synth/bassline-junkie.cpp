@@ -60,6 +60,7 @@ int main()
 		// if(!licznik.update())
 			;// play=false;
 	}
+	engine.stop();
 	device.close();
 	return 0;
 }
