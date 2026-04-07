@@ -519,7 +519,7 @@ public:
           first = 1;
           return 0;
       }
-      if (avail < period_size)
+      if (avail < static_cast<snd_pcm_sframes_t>(period_size))
       {
           if (first)
           {

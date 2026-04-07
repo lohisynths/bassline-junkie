@@ -11,6 +11,7 @@
 
 #include <cmath>
 #include <cstdint>
+#include <cstring>
 
 namespace bassline
 {
@@ -26,7 +27,7 @@ inline double fast_sin(double x) {
     z  = x;
     z *= 0.3183098861837907;
     z += 6755399441055744.0;
-    k  = *((int32_t *) &z);
+    std::memcpy(&k, &z, sizeof(k));
     z  = k;
     z *= 3.1415926535897932;
     x -= z;
