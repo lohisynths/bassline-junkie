@@ -373,7 +373,7 @@ public:
   const unsigned int format_bits = 32; //snd_pcm_format_width(*m_format);
   const unsigned int maxval = (1U << (format_bits - 1U)) - 1U;
 
-  void play(std::array<stk::StkFloat, period_size> &output_float)
+  void play(std::array<double, period_size> &output_float)
   {
 
       while(!aval());
@@ -381,7 +381,7 @@ public:
       std::array<uint32_t, period_size> arr;
 
       auto ciabej =
-              [&](uint32_t &output, stk::StkFloat &input)
+              [&](uint32_t &output, double &input)
               {
                   //input *= 0.3;
 

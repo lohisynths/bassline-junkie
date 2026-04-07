@@ -76,50 +76,50 @@ public:
         voice_index = index;
     }
 
-	const stk::StkFloat env_range_in_notes = 12 * 4;
+	const double env_range_in_notes = 12 * 4;
 
 	struct mod_matrix_s
 	{
-		stk::StkFloat env0_amt=0;
-		stk::StkFloat env1_amt=0;
-		stk::StkFloat env2_amt=0;
+		double env0_amt=0;
+		double env1_amt=0;
+		double env2_amt=0;
 
-		stk::StkFloat lfo0_amt=0;
-		stk::StkFloat lfo1_amt=0;
-		stk::StkFloat lfo2_amt=0;
+		double lfo0_amt=0;
+		double lfo1_amt=0;
+		double lfo2_amt=0;
 	};
 
 	struct osc_mod_s
 	{
-		stk::StkFloat freq=0;
-		stk::StkFloat octave=0;
+		double freq=0;
+		double octave=0;
 
-		stk::StkFloat detune=0;
-		stk::StkFloat sin_level=0;
-		stk::StkFloat saw_level=0;
-		stk::StkFloat sqr_level=0;
-		stk::StkFloat rnd_level=0;
+		double detune=0;
+		double sin_level=0;
+		double saw_level=0;
+		double sqr_level=0;
+		double rnd_level=0;
 	};
 
 	mod_matrix_s mod_matrix[MATRIX_MOD_MATRIX_ITEMS];
 
 	struct flt_mod_struct
 	{
-		stk::StkFloat frequency=0;
-		stk::StkFloat resonance=0;
+		double frequency=0;
+		double resonance=0;
 		// 0..1 amount of keyboard tracking applied in note-space.
-		stk::StkFloat kbtrack=0;
+		double kbtrack=0;
         int type=0;
 	};
 
 	struct amp_mod_struct
 	{
-		stk::StkFloat velocity=0;
+		double velocity=0;
 	};
 
-	stk::StkFloat master_vol=0;
+	double master_vol=0;
 	// MIDI note used as the tracking source for the active voice.
-	stk::StkFloat current_note=57;
+	double current_note=57;
 
 	std::array<Lfo, 3> lfo;
 	std::array<ADSR, 3> env;
@@ -131,9 +131,9 @@ public:
 	amp_mod_struct amp_mod_matrix;
 
 
-stk::StkFloat  getModVal(int mod_nr)
+double  getModVal(int mod_nr)
 {
-	stk::StkFloat tmp;
+	double tmp;
 	tmp =  env[0].getOutput() * mod_matrix[mod_nr].env0_amt;
 	tmp += env[1].getOutput() * mod_matrix[mod_nr].env1_amt;
 	tmp += env[2].getOutput() * mod_matrix[mod_nr].env2_amt;
@@ -152,17 +152,16 @@ void updateOsc(Osc &osc, size_t osc_nr)
 	// * 12 for octave multiply
 	//auto octave = ( (uint_fast8_t)(osc_m[osc_nr].octave * 5)- 2) * 12;
 
-	//stk::StkFloat osc_freq = osc_m[osc_nr].freq + octave;
-    stk::StkFloat osc_freq = osc_m[osc_nr].freq;
+    double osc_freq = osc_m[osc_nr].freq;
 
 
 	osc_freq += getModVal(osc_nr*OSC_MOD_COUNT) * env_range_in_notes;
 	osc_freq += osc_m[osc_nr].detune * 1;
-	osc_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (osc_freq - 57.0) / 12.0 );
+	osc_freq = (double) 220.0 * stk::math::pow( 2.0, (osc_freq - 57.0) / 12.0 );
 
 	osc.setFrequency(osc_freq);
 
-	stk::StkFloat osc_level;
+	double osc_level;
 	osc_level = getModVal(1+(osc_nr*OSC_MOD_COUNT)) + osc_m[osc_nr].sin_level;
 	osc.set_sin_level(osc_level);
 
@@ -178,7 +177,7 @@ void updateOsc(Osc &osc, size_t osc_nr)
 
 void updateFilter(MoogFilter *filter)
 {
-	stk::StkFloat flt_freq = flt_mod_matrix.frequency;
+	double flt_freq = flt_mod_matrix.frequency;
 
 	auto tmp = getModVal(FLT_MOD_OFFSET) ;
 
@@ -186,7 +185,7 @@ void updateFilter(MoogFilter *filter)
 	flt_freq += (current_note - 57) * flt_mod_matrix.kbtrack;
 
 
-	flt_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (flt_freq - 57.0) / 12.0 );
+	flt_freq = (double) 220.0 * stk::math::pow( 2.0, (flt_freq - 57.0) / 12.0 );
 
 	if(flt_freq > 15000)flt_freq = 15000.; //moogfliter fixed upper limit to avoid aliasing
 
@@ -197,7 +196,7 @@ void updateFilter(MoogFilter *filter)
 
 void updateFilter(VAStateVariableFilter *filter)
 {
-    stk::StkFloat flt_freq = flt_mod_matrix.frequency;
+    double flt_freq = flt_mod_matrix.frequency;
 
     auto tmp = getModVal(FLT_MOD_OFFSET) ;
 
@@ -205,7 +204,7 @@ void updateFilter(VAStateVariableFilter *filter)
 	flt_freq += (current_note - 57) * flt_mod_matrix.kbtrack;
 
 
-    flt_freq = (stk::StkFloat) 220.0 * stk::math::pow( 2.0, (flt_freq - 57.0) / 12.0 );
+    flt_freq = (double) 220.0 * stk::math::pow( 2.0, (flt_freq - 57.0) / 12.0 );
 
     if(flt_freq > 22000)
         flt_freq = 22000.; //moogfliter fixed upper limit to avoid aliasing
@@ -251,9 +250,9 @@ struct MyCout
 
 void controlCange(uint8_t param, uint8_t value)
 {
-	const stk::StkFloat divider = 1. / 127.;
+	const double divider = 1. / 127.;
 
-	stk::StkFloat val=value;
+	double val=value;
 
 	if(param >= OSC_OFFSET && param < OSC_OFFSET+(OSC_NUMBER * OSC_PARAMS) )
 	{
@@ -459,9 +458,9 @@ void controlCange(uint8_t param, uint8_t value)
 
 }
 
-const stk::StkFloat divider = 1. / 127.;
+const double divider = 1. / 127.;
 
-void noteOn(stk::StkFloat note, stk::StkFloat vel)
+void noteOn(double note, double vel)
 {
 	current_note = note;
 	for(auto &osc_ : osc_m )

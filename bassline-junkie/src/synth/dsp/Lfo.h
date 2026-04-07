@@ -16,11 +16,11 @@ public:
 	Lfo();
 	virtual ~Lfo();
 
-	void setFrequency(stk::StkFloat freq);
+	void setFrequency(double freq);
 	void setShape(int shape);
 
-	stk::StkFloat tick();
-	stk::StkFloat get_value();
+	double tick();
+	double get_value();
 	void noteOn();
 	void reset();
     void set_sync(bool input) {

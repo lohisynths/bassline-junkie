@@ -15,7 +15,7 @@ void BlitSaw_tick(benchmark::State& state)
 {
     stk::Stk::setSampleRate(96000);
 	stk::BlitSaw osc;
-    stk::StkFloat  output[ARR_SIZE];
+    double  output[ARR_SIZE];
 
 	while (state.KeepRunning()) {
 		for(int i=0; i<ARR_SIZE; i++) {
@@ -41,7 +41,7 @@ void PolyBleepOsc_tick(benchmark::State& state)
     PolyBLEPOscillator osc;
     osc.setSampleRate(96000);
     osc.setMode(Oscillator::OSCILLATOR_MODE_SAW);
-    stk::StkFloat output[ARR_SIZE];
+    double output[ARR_SIZE];
 
     while (state.KeepRunning()) {
         for(int i=0; i<ARR_SIZE; i++) {
@@ -66,7 +66,7 @@ void StmPolyBleepOsc_tick(benchmark::State& state)
 {
     stmlib::Oscillator osc;
     osc.Init();
-    stk::StkFloat output[ARR_SIZE];
+    double output[ARR_SIZE];
 
     while (state.KeepRunning()) {
         for(int i=0; i<ARR_SIZE; i++) {
@@ -91,7 +91,7 @@ BENCHMARK(StmPolyBleepOsc_tick)->Arg(110)->Arg(440)->Arg(880);
 void PolyBleep_tick(benchmark::State& state)
 {
     static PolyBLEP osc(96000, PolyBLEP::SAWTOOTH, 440);
-    stk::StkFloat output[ARR_SIZE];
+    double output[ARR_SIZE];
 
     while (state.KeepRunning()) {
         for(int i=0; i<ARR_SIZE; i++) {

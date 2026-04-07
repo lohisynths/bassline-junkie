@@ -19,7 +19,7 @@ class Engine {
 
 private:
 	std::array<thread<buffer_size>, max_cores> cores;
-	std::array<stk::StkFloat, buffer_size> output_float;
+	std::array<double, buffer_size> output_float;
 	std::array<Voice<buffer_size>, voices_count> m_voices;
 
 	SerialReceiver messager;
@@ -48,7 +48,7 @@ public:
 		}
 	}
 
-	std::array<stk::StkFloat, buffer_size> &process()
+	std::array<double, buffer_size> &process()
 	{
 		if (!g_play)
 		{
@@ -78,7 +78,7 @@ public:
 		for (auto &voice : m_voices)
 		{
 			auto &voice_data = voice.get_array();
-			auto ciabej = [](stk::StkFloat &output, stk::StkFloat &input){ output += input; return output;};
+			auto ciabej = [](double &output, double &input){ output += input; return output;};
 			std::transform(output_float.begin(), output_float.end(), voice_data.begin(),output_float.begin(),ciabej);
 		}
 		return output_float;

@@ -32,7 +32,7 @@ public:
 		this->close();
 	}
 
-	void play(std::array<stk::StkFloat, buffer_size> &output)
+	void play(std::array<double, buffer_size> &output)
 	{
 		for(auto &it : output)
 		{

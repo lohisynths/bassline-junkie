@@ -31,7 +31,7 @@ void Lfo::setShape(int shape)
 }
 
 
-void Lfo::setFrequency(stk::StkFloat freq)
+void Lfo::setFrequency(double freq)
 {
 	osc.setFrequency(static_cast<float>(freq));
 }
@@ -42,13 +42,13 @@ void Lfo::noteOn() {
     }
 }
 
-stk::StkFloat Lfo::tick()
+double Lfo::tick()
 {
 	auto output = osc.nextSample();
 	return output;
 }
 
-stk::StkFloat Lfo::get_value()
+double Lfo::get_value()
 {
 	return osc.getSample();
 }

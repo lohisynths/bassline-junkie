@@ -21,22 +21,22 @@ class Osc
 public:
 	Osc();
 	virtual ~Osc();
-	StkFloat tick();
+	double tick();
 
-	void setFrequency(StkFloat freq);
-	void set_sin_level(StkFloat level);
-	void set_saw_level(StkFloat level);
-	void set_sqr_level(StkFloat level);
-	void set_noise_level(StkFloat level);
+	void setFrequency(double freq);
+	void set_sin_level(double level);
+	void set_saw_level(double level);
+	void set_sqr_level(double level);
+	void set_noise_level(double level);
 	void reset();
 
 
 private:
 	struct waves_level{
-		StkFloat sin_level;
-		StkFloat saw_level;
-		StkFloat sqr_level;
-		StkFloat rnd_level;
+		double sin_level;
+		double saw_level;
+		double sqr_level;
+		double rnd_level;
 	};
 	waves_level m_osc_ctrl;
 	SineWave m_sine;
