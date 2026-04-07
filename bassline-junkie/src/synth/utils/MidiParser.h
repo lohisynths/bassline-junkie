@@ -21,16 +21,14 @@ public:
 
 	void midiHandler(std::deque<uint8_t> &bytes);
 
-	MidiMessage* getMessage();
-
-	std::deque<MidiMessage> msg;
-
-	MidiMessage tmp;
+	MidiMessage getMessage();
 
 private:
 	void parsePendingBytes();
 	size_t getChannelMessageSize(uint8_t status) const;
 
+	std::deque<MidiMessage> msg;
+	MidiMessage build_tmp_;
 	std::deque<uint8_t> pending_bytes;
 	uint8_t running_status = 0;
 

@@ -153,35 +153,35 @@ void MidiParser::parsePendingBytes()
 
 		if (type == 0xB0)
 		{
-			tmp.m_type = MidiMessage::CC;
-			tmp.m_val_1 = intValue0;
-			tmp.m_val_2 = intValue1;
-			tmp.channel = channel;
-			msg.push_back(tmp);
+			build_tmp_.m_type = MidiMessage::CC;
+			build_tmp_.m_val_1 = intValue0;
+			build_tmp_.m_val_2 = intValue1;
+			build_tmp_.channel = channel;
+			msg.push_back(build_tmp_);
 		}
 		else if (type == 0x90)
 		{
 			if (intValue1 != 0)
 			{
-				tmp.m_type = MidiMessage::NOTE_ON;
+				build_tmp_.m_type = MidiMessage::NOTE_ON;
 			}
 			else
 			{
-				tmp.m_type = MidiMessage::NOTE_OFF;
+				build_tmp_.m_type = MidiMessage::NOTE_OFF;
 			}
 
-			tmp.m_val_1 = intValue0;
-			tmp.m_val_2 = intValue1;
-			tmp.channel = channel;
-			msg.push_back(tmp);
+			build_tmp_.m_val_1 = intValue0;
+			build_tmp_.m_val_2 = intValue1;
+			build_tmp_.channel = channel;
+			msg.push_back(build_tmp_);
 		}
 		else if (type == 0x80)
 		{
-			tmp.m_type = MidiMessage::NOTE_OFF;
-			tmp.m_val_1 = intValue0;
-			tmp.m_val_2 = intValue1;
-			tmp.channel = channel;
-			msg.push_back(tmp);
+			build_tmp_.m_type = MidiMessage::NOTE_OFF;
+			build_tmp_.m_val_1 = intValue0;
+			build_tmp_.m_val_2 = intValue1;
+			build_tmp_.channel = channel;
+			msg.push_back(build_tmp_);
 		}
 	}
 }
@@ -200,18 +200,15 @@ void MidiParser::midiHandler(std::deque<uint8_t> &bytes)
 }
 
 
-MidiMessage* MidiParser::getMessage()
+MidiMessage MidiParser::getMessage()
 {
-	MidiMessage* output=nullptr;
+	MidiMessage output;
 
 	if(msg.size() > 0)
 	{
-		tmp = msg.front();
+		output = msg.front();
 		msg.pop_front();
-
-		output = &tmp;
 	}
 
 	return output;
-
 }

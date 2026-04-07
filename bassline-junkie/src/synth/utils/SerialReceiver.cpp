@@ -109,7 +109,7 @@ std::deque<uint8_t> &SerialReceiver::getBuffer()
 	return vector_char;
 }
 
-MidiMessage* SerialReceiver::getMessage()
+MidiMessage SerialReceiver::getMessage()
 {
 	std::lock_guard<std::mutex> lock(m);
 	return midi_parser.getMessage();
