@@ -2,9 +2,8 @@
 #include <fstream>
 //#define DUMP_RESULTS 1
 
-#include "BlitSaw.h"
 #include "Blit.h"
-#include "BlitSquare.h"
+#include "dsp/BlitSaw.h"
 #include "dsp/PolyBLEPOscillator/PolyBLEPOscillator.h"
 #include "dsp/PolyBLEP/PolyBLEP.h"
 #include "dsp/stmlib_polybleep.h"
@@ -13,8 +12,8 @@
 
 void BlitSaw_tick(benchmark::State& state)
 {
-    stk::Stk::setSampleRate(96000);
-	stk::BlitSaw osc;
+	bassline::dsp::BlitSaw osc;
+    osc.setSampleRate(96000);
     double  output[ARR_SIZE];
 
 	while (state.KeepRunning()) {

@@ -8,13 +8,10 @@
 #ifndef OSC_H_
 #define OSC_H_
 
-#include "Stk.h"
 #include "BlitSaw.h"
 #include "BlitSquare.h"
 #include "Noise.h"
 #include "SineWave.h"
-
-using namespace stk;
 
 class Osc
 {
@@ -39,10 +36,10 @@ private:
 		double rnd_level;
 	};
 	waves_level m_osc_ctrl;
-	SineWave m_sine;
-	BlitSaw m_saw;
-	BlitSquare m_square;
-	Noise m_noise;
+	bassline::dsp::SineWave m_sine;
+	bassline::dsp::BlitSaw m_saw;
+	bassline::dsp::BlitSquare m_square;
+	bassline::dsp::Noise m_noise;
 };
 
 #endif /* OSC_H_ */
