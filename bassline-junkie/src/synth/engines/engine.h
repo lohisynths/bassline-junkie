@@ -141,10 +141,9 @@ public:
 						noteOn(msg);
 						break;
 					}
-					else
-						msg->m_type=MidiMessage::Type::NOTE_OFF;
-				} // ignore warning NoteOn with vel 0 = NoteOff
-
+					noteOff(msg);
+					break;
+				}
 				case MidiMessage::Type::NOTE_OFF:
 				{
 					noteOff(msg);
