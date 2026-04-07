@@ -11,7 +11,6 @@
 #include <algorithm>
 
 #include "utils/AudioDevice.h"
-#include "utils/AudioDeviceRt.h"
 #include "utils/cpucounter.h"
 #include "utils/wavwriter.h"
 #include "utils/concurency_helpers.h"
@@ -22,10 +21,7 @@ int main()
 {
 	signal(SIGINT, finish);
 
-	Stk::setSampleRate( 44100.0 );
-	Stk::showWarnings( true );
-
-	AudioDeviceRt<buffer_size> device;
+	AudioDevice<buffer_size> device;
 	cpu_counter licznik;
 
 	Engine<overall_voices_count, buffer_size> engine;
