@@ -1,6 +1,7 @@
-#include <algorithm>
+#include <array>
+#include <cmath>
+#include <string>
 
-#include "utils/AudioDeviceRt.h"
 #include "dsp/BlitSaw.h"
 #include "dsp/stmlib_polybleep.h"
 #include "dsp/PolyBLEPOscillator/PolyBLEPOscillator.h"
@@ -54,27 +55,6 @@ double tick_PolyBleep(double osc_freq) {
     static PolyBLEP osc(96000, PolyBLEP::SAWTOOTH, 440);
     osc.setFrequency(osc_freq);
     return osc.getAndInc();
-}
-
-void render_sweep(double (*f)(double), AudioDeviceRt<buffer_size> &device) {
-    bool play = true;
-    double freq = 12;
-    std::array<double, buffer_size> output;
-    while (play) {
-        for (int i = 0; i < buffer_size; i++) {
-            freq += 0.00005;
-            double osc_freq = (double) 440.0 * pow(2.0, (freq - 69.0) / 12.0);
-            if (osc_freq > 20000.) {
-                play = false;
-            }
-            output[i] = f(osc_freq);
-        }
-        device.play(output);
-    }
-
-    for(int i=0;i<sample_rate;i++) {
-        device.mute();
-    }
 }
 
 void render_sweep(double (*f)(double)) {
