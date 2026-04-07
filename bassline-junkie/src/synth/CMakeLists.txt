@@ -38,7 +38,7 @@ target_compile_options(${PROJECT_NAME}
     PRIVATE $<$<STREQUAL:$<CONFIGURATION>,RelWithDebInfo>:
         -Ofast -flto -Wall -Wextra -Wpedantic>
     PRIVATE $<$<STREQUAL:$<CONFIGURATION>,Debug>:
-        -Wall >
+        -Wall -Wextra -Wpedantic>
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
