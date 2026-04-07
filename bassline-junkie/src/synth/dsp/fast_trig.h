@@ -20,31 +20,30 @@ namespace math
 
 
 inline double fast_sin(double x) {
-    int32_t k;
-    double y;
-    double z;
+    constexpr double kInvPi = 0.31830988618379067154;
+    constexpr double kPi = 3.14159265358979323846;
+    constexpr double kMaxReducedInput = 1048576.0;
 
-    z  = x;
-    z *= 0.3183098861837907;
-    z += 6755399441055744.0;
-    std::memcpy(&k, &z, sizeof(k));
-    z  = k;
-    z *= 3.1415926535897932;
-    x -= z;
-    y  = x;
-    y *= x;
-    z  = 0.0073524681968701;
-    z *= y;
-    z -= 0.1652891139701474;
-    z *= y;
-    z += 0.9996919862959676;
-    x *= z;
-    k &= 1;
-    k += k;
-    z  = k;
-    z *= x;
-    x -= z;
-    return x;
+    if (!std::isfinite(x) || std::fabs(x) > kMaxReducedInput) {
+        return std::sin(x);
+    }
+
+    const auto turns = static_cast<std::int64_t>(std::nearbyint(x * kInvPi));
+    const double reduced = x - static_cast<double>(turns) * kPi;
+    const double reduced2 = reduced * reduced;
+
+    double y = reduced * (1.0 + reduced2 * (
+        -1.66666666666666324348e-1 + reduced2 * (
+         8.33333333332248946124e-3 + reduced2 * (
+        -1.98412698298579493134e-4 + reduced2 * (
+         2.75573137070700676789e-6 + reduced2 *
+        -2.50507602534068634195e-8)))));
+
+    if (turns & 1) {
+        y = -y;
+    }
+
+    return y;
 }
 
 inline double fastPow(double a, double b) {
@@ -83,7 +82,7 @@ inline double fastAtan(double x)
 
 inline double atan(double x)
 {
-    return fastAtan(x);
+    return std::atan(x);
 }
 
 inline double sin(double x)
@@ -133,7 +132,7 @@ inline double log(double x)
 
 inline double pow(double x, double y)
 {
-    return fastPow(x, y);
+    return std::pow(x, y);
 }
 
 inline double atan2(double x, double y)
