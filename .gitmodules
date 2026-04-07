@@ -1,5 +1,0 @@
-[submodule "stk"]
-	path = stk
-	url = https://github.com/lohisynths/stk.git
-	branch = x86
-	update = rebase

@@ -19,7 +19,6 @@
 #ifndef ADRS_h
 #define ADRS_h
 
-#include <Stk.h>
 class ADSR {
 public:
 	ADSR(void);

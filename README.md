@@ -10,7 +10,7 @@ init
 		* replace /home/alax/* with your path (sybolic links and '~/file*' won't work)
 	- initialize subrepos and look check toolchain
 		./init.sh
-	- crosscompile application and static version of stklib
+	- crosscompile application
 		./build
 	- binary is located in bassline-junkie/arm_debug folder; copy to 'home' raspi and run
 	- create plots folder in bassline junkie
@@ -24,8 +24,3 @@ init
 		* replace /home/alax/* with your path ( sybolic links and '~/file*' won't work)
 	  and make sure that 'Append variables to native environment' is selected below
 	
-libstk
-
-	- due to libstk build system limitations it isn't possible to build both release and debug versions of library.
-	- eclipse project files added with separate build configuration for debug/release
-	- 'lib' recipe added to makefile, sample applications ignored

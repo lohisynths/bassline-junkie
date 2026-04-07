@@ -56,12 +56,6 @@ function git_init {
 	git submodule init
 	git submodule update
 
-	cd stk
-	echo -e ${GREEN} 'updating stk subrepo' ${NC}
-	git checkout master
-	git pull
-	cd ../
-
 	cd benchmark
 	echo -e ${GREEN} 'updating google benchmark subrepo' ${NC}
 	git pull lohi v2
@@ -79,30 +73,8 @@ function configure {
 	cmake -DCMAKE_TOOLCHAIN_FILE=/home/alax/git/buildroot/output/host/share/buildroot/toolchainfile.cmake ../
 	cd ../../
 	echo "done"
-
-	cd stk
-	autoreconf
-
-	for i in "$@" ; do
-	    if [[ $i == "arm" ]] ; then
-		echo "arm configure !"
-		export 
-		CXXFLAGS="-O3 -mfpu=neon-vfpv4 -mfloat-abi=hard -funsafe-math-optimizations -ftree-vectorize" 
-		./configure --host=arm-linux-gnueabihf --build=x86_64-linux-gnu --enable-debug --with-alsa --disable-shared --enable-static
-		break
-	    elif [[ $i == "x86" ]] ; then
-		echo "x86 configure !"
-		./configure --enable-debug --with-alsa --disable-shared --enable-static
-		break
-	    else
-		echo "wrong configure !"
-		exit
-	    fi
-	done
-	cd ../
 }
 
 
 
 main "$@"
-

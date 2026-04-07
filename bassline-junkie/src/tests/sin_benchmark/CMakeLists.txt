@@ -14,14 +14,8 @@ add_executable(${PROJECT_NAME}
 )
 
 
-if(NOT CMAKE_SYSTEM_PROCESSOR MATCHES armv7l)
-    set(ADITIONAL_LIBS jack)
-endif()
-
 target_link_libraries(${PROJECT_NAME}
-    lohi::stk
     asound
-    ${ADITIONAL_LIBS}
     pthread
     benchmark
 )

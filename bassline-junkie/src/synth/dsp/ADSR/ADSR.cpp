@@ -21,9 +21,10 @@
 
 #include "ADSR.h"
 #include "../fast_trig.h"
+#include "../../config.h"
 
 ADSR::ADSR(void) {
-	sample_rate = stk::Stk::sampleRate();
+	sample_rate = ::sample_rate;
 	max_time = 2;
     reset();
     setAttackRate(0.001);

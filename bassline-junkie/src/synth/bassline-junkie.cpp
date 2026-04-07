@@ -3,20 +3,17 @@
 // Author      : alax
 // Version     : 0
 // Copyright   : TODO
-// Description : libasound + libstk C++ Hello World
+// Description : libasound C++ Hello World
 //============================================================================
 #include <signal.h>
 #include <sys/mman.h>
 #include <cstdio>
 #include <algorithm>
 
-#include <Stk.h>
-
 #include "utils/AudioDevice.h"
 #include "utils/cpucounter.h"
 #include "utils/wav_writer.h"
 #include "utils/concurency_helpers.h"
-#include <RtWvOut.h>
 #include "engines/engine.h"
 
 int main()
