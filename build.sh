@@ -6,7 +6,7 @@ CMAKE_PRIVATE_FLAGS=
 
 BUILD_SCRIPT_DIRECTORY=$(cd `dirname $0` && pwd)
 
-TOOLCHAIN_FILE=$BUILD_SCRIPT_DIRECTORY"/cmake/arm-linux-toolchain.cmake"
+
 
 function abort {
     echo "usage:"
@@ -40,6 +40,11 @@ elif [  "$1" = "gcc" ] ; then
     echo "Will use gcc [$CC_BIN] and g++ [$CXX_BIN]"
 elif [  "$1" = "arm" ] ; then
     echo "Building for arm with buildroot toolchain"
+    TOOLCHAIN_FILE=$BUILD_SCRIPT_DIRECTORY"/cmake/arm-linux-toolchain.cmake"
+    CMAKE_PRIVATE_FLAGS="-DCMAKE_TOOLCHAIN_FILE=$TOOLCHAIN_FILE"
+elif [  "$1" = "arm64" ] ; then
+    echo "Building for arm with buildroot toolchain"
+    TOOLCHAIN_FILE=$BUILD_SCRIPT_DIRECTORY"/cmake/aarch64-linux-toolchain.cmake"
     CMAKE_PRIVATE_FLAGS="-DCMAKE_TOOLCHAIN_FILE=$TOOLCHAIN_FILE"
 else
     echo "Wrong compiler selected"
