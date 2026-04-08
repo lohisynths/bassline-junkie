@@ -52,6 +52,21 @@ public:
 			core.stop();
 	}
 
+	/**
+	 * Send a one-byte ready signal to the hardware interface over UART so it
+	 * knows the DSP engine has finished initialising and is ready to receive
+	 * the preset dump.  0xFE is the MIDI Active Sensing byte – it is safe to
+	 * emit on the wire and will be silently discarded by any standard MIDI
+	 * parser on the other end.
+	 */
+	void send_ready()
+	{
+		const uint8_t ready_byte = 0xFE;
+		std::cout << "[Engine] send_ready: transmitting 0xFE (MIDI Active Sensing) to interface" << std::endl;
+		messager.writeBytes(&ready_byte, 1);
+		std::cout << "[Engine] send_ready: done" << std::endl;
+	}
+
 	std::array<double, buffer_size> &process()
 	{
 		if (!g_play)

@@ -32,6 +32,10 @@ int main()
 
 	Engine<overall_voices_count, buffer_size> engine;
 
+	// Notify the hardware interface that the DSP engine is fully initialised
+	// and ready to receive the preset dump.
+	engine.send_ready();
+
 	// Lock memory only after the audio/worker threads are alive.
 	// MCL_FUTURE can make thread creation fail on constrained Pi setups.
 	if (mlockall(MCL_CURRENT) != 0) {
