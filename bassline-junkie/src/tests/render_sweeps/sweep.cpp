@@ -52,7 +52,7 @@ double tick_stmlib_bleep(double osc_freq) {
     return out;
 }
 
-double tick_poly_bleep(double osc_freq) {
+double tick_PolyBLEPOscillator(double osc_freq) {
     static PolyBLEPOscillator osc;
     static bool init = false;
     float out;
@@ -99,7 +99,7 @@ int main() {
     render_sweep(tick_stk_blit_square, "stk_blit_square");
     render_sweep(tick_stmlib_bleep, "stmlib_bleep");
     render_sweep(tick_PolyBleep, "PolyBleep");
-    render_sweep(tick_poly_bleep, "poly_bleep");
+    render_sweep(tick_PolyBLEPOscillator, "PolyBLEPOscillator");
 
     return 0;
 }
