@@ -1,6 +1,7 @@
 #include "SineWave.h"
 
 #include "fast_trig.h"
+#include "../config.h"
 
 namespace bassline {
 namespace dsp {
@@ -16,7 +17,7 @@ SineWave::SineWave()
     : time_(0.0),
       rate_(1.0),
       phaseOffset_(0.0),
-      sampleRate_(44100.0) {
+      sampleRate_(sample_rate) {
     initTable();
 }
 

@@ -3,6 +3,7 @@
 #include <limits>
 
 #include "fast_trig.h"
+#include "../config.h"
 
 namespace bassline {
 namespace dsp {
@@ -16,7 +17,7 @@ BlitSquare::BlitSquare(double frequency)
     : nHarmonics_(0),
       m_(2),
       frequency_(220.0),
-      sampleRate_(44100.0),
+      sampleRate_(sample_rate),
       rate_(0.0),
       phase_(0.0),
       p_(0.0),
