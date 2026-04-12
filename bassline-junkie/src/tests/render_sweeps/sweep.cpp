@@ -5,6 +5,7 @@
 #include "dsp/fast_trig.h"
 #include "dsp/BlitSaw.h"
 #include "dsp/BlitSquare.h"
+#include "dsp/MinBLEPOscillator.h"
 #include "dsp/stmlib_polybleep.h"
 #include "dsp/PolyBLEPOscillator/PolyBLEPOscillator.h"
 #include "dsp/PolyBLEP/PolyBLEP.h"
@@ -65,6 +66,30 @@ double tick_PolyBLEPOscillator(double osc_freq) {
     return osc.nextSample();
 }
 
+double tick_minBLEP(double osc_freq) {
+    static bassline::dsp::MinBLEPOscillator osc;
+    static bool init = false;
+    if (!init) {
+        osc.setSampleRate(sample_rate);
+        init = true;
+    }
+    osc.setFrequency(osc_freq);
+    return osc.tick() * 0.8;
+}
+
+double tick_minBLEP_square(double osc_freq) {
+    static bassline::dsp::MinBLEPOscillator osc;
+    static bool init = false;
+    if (!init) {
+        osc.setSampleRate(sample_rate);
+        osc.setWaveform(bassline::dsp::MinBLEPOscillator::SQUARE);
+        osc.setPulseWidth(0.5);
+        init = true;
+    }
+    osc.setFrequency(osc_freq);
+    return osc.tick() * 0.8;
+}
+
 double tick_PolyBleep(double osc_freq) {
     static PolyBLEP osc(sample_rate, PolyBLEP::SAWTOOTH, 440);
     osc.setFrequency(osc_freq);
@@ -100,6 +125,8 @@ int main() {
     render_sweep(tick_stmlib_bleep, "stmlib_bleep");
     render_sweep(tick_PolyBleep, "PolyBleep");
     render_sweep(tick_PolyBLEPOscillator, "PolyBLEPOscillator");
+    render_sweep(tick_minBLEP, "minBLEP");
+    render_sweep(tick_minBLEP_square, "minBLEP_square");
 
     return 0;
 }
