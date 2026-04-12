@@ -112,7 +112,7 @@ void PolyBleep_tick(benchmark::State& state)
 }
 BENCHMARK(PolyBleep_tick)->Arg(110)->Arg(440)->Arg(880);
 
-void MinBLEP_tick(benchmark::State& state)
+void MinBLEP_saw_tick(benchmark::State& state)
 {
     bassline::dsp::MinBLEPOscillator osc;
     osc.setSampleRate(96000);
@@ -135,7 +135,7 @@ void MinBLEP_tick(benchmark::State& state)
             outfile_m.write((const char*)output, sizeof(output));
 #endif
 }
-BENCHMARK(MinBLEP_tick)->Arg(110)->Arg(440)->Arg(880);
+BENCHMARK(MinBLEP_saw_tick)->Arg(110)->Arg(440)->Arg(880);
 
 void MinBLEP_square_tick(benchmark::State& state)
 {
