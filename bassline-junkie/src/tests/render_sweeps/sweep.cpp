@@ -66,7 +66,7 @@ double tick_PolyBLEPOscillator(double osc_freq) {
     return osc.nextSample();
 }
 
-double tick_minBLEP(double osc_freq) {
+double tick_minBLEP_saw(double osc_freq) {
     static bassline::dsp::MinBLEPOscillator osc;
     static bool init = false;
     if (!init) {
@@ -125,7 +125,7 @@ int main() {
     render_sweep(tick_stmlib_bleep, "stmlib_bleep");
     render_sweep(tick_PolyBleep, "PolyBleep");
     render_sweep(tick_PolyBLEPOscillator, "PolyBLEPOscillator");
-    render_sweep(tick_minBLEP, "minBLEP");
+    render_sweep(tick_minBLEP_saw, "minBLEP_saw");
     render_sweep(tick_minBLEP_square, "minBLEP_square");
 
     return 0;
