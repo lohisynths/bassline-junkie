@@ -1,4 +1,5 @@
 #include "MinBLEPOscillator.h"
+#include "fast_trig.h"
 
 #include <cmath>
 #include <cstring>
@@ -190,7 +191,7 @@ double MinBLEPOscillator::tickSaw() {
     constexpr double kBlendEnd   = 1.0 / 4.0;   // ~11 kHz  @ 44.1 kHz
 
     if (ratio >= kBlendEnd) {
-        return std::sin(kTwoPi * delayedPhase);
+        return bassline::math::sin(kTwoPi * delayedPhase);
     }
 
     const double output = delayed + correction;
@@ -198,7 +199,7 @@ double MinBLEPOscillator::tickSaw() {
     if (ratio > kBlendStart) {
         double t = (ratio - kBlendStart) / (kBlendEnd - kBlendStart);
         t = t * t * (3.0 - 2.0 * t);  // smoothstep
-        const double sine = std::sin(kTwoPi * delayedPhase);
+        const double sine = bassline::math::sin(kTwoPi * delayedPhase);
         return output * (1.0 - t) + sine * t;
     }
 
@@ -255,7 +256,7 @@ double MinBLEPOscillator::tickSquare() {
     constexpr double kBlendEnd   = 1.0 / 6.0;   // ~7.4 kHz @ 44.1 kHz
 
     if (ratio >= kBlendEnd) {
-        return std::sin(kTwoPi * delayedPhase);
+        return bassline::math::sin(kTwoPi * delayedPhase);
     }
 
     const double output = delayed + correction;
@@ -263,7 +264,7 @@ double MinBLEPOscillator::tickSquare() {
     if (ratio > kBlendStart) {
         double t = (ratio - kBlendStart) / (kBlendEnd - kBlendStart);
         t = t * t * (3.0 - 2.0 * t);  // smoothstep
-        const double sine = std::sin(kTwoPi * delayedPhase);
+        const double sine = bassline::math::sin(kTwoPi * delayedPhase);
         return output * (1.0 - t) + sine * t;
     }
 
