@@ -74,7 +74,7 @@ double tick_minBLEP_saw(double osc_freq) {
         init = true;
     }
     osc.setFrequency(osc_freq);
-    return osc.tick() * 0.8;
+    return osc.tick();
 }
 
 double tick_minBLEP_square(double osc_freq) {
@@ -87,7 +87,7 @@ double tick_minBLEP_square(double osc_freq) {
         init = true;
     }
     osc.setFrequency(osc_freq);
-    return osc.tick() * 0.8;
+    return osc.tick();
 }
 
 double tick_PolyBleep(double osc_freq) {
@@ -112,7 +112,7 @@ void render_sweep(double (*f)(double), std::string name) {
             if (osc_freq > 20000.) {
                 play = false;
             }
-            output[i] = f(osc_freq);
+            output[i] = f(osc_freq) * 0.8;
         }
         pisacz.Write(&output[0], buffer_size);
     }
