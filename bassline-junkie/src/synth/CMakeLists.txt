@@ -18,6 +18,7 @@ add_executable(${PROJECT_NAME}
 	dsp/PolyBLEPOscillator/PolyBLEPOscillator.cpp
 	dsp/PolyBLEPOscillator/Oscillator.cpp
 	dsp/SineWave.cpp
+	dsp/WavetableOscillator.cpp
 	dsp/MoogFilter.cpp
 	dsp/ADSR/ADSR.cpp
 	utils/array_writer.cpp

@@ -7,6 +7,7 @@
 #include "dsp/MinBLEPOscillator.h"
 #include "dsp/PolyBLEPOscillator/PolyBLEPOscillator.h"
 #include "dsp/PolyBLEP/PolyBLEP.h"
+#include "dsp/WavetableOscillator.h"
 #include "dsp/stmlib_polybleep.h"
 
 #define ARR_SIZE 512
@@ -163,6 +164,74 @@ void MinBLEP_square_tick(benchmark::State& state)
 #endif
 }
 BENCHMARK(MinBLEP_square_tick)->Arg(110)->Arg(440)->Arg(880);
+
+void WavetableSine_tick(benchmark::State& state)
+{
+    bassline::dsp::WavetableOscillator osc;
+    osc.setSampleRate(96000);
+    osc.setWaveform(bassline::dsp::WavetableOscillator::SINE);
+    double output[ARR_SIZE];
+
+    while (state.KeepRunning()) {
+        for(int i=0; i<ARR_SIZE; i++) {
+            osc.setFrequency(state.range(0));
+            output[i] = osc.tick();
+        }
+        benchmark::DoNotOptimize(output);
+    }
+}
+BENCHMARK(WavetableSine_tick)->Arg(110)->Arg(440)->Arg(880);
+
+void WavetableSaw_tick(benchmark::State& state)
+{
+    bassline::dsp::WavetableOscillator osc;
+    osc.setSampleRate(96000);
+    osc.setWaveform(bassline::dsp::WavetableOscillator::SAW);
+    double output[ARR_SIZE];
+
+    while (state.KeepRunning()) {
+        for(int i=0; i<ARR_SIZE; i++) {
+            osc.setFrequency(state.range(0));
+            output[i] = osc.tick();
+        }
+        benchmark::DoNotOptimize(output);
+    }
+}
+BENCHMARK(WavetableSaw_tick)->Arg(110)->Arg(440)->Arg(880);
+
+void WavetableTriangle_tick(benchmark::State& state)
+{
+    bassline::dsp::WavetableOscillator osc;
+    osc.setSampleRate(96000);
+    osc.setWaveform(bassline::dsp::WavetableOscillator::TRIANGLE);
+    double output[ARR_SIZE];
+
+    while (state.KeepRunning()) {
+        for(int i=0; i<ARR_SIZE; i++) {
+            osc.setFrequency(state.range(0));
+            output[i] = osc.tick();
+        }
+        benchmark::DoNotOptimize(output);
+    }
+}
+BENCHMARK(WavetableTriangle_tick)->Arg(110)->Arg(440)->Arg(880);
+
+void WavetableSquare_tick(benchmark::State& state)
+{
+    bassline::dsp::WavetableOscillator osc;
+    osc.setSampleRate(96000);
+    osc.setWaveform(bassline::dsp::WavetableOscillator::SQUARE);
+    double output[ARR_SIZE];
+
+    while (state.KeepRunning()) {
+        for(int i=0; i<ARR_SIZE; i++) {
+            osc.setFrequency(state.range(0));
+            output[i] = osc.tick();
+        }
+        benchmark::DoNotOptimize(output);
+    }
+}
+BENCHMARK(WavetableSquare_tick)->Arg(110)->Arg(440)->Arg(880);
 
 
 BENCHMARK_MAIN();
