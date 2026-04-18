@@ -16,6 +16,7 @@ add_executable(${PROJECT_NAME}
 	../../synth/dsp/PolyBLEPOscillator/PolyBLEPOscillator.cpp
 	../../synth/dsp/PolyBLEP/PolyBLEP.cpp
 	../../synth/dsp/SineWave.cpp
+	../../synth/dsp/WavetableOscillator.cpp
 	osc_bench.cpp
 )
 

@@ -9,6 +9,7 @@
 #include "dsp/stmlib_polybleep.h"
 #include "dsp/PolyBLEPOscillator/PolyBLEPOscillator.h"
 #include "dsp/PolyBLEP/PolyBLEP.h"
+#include "dsp/WavetableOscillator.h"
 #include "wav_writer.h"
 
 const size_t buffer_size = 128;
@@ -96,6 +97,54 @@ double tick_PolyBleep(double osc_freq) {
     return osc.getAndInc();
 }
 
+double tick_wavetable_sine(double osc_freq) {
+    static bassline::dsp::WavetableOscillator osc;
+    static bool init = false;
+    if (!init) {
+        osc.setSampleRate(sample_rate);
+        osc.setWaveform(bassline::dsp::WavetableOscillator::SINE);
+        init = true;
+    }
+    osc.setFrequency(osc_freq);
+    return osc.tick();
+}
+
+double tick_wavetable_saw(double osc_freq) {
+    static bassline::dsp::WavetableOscillator osc;
+    static bool init = false;
+    if (!init) {
+        osc.setSampleRate(sample_rate);
+        osc.setWaveform(bassline::dsp::WavetableOscillator::SAW);
+        init = true;
+    }
+    osc.setFrequency(osc_freq);
+    return osc.tick();
+}
+
+double tick_wavetable_triangle(double osc_freq) {
+    static bassline::dsp::WavetableOscillator osc;
+    static bool init = false;
+    if (!init) {
+        osc.setSampleRate(sample_rate);
+        osc.setWaveform(bassline::dsp::WavetableOscillator::TRIANGLE);
+        init = true;
+    }
+    osc.setFrequency(osc_freq);
+    return osc.tick();
+}
+
+double tick_wavetable_square(double osc_freq) {
+    static bassline::dsp::WavetableOscillator osc;
+    static bool init = false;
+    if (!init) {
+        osc.setSampleRate(sample_rate);
+        osc.setWaveform(bassline::dsp::WavetableOscillator::SQUARE);
+        init = true;
+    }
+    osc.setFrequency(osc_freq);
+    return osc.tick();
+}
+
 void render_sweep(double (*f)(double), std::string name) {
     stmlib::WavWriter pisacz(1, sample_rate,30);
 
@@ -127,6 +176,10 @@ int main() {
     render_sweep(tick_PolyBLEPOscillator, "PolyBLEPOscillator");
     render_sweep(tick_minBLEP_saw, "minBLEP_saw");
     render_sweep(tick_minBLEP_square, "minBLEP_square");
+    render_sweep(tick_wavetable_sine, "wavetable_sine");
+    render_sweep(tick_wavetable_saw, "wavetable_saw");
+    render_sweep(tick_wavetable_triangle, "wavetable_triangle");
+    render_sweep(tick_wavetable_square, "wavetable_square");
 
     return 0;
 }
