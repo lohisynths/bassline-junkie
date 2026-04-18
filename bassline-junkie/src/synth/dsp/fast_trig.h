@@ -46,6 +46,34 @@ inline double fast_sin(double x) {
     return y;
 }
 
+inline double fast_cos(double x) {
+    constexpr double kInvPi = 0.31830988618379067154;
+    constexpr double kPi = 3.14159265358979323846;
+    constexpr double kMaxReducedInput = 1048576.0;
+
+    if (!std::isfinite(x) || std::fabs(x) > kMaxReducedInput) {
+        return std::cos(x);
+    }
+
+    const auto turns = static_cast<std::int64_t>(std::nearbyint(x * kInvPi));
+    const double reduced = x - static_cast<double>(turns) * kPi;
+    const double reduced2 = reduced * reduced;
+
+    double y = 1.0 + reduced2 * (
+        -5.00000000000000000000e-1 + reduced2 * (
+         4.16666666666665929218e-2 + reduced2 * (
+        -1.38888888888730564116e-3 + reduced2 * (
+         2.48015872888517045348e-5 + reduced2 * (
+        -2.75573141792967388112e-7 + reduced2 *
+         2.08757008419747316778e-9)))));
+
+    if (turns & 1) {
+        y = -y;
+    }
+
+    return y;
+}
+
 inline double fastPow(double a, double b) {
   union {
       double d;
@@ -100,7 +128,7 @@ inline double sin(double x)
 }
 inline double cos(double x)
 {
-    return std::cos(x);
+    return fast_cos(x);
 }
 
 inline double fabs(double x)
