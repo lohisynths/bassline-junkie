@@ -11,6 +11,43 @@
 #include "VAStateVariableFilter.h"
 #include "../config.h"
 
+#include <algorithm>
+
+namespace {
+constexpr double kLinearResLimit = 0.75;
+constexpr double kEffectiveResMax = 0.88;
+constexpr double kCompStartRes = 0.65;
+constexpr double kMaxCompDb = -6.0;
+
+double clampUserResonance(double resonance)
+{
+    return std::max(0.0, std::min(1.0, resonance));
+}
+
+double mapUserResonance(double resonance)
+{
+    if (resonance <= kLinearResLimit) {
+        return resonance;
+    }
+
+    const double t = (resonance - kLinearResLimit) / (1.0 - kLinearResLimit);
+    return kLinearResLimit
+        + (kEffectiveResMax - kLinearResLimit) * (1.0 - std::pow(1.0 - t, 3.0));
+}
+
+double resonanceCompGain(double effectiveResonance)
+{
+    if (effectiveResonance <= kCompStartRes) {
+        return 1.0;
+    }
+
+    const double t = (effectiveResonance - kCompStartRes)
+        / (kEffectiveResMax - kCompStartRes);
+    const double compDb = kMaxCompDb * t * t;
+    return std::pow(10.0, compDb / 20.0);
+}
+} // namespace
+
 //==============================================================================
 double resonanceToQ(double resonance)
 {
@@ -31,6 +68,7 @@ VAStateVariableFilter::VAStateVariableFilter()
     gCoeff = 1.0f;
     RCoeff = 1.0f;
     KCoeff = 0.0f;
+    outputGain = 1.0f;
 
     cutoffFreq = 1000.0f;
     Q = static_cast<float>(resonanceToQ(0.5));
@@ -72,7 +110,10 @@ void VAStateVariableFilter::setCutoff(const float& newCutoffFreq)
 void VAStateVariableFilter::setRes(const float& newResonance)
 {
     if (active) {
-        Q = static_cast<float>(resonanceToQ(newResonance));
+        const double userResonance = clampUserResonance(newResonance);
+        const double effectiveResonance = mapUserResonance(userResonance);
+        Q = static_cast<float>(resonanceToQ(effectiveResonance));
+        outputGain = static_cast<float>(resonanceCompGain(effectiveResonance));
         calcFilter();
     }
 }
@@ -81,6 +122,7 @@ void VAStateVariableFilter::setQ(const float& newQ)
 {
     if (active) {
         Q = newQ;
+        outputGain = 1.0f;
         calcFilter();
     }
 }
@@ -98,7 +140,10 @@ void VAStateVariableFilter::setFilter(const int& newType, const float& newCutoff
 {
     filterType = newType;
     cutoffFreq = newCutoffFreq;
-    Q = static_cast<float>(resonanceToQ(newResonance));
+    const double userResonance = clampUserResonance(newResonance);
+    const double effectiveResonance = mapUserResonance(userResonance);
+    Q = static_cast<float>(resonanceToQ(effectiveResonance));
+    outputGain = static_cast<float>(resonanceCompGain(effectiveResonance));
     shelfGain = newShelfGain;
     calcFilter();
 }
@@ -170,36 +215,44 @@ float VAStateVariableFilter::process(const float& input, const int& channelIndex
         z1_A[channelIndex] = gCoeff * HP + BP;		// unit delay (state variable)
         z2_A[channelIndex] = gCoeff * BP + LP;		// unit delay (state variable)
 
+        float output = 0.0f;
+        bool applyCompensation = false;
+
         // Selects which filter type this function will output.
         switch (filterType) {
         case SVFLowpass:
-            return LP;
+            output = LP;
+            applyCompensation = true;
             break;
         case SVFBandpass:
-            return BP;
+            output = BP;
+            applyCompensation = true;
             break;
         case SVFHighpass:
-            return HP;
+            output = HP;
+            applyCompensation = true;
             break;
         case SVFUnitGainBandpass:
-            return UBP;
+            output = UBP;
             break;
         case SVFBandShelving:
-            return BShelf;
+            output = BShelf;
             break;
         case SVFNotch:
-            return Notch;
+            output = Notch;
             break;
         case SVFAllpass:
-            return AP;
+            output = AP;
             break;
         case SVFPeak:
-            return Peak;
+            output = Peak;
             break;
         default:
-            return 0.0f;
+            output = 0.0f;
             break;
         }
+
+        return applyCompensation ? output * outputGain : output;
     }
     else {	// If not active, return input
         return input;
@@ -242,36 +295,44 @@ void VAStateVariableFilter::processAudioBlock(float* const samples,  const int& 
             z1_A[channelIndex] = gCoeff * HP + BP;		// unit delay (state variable)
             z2_A[channelIndex] = gCoeff * BP + LP;		// unit delay (state variable)
 
+            float output = 0.0f;
+            bool applyCompensation = false;
+
             // Selects which filter type this function will output.
             switch (filterType) {
             case SVFLowpass:
-                samples[i] = LP;
+                output = LP;
+                applyCompensation = true;
                 break;
             case SVFBandpass:
-                samples[i] = BP;
+                output = BP;
+                applyCompensation = true;
                 break;
             case SVFHighpass:
-                samples[i] = HP;
+                output = HP;
+                applyCompensation = true;
                 break;
             case SVFUnitGainBandpass:
-                samples[i] = UBP;
+                output = UBP;
                 break;
             case SVFBandShelving:
-                samples[i] = BShelf;
+                output = BShelf;
                 break;
             case SVFNotch:
-                samples[i] = Notch;
+                output = Notch;
                 break;
             case SVFAllpass:
-                samples[i] = AP;
+                output = AP;
                 break;
             case SVFPeak:
-                samples[i] = Peak;
+                output = Peak;
                 break;
             default:
-                samples[i] = 0.0f;
+                output = 0.0f;
                 break;
             }
+
+            samples[i] = applyCompensation ? output * outputGain : output;
         }
     }
 }
