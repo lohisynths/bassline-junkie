@@ -13,6 +13,7 @@ add_executable(${PROJECT_NAME}
 	dsp/BlitSquare.cpp
 	dsp/VAStateVariableFilter.cpp
 	dsp/Lfo.cpp
+	dsp/MinBLEPOscillator.cpp
 	dsp/Noise.cpp
 	dsp/Osc.cpp
 	dsp/SoftClipper.cpp

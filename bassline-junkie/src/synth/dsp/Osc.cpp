@@ -13,6 +13,7 @@ Osc::Osc() : m_osc_ctrl( waves_level{0,1,0,0} )
 	m_sine.setSampleRate(sample_rate);
 	m_saw.setSampleRate(sample_rate);
 	m_square.setSampleRate(sample_rate);
+	m_square.setWaveform(bassline::dsp::MinBLEPOscillator::SQUARE);
 }
 
 Osc::~Osc(){}
