@@ -14,6 +14,7 @@
 #include "dsp/Lfo.h"
 #include "dsp/MoogFilter.h"
 #include "dsp/Osc.h"
+#include "dsp/SoftClipper.h"
 
 #include "dsp/VAStateVariableFilter.h"
 
@@ -57,6 +58,9 @@ public:
 
 	void cc(double param, double val)
 	{
+		if (static_cast<uint8_t>(param) == 95) {
+			m_soft_clipper.setVolumeMidi(static_cast<uint8_t>(val));
+		}
 		m_modifiers.controlCange(param, val);
 	}
 
@@ -111,6 +115,7 @@ public:
 			output = filter.process( output );
 
 			output *= m_modifiers.master_vol;
+			output = m_soft_clipper.process(output);
 			sample = output;
 			//writer.process(adsr_tick);
 		}
@@ -121,6 +126,7 @@ private:
 	//MoogFilter filter;
 	VAStateVariableFilter filter;
 	std::array<Osc, 3> osc;
+	SoftClipper m_soft_clipper;
 	modifiers m_modifiers;
 	std::array<double, buffer_size> array;
 

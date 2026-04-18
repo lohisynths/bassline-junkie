@@ -15,6 +15,7 @@ add_executable(${PROJECT_NAME}
 	dsp/Lfo.cpp
 	dsp/Noise.cpp
 	dsp/Osc.cpp
+	dsp/SoftClipper.cpp
 	dsp/PolyBLEPOscillator/PolyBLEPOscillator.cpp
 	dsp/PolyBLEPOscillator/Oscillator.cpp
 	dsp/SineWave.cpp
