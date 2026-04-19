@@ -53,6 +53,7 @@ SerialReceiver::~SerialReceiver()
 void SerialReceiver::worker_thread()
 {
 	stick_this_thread_to_core(1);
+    set_pthread_params();
 
 	uint8_t buf[256];
 

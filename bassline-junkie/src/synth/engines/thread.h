@@ -51,6 +51,8 @@ public:
 	{
 		std::cout << __PRETTY_FUNCTION__ << " on cpu " << +m_cpu << std::endl;
 		stick_this_thread_to_core(m_cpu);
+	    set_pthread_params();
+
 		// Wait until main() sends data
 		while (g_play)
 		{
