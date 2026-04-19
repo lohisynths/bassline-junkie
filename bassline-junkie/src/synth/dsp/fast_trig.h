@@ -156,6 +156,11 @@ inline double exp(double x)
     return std::exp(x);
 }
 
+inline double exp2(double x)
+{
+    return std::exp2(x);
+}
+
 inline double ceil(double x)
 {
     return std::ceil(x);

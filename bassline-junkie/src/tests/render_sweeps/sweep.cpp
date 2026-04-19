@@ -157,7 +157,7 @@ void render_sweep(double (*f)(double), std::string name) {
     while (play) {
         for (int i = 0; i < buffer_size; i++) {
             freq += 0.00005;
-            double osc_freq = (double) 440.0 * bassline::math::pow(2.0, (freq - 69.0) / 12.0);
+            double osc_freq = 440.0 * bassline::math::exp2((freq - 69.0) / 12.0);
             if (osc_freq > 20000.) {
                 play = false;
             }
