@@ -1,7 +1,7 @@
 #ifndef BASSLINE_JUNKIE_SRC_SYNTH_DSP_NOISE_H_
 #define BASSLINE_JUNKIE_SRC_SYNTH_DSP_NOISE_H_
 
-#include <random>
+#include <cstdint>
 
 namespace bassline {
 namespace dsp {
@@ -15,8 +15,7 @@ public:
     double tick();
 
 private:
-    std::mt19937 generator_;
-    std::uniform_real_distribution<double> distribution_;
+    std::uint32_t state_;
 };
 
 }  // namespace dsp
