@@ -56,7 +56,7 @@ double resonanceToQ(double resonance)
 
 double pitchToFreq(double pitch)
 {
-    return pow(2, (pitch - 69) / 12) * 440;
+    return std::exp2((pitch - 69.0) / 12.0) * 440.0;
 }
 
 VAStateVariableFilter::VAStateVariableFilter()
