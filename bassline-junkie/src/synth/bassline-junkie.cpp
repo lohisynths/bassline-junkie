@@ -36,9 +36,9 @@ int main()
 	// and ready to receive the preset dump.
 	engine.send_ready();
 
-	// Lock memory only after the audio/worker threads are alive.
-	// MCL_FUTURE can make thread creation fail on constrained Pi setups.
-	if (mlockall(MCL_CURRENT) != 0) {
+	// Lock current mappings and future allocations after the audio/worker
+	// threads are alive so startup allocations are already in place.
+	if (mlockall(MCL_CURRENT | MCL_FUTURE) != 0) {
 		perror("mlockall");
 	}
 
