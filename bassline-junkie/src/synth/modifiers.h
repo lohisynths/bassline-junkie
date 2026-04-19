@@ -219,9 +219,7 @@ void updateFilter(VAStateVariableFilter *filter)
         filter_type = SVFHighpass;
     }
 
-    filter->setFilterType(filter_type);
-    filter->setCutoff(flt_freq);
-    filter->setRes(flt_mod_matrix.resonance);
+    filter->setFilter(filter_type, flt_freq, flt_mod_matrix.resonance, 1.0f);
 }
 
 #define DEBUG_MODIFIERS false
