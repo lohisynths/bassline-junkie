@@ -25,7 +25,7 @@
 
 ADSR::ADSR(void) {
 	sample_rate = ::sample_rate;
-	max_time = 2;
+	max_time = 4;
     reset();
     setAttackRate(0.001);
     setDecayRate(0.1);
