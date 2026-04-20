@@ -1,5 +1,4 @@
 #include <array>
-#include <cmath>
 #include <string>
 
 #include "dsp/fast_trig.h"

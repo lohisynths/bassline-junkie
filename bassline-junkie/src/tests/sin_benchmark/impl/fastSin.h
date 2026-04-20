@@ -8,6 +8,8 @@
 #ifndef SRC_TESTS_SIN_BENCHMARK_IMPL_FASTSIN_H_
 #define SRC_TESTS_SIN_BENCHMARK_IMPL_FASTSIN_H_
 
+#include "../../../synth/dsp/fast_trig.h"
+
 // https://stackoverflow.com/a/6091846
 template<typename T>
 T fastSin(T x ){

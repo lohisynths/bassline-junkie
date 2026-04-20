@@ -8,6 +8,8 @@
 #ifndef SRC_TESTS_SIN_BENCHMARK_IMPL_STD_SIN_H_
 #define SRC_TESTS_SIN_BENCHMARK_IMPL_STD_SIN_H_
 
+#include "../../../synth/dsp/fast_trig.h"
+
 template<typename T>
 T sin_std(T a) {
     return std::sin(a);

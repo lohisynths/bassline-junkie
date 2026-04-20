@@ -9,6 +9,7 @@
 */
 
 #include "VAStateVariableFilter.h"
+#include "fast_trig.h"
 #include "../config.h"
 
 #include <algorithm>
@@ -18,6 +19,7 @@ constexpr double kLinearResLimit = 0.75;
 constexpr double kEffectiveResMax = 0.88;
 constexpr double kCompStartRes = 0.65;
 constexpr double kMaxCompDb = -6.0;
+constexpr double kPi = 3.14159265358979323846;
 
 double clampUserResonance(double resonance)
 {
@@ -32,7 +34,8 @@ double mapUserResonance(double resonance)
 
     const double t = (resonance - kLinearResLimit) / (1.0 - kLinearResLimit);
     return kLinearResLimit
-        + (kEffectiveResMax - kLinearResLimit) * (1.0 - std::pow(1.0 - t, 3.0));
+        + (kEffectiveResMax - kLinearResLimit)
+            * (1.0 - bassline::math::pow(1.0 - t, 3.0));
 }
 
 double resonanceCompGain(double effectiveResonance)
@@ -44,7 +47,7 @@ double resonanceCompGain(double effectiveResonance)
     const double t = (effectiveResonance - kCompStartRes)
         / (kEffectiveResMax - kCompStartRes);
     const double compDb = kMaxCompDb * t * t;
-    return std::pow(10.0, compDb / 20.0);
+    return bassline::math::pow(10.0, compDb / 20.0);
 }
 } // namespace
 
@@ -56,7 +59,7 @@ double resonanceToQ(double resonance)
 
 double pitchToFreq(double pitch)
 {
-    return std::exp2((pitch - 69.0) / 12.0) * 440.0;
+    return bassline::math::exp2((pitch - 69.0) / 12.0) * 440.0;
 }
 
 VAStateVariableFilter::VAStateVariableFilter()
@@ -171,9 +174,10 @@ void VAStateVariableFilter::calcFilter()
     if (active) {
 
         // prewarp the cutoff (for bilinear-transform filters)
-        float wd = static_cast<float>(cutoffFreq * 2.0f * M_PI);
+        float wd = static_cast<float>(cutoffFreq * 2.0f * kPi);
         float T = 1.0f / (float)sampleRate;
-        float wa = (2.0f / T) * tan(wd * T / 2.0f);
+        float wa = static_cast<float>(
+            (2.0f / T) * bassline::math::tan(wd * T / 2.0f));
 
         // Calculate g (gain element of integrator)
         gCoeff = wa * T / 2.0f;			// Calculate g (gain element of integrator)

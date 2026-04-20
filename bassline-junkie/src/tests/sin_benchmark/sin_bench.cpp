@@ -1,6 +1,5 @@
 #include <benchmark/benchmark.h>
 #include <fstream>
-#include <cmath>
 
 #include "impl/fast_sin.h"
 #include "impl/fast_sin_w_round.h"
@@ -10,13 +9,14 @@
 
 const int LENGTH = 512;
 const int MIN_TIME = 1;
+constexpr double kPi = 3.14159265358979323846;
 
 
 template<typename T, typename OP>
 void sine_test(OP op, benchmark::State& state, std::string func) {
     T * output = new T[state.range(0)];
     const T one_over_length = 1. / ((T)state.range(0) / 2);
-    T _PI = M_PI;
+    T _PI = static_cast<T>(kPi);
 
     for (auto _ : state) {
         for(int i=0; i<state.range(0); i++) {

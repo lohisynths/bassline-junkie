@@ -100,7 +100,9 @@ void Oscillator::updateIncrement() {
     if (mPitchMod < 0) {
         pitchModAsFrequency = -pitchModAsFrequency;
     }
-    double calculatedFrequency = fmin(fmax(mFrequency + pitchModAsFrequency, 0), mSampleRate/2.0);
+    double calculatedFrequency = bassline::math::fmin(
+        bassline::math::fmax(mFrequency + pitchModAsFrequency, 0.0),
+        mSampleRate / 2.0);
     mPhaseIncrement = calculatedFrequency * 2 * mPI / mSampleRate;
 }
 

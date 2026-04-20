@@ -22,14 +22,13 @@ Permission has been granted to release this port under the WDL/IPlug license:
 */
 
 #include "PolyBLEP.h"
-
-#define _USE_MATH_DEFINES
-
-#include <math.h>
-#include <cmath>
+#include "../fast_trig.h"
 #include <cstdint>
 
-const double TWO_PI = 2 * M_PI;
+namespace {
+constexpr double kPi = 3.14159265358979323846;
+constexpr double kTwoPi = 2.0 * kPi;
+}
 
 template<typename T>
 inline T square_number(const T &x) {
@@ -164,19 +163,19 @@ double PolyBLEP::getAndInc() {
 }
 
 double PolyBLEP::sin() const {
-    return amplitude * std::sin(TWO_PI * t);
+    return amplitude * bassline::math::sin(kTwoPi * t);
 }
 
 double PolyBLEP::cos() const {
-    return amplitude * std::cos(TWO_PI * t);
+    return amplitude * bassline::math::cos(kTwoPi * t);
 }
 
 double PolyBLEP::half() const {
     double t2 = t + 0.5;
     t2 -= bitwiseOrZero(t2);
 
-    double y = (t < 0.5 ? 2 * std::sin(TWO_PI * t) - 2 / M_PI : -2 / M_PI);
-    y += TWO_PI * freqInSecondsPerSample * (blamp(t, freqInSecondsPerSample) + blamp(t2, freqInSecondsPerSample));
+    double y = (t < 0.5 ? 2 * bassline::math::sin(kTwoPi * t) - 2 / kPi : -2 / kPi);
+    y += kTwoPi * freqInSecondsPerSample * (blamp(t, freqInSecondsPerSample) + blamp(t2, freqInSecondsPerSample));
 
     return amplitude * y;
 }
@@ -185,8 +184,8 @@ double PolyBLEP::full() const {
     double _t = this->t + 0.25;
     _t -= bitwiseOrZero(_t);
 
-    double y = 2 * std::sin(M_PI * _t) - 4 / M_PI;
-    y += TWO_PI * freqInSecondsPerSample * blamp(_t, freqInSecondsPerSample);
+    double y = 2 * bassline::math::sin(kPi * _t) - 4 / kPi;
+    y += kTwoPi * freqInSecondsPerSample * blamp(_t, freqInSecondsPerSample);
 
     return amplitude * y;
 }
@@ -212,7 +211,9 @@ double PolyBLEP::tri() const {
 }
 
 double PolyBLEP::tri2() const {
-    double pulseWidth = std::fmax(0.0001, std::fmin(0.9999, this->pulseWidth));
+    double pulseWidth = bassline::math::fmax(
+        0.0001,
+        bassline::math::fmin(0.9999, this->pulseWidth));
 
     double t1 = t + 0.5 * pulseWidth;
     t1 -= bitwiseOrZero(t1);
@@ -265,7 +266,7 @@ double PolyBLEP::trap() const {
     } else if (y > 1) {
         y = 2 - y;
     }
-    y = std::fmax(-1, std::fmin(1, 2 * y));
+    y = bassline::math::fmax(-1.0, bassline::math::fmin(1.0, 2.0 * y));
 
     double t1 = t + 0.125;
     t1 -= bitwiseOrZero(t1);
@@ -289,7 +290,7 @@ double PolyBLEP::trap() const {
 }
 
 double PolyBLEP::trap2() const {
-    double pulseWidth = std::fmin(0.9999, this->pulseWidth);
+    double pulseWidth = bassline::math::fmin(0.9999, this->pulseWidth);
     double scale = 1 / (1 - pulseWidth);
 
     double y = 4 * t;
@@ -298,7 +299,7 @@ double PolyBLEP::trap2() const {
     } else if (y > 1) {
         y = 2 - y;
     }
-    y = std::fmax(-1, std::fmin(1, scale * y));
+    y = bassline::math::fmax(-1.0, bassline::math::fmin(1.0, scale * y));
 
     double t1 = t + 0.25 - 0.25 * pulseWidth;
     t1 -= bitwiseOrZero(t1);
