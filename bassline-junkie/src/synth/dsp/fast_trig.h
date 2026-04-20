@@ -185,6 +185,17 @@ inline double fmod(double x, double y)
 {
     return std::fmod(x,y);
 }
+
+inline double fmax(double x, double y)
+{
+    return std::fmax(x, y);
+}
+
+inline double fmin(double x, double y)
+{
+    return std::fmin(x, y);
+}
+
 #define RAND_MAX_2  2147483647
 
 inline unsigned long rand()
