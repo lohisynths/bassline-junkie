@@ -38,23 +38,6 @@ void addHarmonic(std::vector<double>& waveform, unsigned int harmonic, double am
     }
 }
 
-void removeDc(std::vector<double>& waveform) {
-    if (waveform.empty()) {
-        return;
-    }
-
-    double sum = 0.0;
-    for (std::size_t i = 0; i < waveform.size(); ++i) {
-        sum += waveform[i];
-    }
-
-    const double mean = sum / static_cast<double>(waveform.size());
-
-    for (std::size_t i = 0; i < waveform.size(); ++i) {
-        waveform[i] -= mean;
-    }
-}
-
 std::vector<float> buildIntegratedTable(const std::vector<double>& waveform) {
     std::vector<float> integrated(WavetableOscillator::kTableSize + 1u, 0.0f);
 
