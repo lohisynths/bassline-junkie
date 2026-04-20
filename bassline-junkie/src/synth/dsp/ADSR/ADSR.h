@@ -35,8 +35,9 @@ public:
     void setTargetRatioDR(double targetRatio);
     void reset(void);
     void setLoopOn(bool enabled) {
+        const bool was_looping = loop;
         loop = enabled;
-        if(!loop) {
+        if(was_looping && !loop) {
             state = env_release;
         }
     }
@@ -67,7 +68,7 @@ protected:
 	double decayBase;
 	double decayBaseLoop;
 	double releaseBase;
-    bool loop;
+    bool loop = false;
  
     double calcCoef(double rate, double targetRatio);
 };
