@@ -79,7 +79,7 @@ void SineWave::initTable() {
 
     const double step = 1.0 / static_cast<double>(kTableSize);
     for (unsigned long i = 0; i <= kTableSize; ++i) {
-        table_[i] = std::sin(kTwoPi * static_cast<double>(i) * step);
+        table_[i] = bassline::math::sin(kTwoPi * static_cast<double>(i) * step);
     }
 
     tableInitialized_ = true;

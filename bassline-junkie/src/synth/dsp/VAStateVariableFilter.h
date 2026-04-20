@@ -31,20 +31,6 @@
 #ifndef VASTATEVARIABLEFILTER_H_INCLUDED
 #define VASTATEVARIABLEFILTER_H_INCLUDED
 
-#define _USE_MATH_DEFINES		// to use M_PI
-
-//==============================================================================
-
-#include <cmath>
-
-//==============================================================================
-
-using std::pow;
-using std::tan;
-using std::sqrt;
-
-//==============================================================================
-
 /** The type of filter that the State Variable Filter will output. */
 enum SVFType {
     SVFLowpass = 0,

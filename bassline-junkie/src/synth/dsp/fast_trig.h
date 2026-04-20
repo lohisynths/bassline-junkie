@@ -121,6 +121,11 @@ inline double atan(double x)
     return std::atan(x);
 }
 
+inline double acos(double x)
+{
+    return std::acos(x);
+}
+
 inline double sin(double x)
 {
     return fast_sin(x);
@@ -149,6 +154,11 @@ inline double abs(double x)
 inline double sqrt(double x)
 {
     return std::sqrt(x);
+}
+
+inline double tan(double x)
+{
+    return std::tan(x);
 }
 
 inline double exp(double x)

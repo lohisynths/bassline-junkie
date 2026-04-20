@@ -9,7 +9,7 @@
 #ifndef __SpaceBass__Oscillator__
 #define __SpaceBass__Oscillator__
 
-#include <math.h>
+#include "../fast_trig.h"
 
 class Oscillator {
 public:
@@ -28,7 +28,7 @@ public:
     virtual double nextSample()=0;
     Oscillator() :
     mOscillatorMode(OSCILLATOR_MODE_SINE),
-    mPI(2*std::acos(0.0)),
+    mPI(2 * bassline::math::acos(0.0)),
     twoPI(2 * mPI),
     isMuted(true),
     mFrequency(440.0),

@@ -1,7 +1,6 @@
 #include "MinBLEPOscillator.h"
 #include "fast_trig.h"
 
-#include <cmath>
 #include <cstring>
 
 namespace bassline {
@@ -34,15 +33,15 @@ void MinBLEPOscillator::buildTable() {
         const double x = halfWidth * (2.0 * t - 1.0);
 
         // Normalised sinc: sin(pi*x) / (pi*x)
-        const double sinc = (std::fabs(x) < 1e-12)
+        const double sinc = (bassline::math::fabs(x) < 1e-12)
             ? 1.0
-            : std::sin(kPi * x) / (kPi * x);
+            : bassline::math::sin(kPi * x) / (kPi * x);
 
         // 4-term Blackman-Harris window: -92 dB sidelobe attenuation
         const double w = 0.35875
-            - 0.48829 * std::cos(kTwoPi * t)
-            + 0.14128 * std::cos(2.0 * kTwoPi * t)
-            - 0.01168 * std::cos(3.0 * kTwoPi * t);
+            - 0.48829 * bassline::math::cos(kTwoPi * t)
+            + 0.14128 * bassline::math::cos(2.0 * kTwoPi * t)
+            - 0.01168 * bassline::math::cos(3.0 * kTwoPi * t);
 
         runSum += sinc * w;
         blepTable_[i] = runSum;
@@ -50,7 +49,7 @@ void MinBLEPOscillator::buildTable() {
 
     // Normalise so the step goes from 0.0 to 1.0
     const double norm = blepTable_[N - 1];
-    if (std::fabs(norm) > 1e-10) {
+    if (bassline::math::fabs(norm) > 1e-10) {
         const double invNorm = 1.0 / norm;
         for (int i = 0; i < N; ++i)
             blepTable_[i] *= invNorm;

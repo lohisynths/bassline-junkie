@@ -1,7 +1,7 @@
 #include "WavetableOscillator.h"
+#include "fast_trig.h"
 
 #include <algorithm>
-#include <cmath>
 #include <limits>
 
 #include "../config.h"
@@ -22,8 +22,8 @@ void addHarmonic(std::vector<double>& waveform, unsigned int harmonic, double am
     const double angleStep =
         2.0 * kPi * static_cast<double>(harmonic)
         / static_cast<double>(WavetableOscillator::kTableSize);
-    const double sinStep = std::sin(angleStep);
-    const double cosStep = std::cos(angleStep);
+    const double sinStep = bassline::math::sin(angleStep);
+    const double cosStep = bassline::math::cos(angleStep);
 
     double sine = 0.0;
     double cosine = 1.0;
@@ -50,7 +50,7 @@ std::vector<float> buildIntegratedTable(const std::vector<double>& waveform) {
     integrated[WavetableOscillator::kTableSize] = static_cast<float>(cumulative);
 
     const double drift = cumulative;
-    if (std::fabs(drift) > std::numeric_limits<double>::epsilon()) {
+    if (bassline::math::fabs(drift) > std::numeric_limits<double>::epsilon()) {
         const double driftPerSample =
             drift / static_cast<double>(WavetableOscillator::kTableSize);
         for (std::size_t i = 0; i <= WavetableOscillator::kTableSize; ++i) {
@@ -145,7 +145,7 @@ double WavetableOscillator::tick() {
 }
 
 void WavetableOscillator::ensureBank(double sampleRate) {
-    if (bankInitialized_ && std::fabs(bank_.sampleRate - sampleRate) < 1e-9) {
+    if (bankInitialized_ && bassline::math::fabs(bank_.sampleRate - sampleRate) < 1e-9) {
         return;
     }
 
@@ -191,7 +191,7 @@ std::vector<WavetableOscillator::Table> WavetableOscillator::buildTables(
             return 0.0;
         }();
 
-        if (std::fabs(amplitude) <= std::numeric_limits<double>::epsilon()) {
+        if (bassline::math::fabs(amplitude) <= std::numeric_limits<double>::epsilon()) {
             continue;
         }
 
@@ -296,7 +296,8 @@ void WavetableOscillator::updateTableIndex() {
     }
 
     const double nyquist = 0.5 * sampleRate_;
-    unsigned int allowedHarmonic = static_cast<unsigned int>(std::floor(nyquist / frequency_));
+    unsigned int allowedHarmonic =
+        static_cast<unsigned int>(bassline::math::floor(nyquist / frequency_));
     if (allowedHarmonic < 1u) {
         allowedHarmonic = 1u;
     }
