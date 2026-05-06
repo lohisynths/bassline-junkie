@@ -96,10 +96,11 @@ public:
 		// reset buffer
 		std::fill(std::begin(output_float), std::end(output_float), 0);
 		// fill output buffer with data
+		constexpr double voice_mix_gain = 1.0 / static_cast<double>(voices_count);
 		for (auto &voice : m_voices)
 		{
 			auto &voice_data = voice.get_array();
-			auto ciabej = [](double &output, double &input){ output += input; return output;};
+			auto ciabej = [](double &output, double &input){ output += input * voice_mix_gain; return output;};
 			std::transform(output_float.begin(), output_float.end(), voice_data.begin(),output_float.begin(),ciabej);
 		}
 		return output_float;
