@@ -8,8 +8,7 @@
 #ifndef OSC_H_
 #define OSC_H_
 
-#include "BlitSaw.h"
-#include "BlitSquare.h"
+#include "MinBLEPOscillator.h"
 #include "Noise.h"
 #include "SineWave.h"
 
@@ -37,8 +36,8 @@ private:
 	};
 	waves_level m_osc_ctrl;
 	bassline::dsp::SineWave m_sine;
-	bassline::dsp::BlitSaw m_saw;
-	bassline::dsp::BlitSquare m_square;
+	bassline::dsp::MinBLEPOscillator m_saw;
+	bassline::dsp::MinBLEPOscillator m_square;
 	bassline::dsp::Noise m_noise;
 };
 

@@ -9,8 +9,7 @@ endif()
 # Create the executable
 add_executable(${PROJECT_NAME}
 	bassline-junkie.cpp
-	dsp/BlitSaw.cpp
-	dsp/BlitSquare.cpp
+	dsp/MinBLEPOscillator.cpp
 	dsp/VAStateVariableFilter.cpp
 	dsp/Lfo.cpp
 	dsp/Noise.cpp
