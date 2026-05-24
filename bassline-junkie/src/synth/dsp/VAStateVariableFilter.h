@@ -161,7 +161,6 @@ private:
     float gCoeff;		// gain element
     float RCoeff;		// feedback damping element
     float KCoeff;		// shelf gain element
-    float outputGain;
 
     float z1_A[2], z2_A[2];		// state variables (z^-1)
 
