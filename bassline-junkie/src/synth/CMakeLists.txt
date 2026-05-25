@@ -1,16 +1,13 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.12)
 
 project(bassline-junkie VERSION 0.0.0 LANGUAGES CXX)
 find_package(ALSA REQUIRED)
-if( NOT ALSA_FOUND )
-    #message(FATAL_ERROR "The process is not interrupted!")
-endif()
+find_package(Threads REQUIRED)
 
 # Create the executable
 add_executable(${PROJECT_NAME}
 	bassline-junkie.cpp
-	dsp/BlitSaw.cpp
-	dsp/BlitSquare.cpp
+	dsp/MinBLEPOscillator.cpp
 	dsp/VAStateVariableFilter.cpp
 	dsp/Lfo.cpp
 	dsp/Noise.cpp
@@ -29,8 +26,9 @@ add_executable(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME}
-    asound
-    pthread
+    PRIVATE
+        ALSA::ALSA
+        Threads::Threads
 )
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_11 cxx_thread_local)

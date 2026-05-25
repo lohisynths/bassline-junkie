@@ -74,6 +74,34 @@ inline double fast_cos(double x) {
     return y;
 }
 
+inline double fast_tanh(double x) {
+    constexpr double kLimit = 5.0;
+
+    if (x >= kLimit) {
+        return 1.0;
+    }
+    if (x <= -kLimit) {
+        return -1.0;
+    }
+
+    const double x2 = x * x;
+    const double y = x * (135135.0 + x2 * (
+        17325.0 + x2 * (
+          378.0 + x2))) /
+        (135135.0 + x2 * (
+         62370.0 + x2 * (
+          3150.0 + 28.0 * x2)));
+
+    if (y > 1.0) {
+        return 1.0;
+    }
+    if (y < -1.0) {
+        return -1.0;
+    }
+
+    return y;
+}
+
 inline double fastPow(double a, double b) {
   union {
       double d;
@@ -159,6 +187,11 @@ inline double sqrt(double x)
 inline double tan(double x)
 {
     return std::tan(x);
+}
+
+inline double tanh(double x)
+{
+    return fast_tanh(x);
 }
 
 inline double exp(double x)

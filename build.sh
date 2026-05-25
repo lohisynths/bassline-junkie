@@ -1,6 +1,6 @@
 #!/bin/bash
 # Ubuntu supports multiple versions of clang to be installed at the same time.
-# The tests need to determin the clang binary before calling cmake
+# The tests need to determine the clang binary before calling cmake
 
 CMAKE_PRIVATE_FLAGS=
 
@@ -10,7 +10,7 @@ BUILD_SCRIPT_DIRECTORY=$(cd `dirname $0` && pwd)
 
 function abort {
     echo "usage:"
-    echo "       build.sh { clang | gcc } {Release | Debug}"
+    echo "       build.sh { clang | gcc | arm64 } {Release | Debug}"
     exit
 }
 
@@ -38,12 +38,8 @@ elif [  "$1" = "gcc" ] ; then
     fi
     CMAKE_PRIVATE_FLAGS="$CMAKE_PRIVATE_FLAGS -DCMAKE_CXX_COMPILER=$CXX_BIN"
     echo "Will use gcc [$CC_BIN] and g++ [$CXX_BIN]"
-elif [  "$1" = "arm" ] ; then
-    echo "Building for arm with buildroot toolchain"
-    TOOLCHAIN_FILE=$BUILD_SCRIPT_DIRECTORY"/cmake/arm-linux-toolchain.cmake"
-    CMAKE_PRIVATE_FLAGS="-DCMAKE_TOOLCHAIN_FILE=$TOOLCHAIN_FILE"
 elif [  "$1" = "arm64" ] ; then
-    echo "Building for arm with buildroot toolchain"
+    echo "Building for arm64 with buildroot toolchain"
     TOOLCHAIN_FILE=$BUILD_SCRIPT_DIRECTORY"/cmake/aarch64-linux-toolchain.cmake"
     CMAKE_PRIVATE_FLAGS="-DCMAKE_TOOLCHAIN_FILE=$TOOLCHAIN_FILE"
 else
@@ -66,4 +62,3 @@ else
 fi
 
 make -j 8
-

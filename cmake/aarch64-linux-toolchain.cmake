@@ -56,9 +56,8 @@ string(REPLACE "/share/buildroot" "" RELOCATED_HOST_DIR ${CMAKE_TOOLCHAIN_PATH})
 # so that it can find our custom platform description.
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR})
 
-set(CMAKE_SYSTEM_NAME Buildroot)
-set(CMAKE_SYSTEM_PROCESSOR armv7l)
-set(CMAKE_SYSTEM_NAME Generic)
+set(CMAKE_SYSTEM_NAME Linux)
+set(CMAKE_SYSTEM_PROCESSOR aarch64)
 
 # Set the {C,CXX}FLAGS appended by CMake depending on the build type
 # defined by Buildroot. CMake defaults these variables with -g and/or
@@ -92,13 +91,13 @@ set(CMAKE_BUILD_TYPE Release CACHE STRING "Buildroot build configuration")
 set(CMAKE_INSTALL_SO_NO_EXE 0)
 
 set(CMAKE_PROGRAM_PATH "${RELOCATED_HOST_DIR}/bin")
-set(BUILDROOT_SYSROOT "${RELOCATED_HOST_DIR}/aarch64-buildroot-linux-gnueabihf/sysroot")
-set(CMAKE_FIND_ROOT_PATH "${RELOCATED_HOST_DIR}/aarch64-buildroot-linux-gnueabihf/sysroot")
+set(BUILDROOT_SYSROOT "${RELOCATED_HOST_DIR}/aarch64-buildroot-linux-gnu/sysroot")
+set(CMAKE_FIND_ROOT_PATH "${BUILDROOT_SYSROOT}")
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
-set(ENV{PKG_CONFIG_SYSROOT_DIR} "${RELOCATED_HOST_DIR}/arm-buildroot-linux-gnueabihf/sysroot")
+set(ENV{PKG_CONFIG_SYSROOT_DIR} "${BUILDROOT_SYSROOT}")
 
 # This toolchain file can be used both inside and outside Buildroot.
 set(CMAKE_C_COMPILER "${RELOCATED_HOST_DIR}/bin/aarch64-linux-gcc")
