@@ -1,10 +1,8 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.12)
 
 project(osc_benchmark VERSION 0.0.0 LANGUAGES CXX)
 find_package(ALSA REQUIRED)
-if(NOT ALSA_FOUND )
-    message(MESSAGE_FATAL "The process is not interrupted!")
-endif()
+find_package(Threads REQUIRED)
 
 # Create the executable
 add_executable(${PROJECT_NAME}
@@ -22,9 +20,10 @@ add_executable(${PROJECT_NAME}
 
 
 target_link_libraries(${PROJECT_NAME}
-    asound
-    pthread
-    benchmark
+    PRIVATE
+        ALSA::ALSA
+        Threads::Threads
+        benchmark
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
