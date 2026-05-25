@@ -13,9 +13,22 @@
 #include "../config.h"
 
 //==============================================================================
+
 double resonanceToQ(double resonance)
 {
     return 1.0 / (2.0 * (1.0 - resonance));
+}
+
+float qToResonanceGainCompensation(const float& q)
+{
+    // Resonance starts boosting the cutoff peak above unity when Q > 1.
+    // Keep this as a gentle trim so high resonance does not crush the whole signal.
+    if (q <= 1.0f) {
+        return 1.0f;
+    }
+
+    const float maxGainReduction = 0.45f;
+    return 1.0f - maxGainReduction * (1.0f - (1.0f / q));
 }
 
 double pitchToFreq(double pitch)
@@ -35,6 +48,7 @@ VAStateVariableFilter::VAStateVariableFilter()
 
     cutoffFreq = 1000.0f;
     Q = static_cast<float>(resonanceToQ(0.5));
+    resonanceGainCompensation = qToResonanceGainCompensation(Q);
 
     z1_A[0] = z2_A[0] = 0.0f;
     z1_A[1] = z2_A[1] = 0.0f;
@@ -74,6 +88,7 @@ void VAStateVariableFilter::setRes(const float& newResonance)
 {
     if (active) {
         Q = static_cast<float>(resonanceToQ(newResonance));
+        resonanceGainCompensation = qToResonanceGainCompensation(Q);
         calcFilter();
     }
 }
@@ -82,6 +97,7 @@ void VAStateVariableFilter::setQ(const float& newQ)
 {
     if (active) {
         Q = newQ;
+        resonanceGainCompensation = qToResonanceGainCompensation(Q);
         calcFilter();
     }
 }
@@ -100,6 +116,7 @@ void VAStateVariableFilter::setFilter(const int& newType, const float& newCutoff
     filterType = newType;
     cutoffFreq = newCutoffFreq;
     Q = static_cast<float>(resonanceToQ(newResonance));
+    resonanceGainCompensation = qToResonanceGainCompensation(Q);
     shelfGain = newShelfGain;
     calcFilter();
 }
@@ -174,13 +191,13 @@ float VAStateVariableFilter::process(const float& input, const int& channelIndex
         // Selects which filter type this function will output.
         switch (filterType) {
         case SVFLowpass:
-            return LP;
+            return LP * resonanceGainCompensation;
             break;
         case SVFBandpass:
-            return BP;
+            return BP * resonanceGainCompensation;
             break;
         case SVFHighpass:
-            return HP;
+            return HP * resonanceGainCompensation;
             break;
         case SVFUnitGainBandpass:
             return UBP;
@@ -245,13 +262,13 @@ void VAStateVariableFilter::processAudioBlock(float* const samples,  const int& 
             // Selects which filter type this function will output.
             switch (filterType) {
             case SVFLowpass:
-                samples[i] = LP;
+                samples[i] = LP * resonanceGainCompensation;
                 break;
             case SVFBandpass:
-                samples[i] = BP;
+                samples[i] = BP * resonanceGainCompensation;
                 break;
             case SVFHighpass:
-                samples[i] = HP;
+                samples[i] = HP * resonanceGainCompensation;
                 break;
             case SVFUnitGainBandpass:
                 samples[i] = UBP;

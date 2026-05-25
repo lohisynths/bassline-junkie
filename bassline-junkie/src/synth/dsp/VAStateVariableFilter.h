@@ -153,6 +153,7 @@ private:
     float cutoffFreq;
     float Q;
     float shelfGain;
+    float resonanceGainCompensation;
 
     float sampleRate;
     bool active = true;	// is the filter processing or not
