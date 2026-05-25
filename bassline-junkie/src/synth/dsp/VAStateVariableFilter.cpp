@@ -198,7 +198,7 @@ float VAStateVariableFilter::process(const float& input, const int& channelIndex
             return Peak;
             break;
         default:
-            break;
+            return input;
         }
     }
     else {	// If not active, return input
