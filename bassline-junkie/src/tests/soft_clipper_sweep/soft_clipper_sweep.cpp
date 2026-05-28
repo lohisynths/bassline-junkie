@@ -2,6 +2,7 @@
 #include <string>
 
 #include "dsp/SineWave.h"
+#include "dsp/SoftClipper/TanhAdaaSoftClipper.h"
 #include "dsp/SoftClipper/TanhSoftClipper.h"
 #include "dsp/fast_trig.h"
 #include "wav_writer.h"
@@ -10,10 +11,10 @@ const size_t render_buffer_size = 128;
 const size_t render_sample_rate = 48000;
 const double soft_clip_drive = 8.0;
 
-double tick_sine_soft_clipper(double osc_freq)
+double tick_sine_soft_clipper_halfband(double osc_freq)
 {
     static bassline::dsp::SineWave osc;
-    static bassline::dsp::TanhSoftClipper<4, bassline::dsp::BiquadLowPassFilter> soft_clipper;
+    static bassline::dsp::TanhSoftClipper<8, bassline::dsp::HalfBandIir2x> soft_clipper;
     static bool init = false;
 
     if (!init) {
@@ -22,7 +23,22 @@ double tick_sine_soft_clipper(double osc_freq)
     }
 
     osc.setFrequency(osc_freq);
-    return soft_clipper.process(osc.tick(), soft_clip_drive);
+    return soft_clipper.process(osc.tick(), soft_clip_drive) * 0.5;
+}
+
+double tick_sine_soft_clipper_halfband_adaa(double osc_freq)
+{
+    static bassline::dsp::SineWave osc;
+    static bassline::dsp::TanhAdaaSoftClipper<8, bassline::dsp::HalfBandIir2x> soft_clipper;
+    static bool init = false;
+
+    if (!init) {
+        osc.setSampleRate(render_sample_rate);
+        init = true;
+    }
+
+    osc.setFrequency(osc_freq);
+    return soft_clipper.process(osc.tick(), soft_clip_drive) * 0.5;
 }
 
 void render_sweep(double (*f)(double), std::string name)
@@ -50,6 +66,7 @@ void render_sweep(double (*f)(double), std::string name)
 
 int main()
 {
-    render_sweep(tick_sine_soft_clipper, "sine_soft_clipper_drive_8");
+    render_sweep(tick_sine_soft_clipper_halfband, "sine_soft_clipper_drive_8_8x_halfband");
+    render_sweep(tick_sine_soft_clipper_halfband_adaa, "sine_soft_clipper_drive_8_8x_halfband_adaa");
     return 0;
 }

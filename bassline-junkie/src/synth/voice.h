@@ -14,7 +14,7 @@
 #include "dsp/Lfo.h"
 #include "dsp/MoogFilter.h"
 #include "dsp/Osc.h"
-#include "dsp/SoftClipper/TanhSoftClipper.h"
+#include "dsp/SoftClipper/TanhAdaaSoftClipper.h"
 
 #include "dsp/VAStateVariableFilter.h"
 
@@ -122,7 +122,7 @@ private:
 
 	//MoogFilter filter;
 	VAStateVariableFilter filter;
-	bassline::dsp::TanhSoftClipper<4, bassline::dsp::BiquadLowPassFilter> m_soft_clipper;
+	bassline::dsp::TanhAdaaSoftClipper<8, bassline::dsp::HalfBandIir2x> m_soft_clipper;
 	std::array<Osc, 3> osc;
 	modifiers m_modifiers;
 	std::array<double, buffer_size> array;

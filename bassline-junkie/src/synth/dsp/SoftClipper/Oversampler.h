@@ -1,17 +1,30 @@
 #ifndef SRC_SYNTH_DSP_SOFTCLIPPER_OVERSAMPLER_H_
 #define SRC_SYNTH_DSP_SOFTCLIPPER_OVERSAMPLER_H_
 
+#include <array>
 #include <cstddef>
 #include <cmath>
 
+#include "HalfBandIir2x.h"
 #include "../../config.h"
 
 namespace bassline {
 namespace dsp {
 
-template <size_t Factor, typename Filter>
+template <size_t Factor, typename Stage = HalfBandIir2x>
 class Oversampler {
-    static_assert(Factor > 0, "Oversampling factor must be greater than zero");
+    static constexpr bool isPowerOfTwo(size_t value)
+    {
+        return value != 0 && ((value & (value - 1)) == 0);
+    }
+
+    static constexpr size_t stageCount(size_t value)
+    {
+        return value <= 1 ? 0 : 1 + stageCount(value / 2);
+    }
+
+    static_assert(Factor >= 2, "Oversampling factor must be at least 2");
+    static_assert(isPowerOfTwo(Factor), "Oversampling factor must be a power of two");
 
 public:
     explicit Oversampler(double baseSampleRate = sample_rate)
@@ -26,43 +39,62 @@ public:
         }
 
         m_base_sample_rate = baseSampleRate;
-        const double oversampled_rate = m_base_sample_rate * static_cast<double>(Factor);
-        const double cutoff = m_base_sample_rate * 0.45;
-
-        m_pre_filter.setSampleRate(oversampled_rate);
-        m_pre_filter.setCutoff(cutoff);
-        m_post_filter.setSampleRate(oversampled_rate);
-        m_post_filter.setCutoff(cutoff);
     }
 
     void reset(double value = 0.0)
     {
-        m_previous_input = value;
-        m_pre_filter.reset(value);
-        m_post_filter.reset(value);
+        for (auto& stage : m_up_stages) {
+            stage.reset(value);
+        }
+        for (auto& stage : m_down_stages) {
+            stage.reset(value);
+        }
     }
 
     template <typename Processor>
     double process(double input, Processor processor)
     {
-        double output = 0.0;
+        std::array<double, Factor> samples;
+        std::array<double, Factor> scratch;
+        samples[0] = input;
 
-        for (size_t i = 0; i < Factor; ++i) {
-            const double t = static_cast<double>(i + 1) / static_cast<double>(Factor);
-            const double interpolated = m_previous_input + ((input - m_previous_input) * t);
-            const double filtered_input = m_pre_filter.process(interpolated);
-            output = m_post_filter.process(processor(filtered_input));
+        size_t sample_count = 1;
+        for (size_t stage = 0; stage < kStageCount; ++stage) {
+            for (size_t i = 0; i < sample_count; ++i) {
+                double even;
+                double odd;
+                m_up_stages[stage].processUpsample(samples[i], even, odd);
+                scratch[i * 2] = even;
+                scratch[(i * 2) + 1] = odd;
+            }
+            sample_count *= 2;
+            for (size_t i = 0; i < sample_count; ++i) {
+                samples[i] = scratch[i];
+            }
         }
 
-        m_previous_input = input;
-        return output;
+        for (size_t i = 0; i < Factor; ++i) {
+            samples[i] = processor(samples[i]);
+        }
+
+        for (size_t stage = kStageCount; stage > 0; --stage) {
+            Stage& down_stage = m_down_stages[stage - 1];
+            const size_t next_sample_count = sample_count / 2;
+            for (size_t i = 0; i < next_sample_count; ++i) {
+                samples[i] = down_stage.processDownsample(samples[i * 2], samples[(i * 2) + 1]);
+            }
+            sample_count = next_sample_count;
+        }
+
+        return samples[0];
     }
 
 private:
+    static const size_t kStageCount = stageCount(Factor);
+
     double m_base_sample_rate = sample_rate;
-    double m_previous_input = 0.0;
-    Filter m_pre_filter;
-    Filter m_post_filter;
+    std::array<Stage, kStageCount> m_up_stages;
+    std::array<Stage, kStageCount> m_down_stages;
 };
 
 } // namespace dsp

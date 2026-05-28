@@ -3,13 +3,13 @@
 
 #include <cmath>
 
-#include "BiquadLowPassFilter.h"
+#include "HalfBandIir2x.h"
 #include "Oversampler.h"
 
 namespace bassline {
 namespace dsp {
 
-template <size_t OversamplingFactor = 4, typename Filter = BiquadLowPassFilter>
+template <size_t OversamplingFactor = 8, typename Stage = HalfBandIir2x>
 class TanhSoftClipper {
 public:
     void reset(double value = 0.0)
@@ -25,7 +25,7 @@ public:
     }
 
 private:
-    Oversampler<OversamplingFactor, Filter> m_oversampler;
+    Oversampler<OversamplingFactor, Stage> m_oversampler;
 };
 
 } // namespace dsp
