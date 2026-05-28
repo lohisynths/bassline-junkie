@@ -14,7 +14,7 @@ const double soft_clip_drive = 8.0;
 double tick_sine_soft_clipper_halfband(double osc_freq)
 {
     static bassline::dsp::SineWave osc;
-    static bassline::dsp::TanhSoftClipper<8, bassline::dsp::HalfBandIir2x> soft_clipper;
+    static bassline::dsp::TanhSoftClipper<8> soft_clipper;
     static bool init = false;
 
     if (!init) {
@@ -29,7 +29,7 @@ double tick_sine_soft_clipper_halfband(double osc_freq)
 double tick_sine_soft_clipper_halfband_adaa(double osc_freq)
 {
     static bassline::dsp::SineWave osc;
-    static bassline::dsp::TanhAdaaSoftClipper<8, bassline::dsp::HalfBandIir2x> soft_clipper;
+    static bassline::dsp::TanhAdaaSoftClipper<8> soft_clipper;
     static bool init = false;
 
     if (!init) {

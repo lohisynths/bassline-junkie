@@ -3,13 +3,12 @@
 
 #include <cmath>
 
-#include "HalfBandIir2x.h"
 #include "Oversampler.h"
 
 namespace bassline {
 namespace dsp {
 
-template <size_t OversamplingFactor = 8, typename Stage = HalfBandIir2x>
+template <size_t OversamplingFactor = 8>
 class TanhSoftClipper {
 public:
     void reset(double value = 0.0)
@@ -25,7 +24,7 @@ public:
     }
 
 private:
-    Oversampler<OversamplingFactor, Stage> m_oversampler;
+    Oversampler<OversamplingFactor> m_oversampler;
 };
 
 } // namespace dsp

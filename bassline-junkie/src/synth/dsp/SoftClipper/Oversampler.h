@@ -11,7 +11,7 @@
 namespace bassline {
 namespace dsp {
 
-template <size_t Factor, typename Stage = HalfBandIir2x>
+template <size_t Factor>
 class Oversampler {
     static constexpr bool isPowerOfTwo(size_t value)
     {
@@ -78,7 +78,7 @@ public:
         }
 
         for (size_t stage = kStageCount; stage > 0; --stage) {
-            Stage& down_stage = m_down_stages[stage - 1];
+            HalfBandIir2x& down_stage = m_down_stages[stage - 1];
             const size_t next_sample_count = sample_count / 2;
             for (size_t i = 0; i < next_sample_count; ++i) {
                 samples[i] = down_stage.processDownsample(samples[i * 2], samples[(i * 2) + 1]);
@@ -93,8 +93,8 @@ private:
     static const size_t kStageCount = stageCount(Factor);
 
     double m_base_sample_rate = sample_rate;
-    std::array<Stage, kStageCount> m_up_stages;
-    std::array<Stage, kStageCount> m_down_stages;
+    std::array<HalfBandIir2x, kStageCount> m_up_stages;
+    std::array<HalfBandIir2x, kStageCount> m_down_stages;
 };
 
 } // namespace dsp

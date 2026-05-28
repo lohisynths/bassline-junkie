@@ -122,7 +122,7 @@ private:
 
 	//MoogFilter filter;
 	VAStateVariableFilter filter;
-	bassline::dsp::TanhAdaaSoftClipper<8, bassline::dsp::HalfBandIir2x> m_soft_clipper;
+	bassline::dsp::TanhAdaaSoftClipper<8> m_soft_clipper;
 	std::array<Osc, 3> osc;
 	modifiers m_modifiers;
 	std::array<double, buffer_size> array;
