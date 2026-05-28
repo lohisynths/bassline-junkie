@@ -386,11 +386,14 @@ public:
       auto ciabej =
               [&](uint32_t &output, double &input)
               {
-                  if (input > 1)
+                  if (input > 1) {
+                      input = 1;
                       std::cout << "clip +1" << std::endl;
-                  else if (input < -1 )
+                  }    
+                  else if (input < -1 ) {
+                      input = -1;
                       std::cout << "clip -1" << std::endl;
-
+				  }
                   output = (input+1) * maxval;
                   output += maxval;
                   return output;
