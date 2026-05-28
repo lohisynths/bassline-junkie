@@ -118,6 +118,7 @@ public:
 	};
 
 	double master_vol=0;
+	double soft_clip_drive=1.0;
 	// MIDI note used as the tracking source for the active voice.
 	double current_note=57;
 
@@ -408,7 +409,13 @@ void controlCange(uint8_t param, uint8_t value)
 
     if(param == 95 ) {
         MyCout(voice_index) << " vol:\t\t" << val << "\n";
-        this->master_vol = val*divider;
+        if (value <= 96) {
+            this->master_vol = value / 96.0;
+            this->soft_clip_drive = 1.0;
+        } else {
+            this->master_vol = 1.0;
+            this->soft_clip_drive = 1.0 + ((value - 96.0) / 31.0) * 7.0;
+        }
     }
 
 	if(param >= MATRIX_MOD_OFFSET && param < MATRIX_MOD_OFFSET+(MATRIX_MOD_MATRIX_ITEMS * MATIRX_MOD_PARAMS_COUNT))

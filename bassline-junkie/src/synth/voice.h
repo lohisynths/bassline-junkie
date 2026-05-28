@@ -14,6 +14,7 @@
 #include "dsp/Lfo.h"
 #include "dsp/MoogFilter.h"
 #include "dsp/Osc.h"
+#include "dsp/SoftClipper/TanhSoftClipper.h"
 
 #include "dsp/VAStateVariableFilter.h"
 
@@ -111,6 +112,7 @@ public:
 			output = filter.process( output );
 
 			output *= m_modifiers.master_vol;
+			output = m_soft_clipper.process(output, m_modifiers.soft_clip_drive);
 			sample = output;
 			//writer.process(adsr_tick);
 		}
@@ -120,6 +122,7 @@ private:
 
 	//MoogFilter filter;
 	VAStateVariableFilter filter;
+	bassline::dsp::TanhSoftClipper<4, bassline::dsp::BiquadLowPassFilter> m_soft_clipper;
 	std::array<Osc, 3> osc;
 	modifiers m_modifiers;
 	std::array<double, buffer_size> array;
