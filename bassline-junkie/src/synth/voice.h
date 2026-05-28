@@ -64,6 +64,9 @@ public:
 	void noteOn(double note, double vel)
 	{
 		m_modifiers.noteOn(note, vel);
+        for (auto &wave : osc) {
+            wave.reset();
+        }
         for (auto &lfo : m_modifiers.lfo)  {
             lfo.noteOn();
         }
