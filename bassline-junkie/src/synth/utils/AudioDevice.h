@@ -422,7 +422,7 @@ public:
               first = 1;
           }
 
-          std::vector<int32_t *> data(channels);
+          std::array<int32_t *, 2> data;
 
           for (unsigned int chn = 0; chn < channels; chn++)
           {
