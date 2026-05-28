@@ -107,9 +107,9 @@ public:
 				output = output + wave.tick() * 0.3;
 			}
 
+			output = filter.process( output );
             output *= m_modifiers.amp_mod_matrix.velocity; // velocity
             output *= m_modifiers.env[2].getOutput();
-			output = filter.process( output );
 
 			output *= m_modifiers.master_vol;
 			output = m_soft_clipper.process(output, m_modifiers.soft_clip_drive);
