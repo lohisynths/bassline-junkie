@@ -27,6 +27,9 @@ private:
 
 public:
 	Engine() {
+		notes.reserve(voices_count);
+		free_voices.reserve(voices_count);
+
 		for (size_t i = 0; i < max_cores; ++i) {
 	        cores[i].set_cpu_affinity(i+first_cpu);
 		}
@@ -77,7 +80,7 @@ public:
 
 		// Keep MIDI/control handling bounded so preset dumps do not steal the
 		// entire audio budget from the render path.
-		for(int i=0;i<8;i++)
+		for(int i=0;i<2;i++)
 		{
 			updateMessages();
 		}
