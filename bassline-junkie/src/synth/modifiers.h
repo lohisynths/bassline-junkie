@@ -44,6 +44,11 @@
 
 #define MATRIX_MOD_MATRIX_ITEMS ( (OSC_NUMBER * OSC_MOD_COUNT) + FLT_MOD_COUNT )
 
+#define DEBUG_MODIFIERS false
+#if DEBUG_MODIFIERS
+#include <sstream>
+#endif
+
 static const char *const MOD_SRC_NAMES[] = {
         "osc 0 det",
         "osc 0 sin",
@@ -227,7 +232,7 @@ void updateFilter(VAStateVariableFilter *filter)
     filter->setFilter(filter_type, flt_freq, resonance, 1.0f);
 }
 
-#define DEBUG_MODIFIERS false
+#if DEBUG_MODIFIERS
 struct MyCout
  {
    std::stringstream s;
@@ -250,6 +255,17 @@ struct MyCout
    }
    bool enabled = false;
  };
+#else
+struct MyCout
+ {
+   explicit MyCout(int) {}
+
+   template <typename T>
+   MyCout& operator << (const T &) {
+     return *this;
+   }
+ };
+#endif
 
 void controlCange(uint8_t param, uint8_t value)
 {
