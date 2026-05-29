@@ -7,8 +7,6 @@
 
 #include "SerialReceiver.h"
 
-#include "concurency_helpers.h"
-
 //TODO!!: IMPORTANT no memory allocations after lauynch!!
 #define SERIAL_PRINT_FUNCTION std::cout << "[SerialReceiver] "<< __PRETTY_FUNCTION__ << std::endl;
 #define SERIAL_PRINT(a) std::cout << "[SerialReceiver] \t"<< __func__ << "\t\t " << (a) << std::endl;
@@ -52,8 +50,9 @@ SerialReceiver::~SerialReceiver()
 
 void SerialReceiver::worker_thread()
 {
-	stick_this_thread_to_core(1);
-    set_pthread_params();
+	// Keep serial parsing out of the realtime audio scheduling lane.  Preset
+	// dumps can arrive in bursts; if this thread runs SCHED_FIFO on the audio
+	// CPU it can preempt playback long enough to cause ALSA XRUNs.
 
 	uint8_t buf[256];
 
@@ -120,7 +119,10 @@ MidiMessage SerialReceiver::getMessage()
 	if (fd < 0) {
 		return MidiMessage();
 	}
-	std::lock_guard<std::mutex> lock(m);
+	std::unique_lock<std::mutex> lock(m, std::try_to_lock);
+	if (!lock.owns_lock()) {
+		return MidiMessage();
+	}
 	return midi_parser.getMessage();
 }
 
