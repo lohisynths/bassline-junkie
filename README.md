@@ -1,6 +1,14 @@
 # bassline-junkie
 
+![bassline-junkie](docs/bassline-junkie.jpg)
+
 `bassline-junkie` is a C++ synth and benchmark project built with CMake. The main executable links against ALSA and CMake's Threads package, and the optional benchmark suite is pulled in through CMake when enabled.
+
+## Related Projects
+
+- [bassline-junkie](https://github.com/lohisynths/bassline-junkie): C++ synthesizer engine, build scripts, and benchmark project.
+- [bassline-junkie-interface_v2](https://github.com/lohisynths/bassline-junkie-interface_v2): User interface companion for controlling and interacting with bassline-junkie.
+- [lohi-buildroot](https://github.com/lohisynths/lohi-buildroot): Buildroot setup for producing the embedded Linux toolchain and target system used by LOHI synth projects.
 
 ## Requirements
 
