@@ -13,9 +13,9 @@ Osc::Osc() : m_osc_ctrl( waves_level{0,1,0,0} )
 	m_sine.setSampleRate(sample_rate);
 	m_saw.setSampleRate(sample_rate);
 	m_square.setSampleRate(sample_rate);
-	m_saw.setWaveform(bassline::dsp::MinBLEPOscillator::SAW);
-	m_square.setWaveform(bassline::dsp::MinBLEPOscillator::SQUARE);
-	m_square.setPulseWidth(0.5);
+	m_sine.setWaveform(bassline::dsp::WavetableOscillator::SINE);
+	m_saw.setWaveform(bassline::dsp::WavetableOscillator::SAW);
+	m_square.setWaveform(bassline::dsp::WavetableOscillator::SQUARE);
 }
 
 Osc::~Osc(){}

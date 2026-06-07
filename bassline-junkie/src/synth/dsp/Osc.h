@@ -8,9 +8,8 @@
 #ifndef OSC_H_
 #define OSC_H_
 
-#include "MinBLEPOscillator.h"
 #include "Noise.h"
-#include "SineWave.h"
+#include "WavetableOscillator.h"
 
 class Osc
 {
@@ -35,9 +34,9 @@ private:
 		double rnd_level;
 	};
 	waves_level m_osc_ctrl;
-	bassline::dsp::SineWave m_sine;
-	bassline::dsp::MinBLEPOscillator m_saw;
-	bassline::dsp::MinBLEPOscillator m_square;
+	bassline::dsp::WavetableOscillator m_sine;
+	bassline::dsp::WavetableOscillator m_saw;
+	bassline::dsp::WavetableOscillator m_square;
 	bassline::dsp::Noise m_noise;
 };
 
