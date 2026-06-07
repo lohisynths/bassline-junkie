@@ -35,7 +35,7 @@ void BlitSaw_tick(benchmark::State& state)
             outfile_m.write((const char*)output, sizeof(output));
 #endif
 }
-BENCHMARK(BlitSaw_tick)->Arg(110)->Arg(440)->Arg(880);
+BENCHMARK(BlitSaw_tick)->Arg(110)->Arg(440)->Arg(880)->Arg(16000);
 
 void PolyBleepOsc_tick(benchmark::State& state)
 {
@@ -61,7 +61,7 @@ void PolyBleepOsc_tick(benchmark::State& state)
             outfile_m.write((const char*)output, sizeof(output));
 #endif
 }
-BENCHMARK(PolyBleepOsc_tick)->Arg(110)->Arg(440)->Arg(880);
+BENCHMARK(PolyBleepOsc_tick)->Arg(110)->Arg(440)->Arg(880)->Arg(16000);
 
 void StmPolyBleepOsc_tick(benchmark::State& state)
 {
@@ -87,7 +87,7 @@ void StmPolyBleepOsc_tick(benchmark::State& state)
             outfile_m.write((const char*)output, sizeof(output));
 #endif
 }
-BENCHMARK(StmPolyBleepOsc_tick)->Arg(110)->Arg(440)->Arg(880);
+BENCHMARK(StmPolyBleepOsc_tick)->Arg(110)->Arg(440)->Arg(880)->Arg(16000);
 
 void PolyBleep_tick(benchmark::State& state)
 {
@@ -111,7 +111,7 @@ void PolyBleep_tick(benchmark::State& state)
             outfile_m.write((const char*)output, sizeof(output));
 #endif
 }
-BENCHMARK(PolyBleep_tick)->Arg(110)->Arg(440)->Arg(880);
+BENCHMARK(PolyBleep_tick)->Arg(110)->Arg(440)->Arg(880)->Arg(16000);
 
 void MinBLEP_saw_tick(benchmark::State& state)
 {
@@ -136,7 +136,7 @@ void MinBLEP_saw_tick(benchmark::State& state)
             outfile_m.write((const char*)output, sizeof(output));
 #endif
 }
-BENCHMARK(MinBLEP_saw_tick)->Arg(110)->Arg(440)->Arg(880);
+BENCHMARK(MinBLEP_saw_tick)->Arg(110)->Arg(440)->Arg(880)->Arg(16000);
 
 void MinBLEP_square_tick(benchmark::State& state)
 {
@@ -163,7 +163,7 @@ void MinBLEP_square_tick(benchmark::State& state)
             outfile_m.write((const char*)output, sizeof(output));
 #endif
 }
-BENCHMARK(MinBLEP_square_tick)->Arg(110)->Arg(440)->Arg(880);
+BENCHMARK(MinBLEP_square_tick)->Arg(110)->Arg(440)->Arg(880)->Arg(16000);
 
 void WavetableSine_tick(benchmark::State& state)
 {
@@ -180,7 +180,7 @@ void WavetableSine_tick(benchmark::State& state)
         benchmark::DoNotOptimize(output);
     }
 }
-BENCHMARK(WavetableSine_tick)->Arg(110)->Arg(440)->Arg(880);
+BENCHMARK(WavetableSine_tick)->Arg(110)->Arg(440)->Arg(880)->Arg(16000);
 
 void WavetableSaw_tick(benchmark::State& state)
 {
@@ -197,7 +197,7 @@ void WavetableSaw_tick(benchmark::State& state)
         benchmark::DoNotOptimize(output);
     }
 }
-BENCHMARK(WavetableSaw_tick)->Arg(110)->Arg(440)->Arg(880);
+BENCHMARK(WavetableSaw_tick)->Arg(110)->Arg(440)->Arg(880)->Arg(16000);
 
 void WavetableTriangle_tick(benchmark::State& state)
 {
@@ -214,7 +214,7 @@ void WavetableTriangle_tick(benchmark::State& state)
         benchmark::DoNotOptimize(output);
     }
 }
-BENCHMARK(WavetableTriangle_tick)->Arg(110)->Arg(440)->Arg(880);
+BENCHMARK(WavetableTriangle_tick)->Arg(110)->Arg(440)->Arg(880)->Arg(16000);
 
 void WavetableSquare_tick(benchmark::State& state)
 {
@@ -231,7 +231,7 @@ void WavetableSquare_tick(benchmark::State& state)
         benchmark::DoNotOptimize(output);
     }
 }
-BENCHMARK(WavetableSquare_tick)->Arg(110)->Arg(440)->Arg(880);
+BENCHMARK(WavetableSquare_tick)->Arg(110)->Arg(440)->Arg(880)->Arg(16000);
 
 
 BENCHMARK_MAIN();
