@@ -5,6 +5,7 @@
 #include "dsp/BlitSaw.h"
 #include "dsp/BlitSquare.h"
 #include "dsp/MinBLEPOscillator.h"
+#include "dsp/Osc.h"
 #include "dsp/stmlib_polybleep.h"
 #include "dsp/PolyBLEPOscillator/PolyBLEPOscillator.h"
 #include "dsp/PolyBLEP/PolyBLEP.h"
@@ -145,56 +146,48 @@ double tick_wavetable_square(double osc_freq) {
 }
 
 double tick_wavetable_pwm(double osc_freq) {
-    static bassline::dsp::WavetableOscillator rising;
-    static bassline::dsp::WavetableOscillator falling;
+    static Osc osc;
     static bool init = false;
     if (!init) {
-        rising.setSampleRate(sample_rate);
-        falling.setSampleRate(sample_rate);
-        rising.setWaveform(bassline::dsp::WavetableOscillator::SAW);
-        falling.setWaveform(bassline::dsp::WavetableOscillator::SAW);
-        falling.setPhaseOffset(0.23);
+        osc.set_sin_level(0.0);
+        osc.set_saw_level(0.0);
+        osc.set_sqr_level(1.0);
+        osc.set_noise_level(0.0);
+        osc.set_pulse_width(0.23);
         init = true;
     }
-    rising.setFrequency(osc_freq);
-    falling.setFrequency(osc_freq);
-    constexpr double dutyCycle = 0.23;
-    constexpr double pulsePeak = 2.0 * (1.0 - dutyCycle);
-    return (rising.tick() - falling.tick()) / pulsePeak;
+    osc.setFrequency(osc_freq);
+    return osc.tick();
 }
 
 double tick_wavetable_saw_window(double osc_freq) {
-    static bassline::dsp::WavetableOscillator primary;
-    static bassline::dsp::WavetableOscillator window;
+    static Osc osc;
     static bool init = false;
     if (!init) {
-        primary.setSampleRate(sample_rate);
-        window.setSampleRate(sample_rate);
-        primary.setWaveform(bassline::dsp::WavetableOscillator::SAW);
-        window.setWaveform(bassline::dsp::WavetableOscillator::SAW);
-        window.setPhaseOffset(0.25);
+        osc.set_sin_level(0.0);
+        osc.set_saw_level(1.0);
+        osc.set_sqr_level(0.0);
+        osc.set_noise_level(0.0);
+        osc.set_saw_window(2.0 / 3.0);
         init = true;
     }
-    primary.setFrequency(osc_freq);
-    window.setFrequency(osc_freq);
-    return 0.5 * (primary.tick() + window.tick());
+    osc.setFrequency(osc_freq);
+    return osc.tick();
 }
 
 double tick_wavetable_sine_fold(double osc_freq) {
-    static bassline::dsp::WavetableOscillator fundamental;
-    static bassline::dsp::WavetableOscillator third;
+    static Osc osc;
     static bool init = false;
     if (!init) {
-        fundamental.setSampleRate(sample_rate);
-        third.setSampleRate(sample_rate);
-        fundamental.setWaveform(bassline::dsp::WavetableOscillator::SINE);
-        third.setWaveform(bassline::dsp::WavetableOscillator::SINE);
+        osc.set_sin_level(1.0);
+        osc.set_saw_level(0.0);
+        osc.set_sqr_level(0.0);
+        osc.set_noise_level(0.0);
+        osc.set_sine_fold(0.5);
         init = true;
     }
-    fundamental.setFrequency(osc_freq);
-    third.setFrequency(osc_freq * 3.0);
-    const double thirdWeight = osc_freq * 3.0 < sample_rate * 0.5 ? 0.5 : 0.0;
-    return (fundamental.tick() + thirdWeight * third.tick()) / (1.0 + thirdWeight);
+    osc.setFrequency(osc_freq);
+    return osc.tick();
 }
 
 void render_sweep(double (*f)(double), std::string name) {
