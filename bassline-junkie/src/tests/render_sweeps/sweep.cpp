@@ -152,7 +152,6 @@ double tick_wavetable_pwm(double osc_freq) {
         osc.set_sin_level(0.0);
         osc.set_saw_level(0.0);
         osc.set_sqr_level(1.0);
-        osc.set_noise_level(0.0);
         osc.set_pulse_width(0.23);
         init = true;
     }
@@ -167,7 +166,6 @@ double tick_wavetable_saw_window(double osc_freq) {
         osc.set_sin_level(0.0);
         osc.set_saw_level(1.0);
         osc.set_sqr_level(0.0);
-        osc.set_noise_level(0.0);
         osc.set_saw_window(2.0 / 3.0);
         init = true;
     }
@@ -182,7 +180,6 @@ double tick_wavetable_sine_fold(double osc_freq) {
         osc.set_sin_level(1.0);
         osc.set_saw_level(0.0);
         osc.set_sqr_level(0.0);
-        osc.set_noise_level(0.0);
         osc.set_sine_fold(0.5);
         init = true;
     }

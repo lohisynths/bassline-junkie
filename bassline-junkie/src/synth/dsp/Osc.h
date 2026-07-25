@@ -8,7 +8,6 @@
 #ifndef OSC_H_
 #define OSC_H_
 
-#include "Noise.h"
 #include "WavetableOscillator.h"
 
 class Osc
@@ -22,7 +21,6 @@ public:
 	void set_sin_level(double level);
 	void set_saw_level(double level);
 	void set_sqr_level(double level);
-	void set_noise_level(double level);
 	void set_pulse_width(double dutyCycle);
 	void set_saw_window(double width);
 	void set_sine_fold(double amount);
@@ -34,7 +32,6 @@ private:
 		double sin_level;
 		double saw_level;
 		double sqr_level;
-		double rnd_level;
 	};
 	waves_level m_osc_ctrl;
 	bassline::dsp::WavetableOscillator m_sine;
@@ -43,7 +40,6 @@ private:
 	bassline::dsp::WavetableOscillator m_sawWindow;
 	bassline::dsp::WavetableOscillator m_square;
 	bassline::dsp::WavetableOscillator m_pulseEdge;
-	bassline::dsp::Noise m_noise;
 	double m_frequency;
 	double m_pulseWidth;
 	double m_sawWindowWidth;

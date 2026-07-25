@@ -9,7 +9,6 @@ add_executable(${PROJECT_NAME}
 	../../synth/dsp/BlitSaw.cpp
 	../../synth/dsp/BlitSquare.cpp
 	../../synth/dsp/MinBLEPOscillator.cpp
-	../../synth/dsp/Noise.cpp
 	../../synth/dsp/Osc.cpp
 	../../synth/dsp/PolyBLEPOscillator/Oscillator.cpp
 	../../synth/dsp/PolyBLEPOscillator/PolyBLEPOscillator.cpp

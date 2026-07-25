@@ -54,19 +54,19 @@ static const char *const MOD_SRC_NAMES[] = {
         "osc 0 sin",
         "osc 0 saw",
         "osc 0 sqr",
-        "osc 0 rnd",
+        "osc 0 pwm",
 
         "osc 1 det",
         "osc 1 sin",
         "osc 1 saw",
         "osc 1 sqr",
-        "osc 1 rnd",
+        "osc 1 pwm",
 
         "osc 2 det",
         "osc 2 sin",
         "osc 2 saw",
         "osc 2 sqr",
-        "osc 2 rnd",
+        "osc 2 pwm",
 
         "flt freq",
         "flt res"
@@ -103,7 +103,6 @@ public:
 		double sin_level=0;
 		double saw_level=0;
 		double sqr_level=0;
-		double rnd_level=0;
 		double pulse_width=0.5;
 		double saw_window=0;
 		double sine_fold=0;
@@ -180,9 +179,9 @@ void updateOsc(Osc &osc, size_t osc_nr)
 	osc_level = getModVal(3+(osc_nr*OSC_MOD_COUNT)) + osc_m[osc_nr].sqr_level;
 	osc.set_sqr_level(osc_level);
 
-	osc_level = getModVal(4+(osc_nr*OSC_MOD_COUNT)) + osc_m[osc_nr].rnd_level;
-	osc.set_noise_level(osc_level);
-	osc.set_pulse_width(osc_m[osc_nr].pulse_width);
+	double pulse_width =
+		getModVal(4+(osc_nr*OSC_MOD_COUNT)) + osc_m[osc_nr].pulse_width;
+	osc.set_pulse_width(pulse_width);
 	osc.set_saw_window(osc_m[osc_nr].saw_window);
 	osc.set_sine_fold(osc_m[osc_nr].sine_fold);
 }
@@ -313,8 +312,8 @@ void controlCange(uint8_t param, uint8_t value)
 			break;
 			case 4:
 			{
-			    MyCout(voice_index) << "osc " << +osc_number <<  " rnd:\t\t" << val << "\n";
-				this->osc_m[osc_number].rnd_level=(val*divider);
+			    MyCout(voice_index) << "osc " << +osc_number <<  " pwm:\t\t" << val << "\n";
+				this->osc_m[osc_number].pulse_width=(val*divider);
 			}
 			break;
 		}

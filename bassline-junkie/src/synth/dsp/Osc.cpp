@@ -18,7 +18,7 @@ double clamp01(double value)
 }
 
 Osc::Osc()
-	: m_osc_ctrl(waves_level{0,1,0,0}),
+	: m_osc_ctrl(waves_level{0,1,0}),
 	  m_frequency(220.0),
 	  m_pulseWidth(0.5),
 	  m_sawWindowWidth(0.0),
@@ -76,9 +76,8 @@ double Osc::tick()
 		2.0 * (m_pulseWidth > 0.5 ? m_pulseWidth : 1.0 - m_pulseWidth);
 	const double pulse = (m_square.tick() - m_pulseEdge.tick()) / pulsePeak;
 	output += pulse * m_osc_ctrl.sqr_level;
-	output += m_noise.tick() * m_osc_ctrl.rnd_level * 0.5;
 
-	double div =  m_osc_ctrl.sin_level+m_osc_ctrl.saw_level+m_osc_ctrl.sqr_level+m_osc_ctrl.rnd_level;
+	double div = m_osc_ctrl.sin_level + m_osc_ctrl.saw_level + m_osc_ctrl.sqr_level;
 	if(div<1) div=1;
 	output /= div;
 
@@ -110,11 +109,6 @@ void Osc::set_saw_level(double level)
 void Osc::set_sqr_level(double level)
 {
 	m_osc_ctrl.sqr_level=level;
-}
-
-void Osc::set_noise_level(double level)
-{
-	m_osc_ctrl.rnd_level=level;
 }
 
 void Osc::set_pulse_width(double dutyCycle)

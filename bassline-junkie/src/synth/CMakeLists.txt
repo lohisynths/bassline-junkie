@@ -9,7 +9,6 @@ add_executable(${PROJECT_NAME}
 	bassline-junkie.cpp
 	dsp/VAStateVariableFilter.cpp
 	dsp/Lfo.cpp
-	dsp/Noise.cpp
 	dsp/Osc.cpp
 	dsp/PolyBLEPOscillator/PolyBLEPOscillator.cpp
 	dsp/PolyBLEPOscillator/Oscillator.cpp
