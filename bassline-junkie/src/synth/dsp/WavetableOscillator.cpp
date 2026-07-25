@@ -73,6 +73,7 @@ WavetableOscillator::WavetableOscillator(double frequency)
       frequency_(frequency),
       sampleRate_(sample_rate),
       phase_(0.0),
+      phaseOffset_(0.0),
       phaseIncrement_(0.0),
       phaseIncrementInv_(0.0),
       primaryTableIndex_(0u),
@@ -127,6 +128,19 @@ void WavetableOscillator::setWaveform(Waveform waveform) {
     syncIntegratedState();
 }
 
+void WavetableOscillator::setPhaseOffset(double phaseOffset) {
+    phaseOffset -= bassline::math::floor(phaseOffset);
+    if (phaseOffset < 0.0) {
+        phaseOffset += 1.0;
+    }
+    if (phaseOffset == phaseOffset_) {
+        return;
+    }
+
+    phaseOffset_ = phaseOffset;
+    syncIntegratedState();
+}
+
 double WavetableOscillator::tick() {
     if (phaseIncrement_ <= 0.0) {
         return 0.0;
@@ -134,10 +148,14 @@ double WavetableOscillator::tick() {
 
     phase_ += phaseIncrement_;
     if (phase_ >= 1.0) {
-        phase_ -= 1.0;
+        phase_ -= bassline::math::floor(phase_);
     }
 
-    const double current = lookupCurrentIntegrated(phase_);
+    double readPhase = phase_ + phaseOffset_;
+    if (readPhase >= 1.0) {
+        readPhase -= bassline::math::floor(readPhase);
+    }
+    const double current = lookupCurrentIntegrated(readPhase);
     const double output = (current - previousIntegrated_) * phaseIncrementInv_;
     previousIntegrated_ = current;
 
@@ -263,7 +281,11 @@ double WavetableOscillator::lookupCurrentIntegrated(double phase) {
 }
 
 void WavetableOscillator::syncIntegratedState() {
-    previousIntegrated_ = lookupCurrentIntegrated(phase_);
+    double readPhase = phase_ + phaseOffset_;
+    if (readPhase >= 1.0) {
+        readPhase -= bassline::math::floor(readPhase);
+    }
+    previousIntegrated_ = lookupCurrentIntegrated(readPhase);
 }
 
 void WavetableOscillator::updatePhaseIncrement() {

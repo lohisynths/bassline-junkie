@@ -104,6 +104,9 @@ public:
 		double saw_level=0;
 		double sqr_level=0;
 		double rnd_level=0;
+		double pulse_width=0.5;
+		double saw_window=0;
+		double sine_fold=0;
 	};
 
 	mod_matrix_s mod_matrix[MATRIX_MOD_MATRIX_ITEMS];
@@ -179,6 +182,9 @@ void updateOsc(Osc &osc, size_t osc_nr)
 
 	osc_level = getModVal(4+(osc_nr*OSC_MOD_COUNT)) + osc_m[osc_nr].rnd_level;
 	osc.set_noise_level(osc_level);
+	osc.set_pulse_width(osc_m[osc_nr].pulse_width);
+	osc.set_saw_window(osc_m[osc_nr].saw_window);
+	osc.set_sine_fold(osc_m[osc_nr].sine_fold);
 }
 
 void updateFilter(MoogFilter *filter)

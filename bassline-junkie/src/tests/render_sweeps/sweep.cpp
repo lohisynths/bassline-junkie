@@ -144,6 +144,58 @@ double tick_wavetable_square(double osc_freq) {
     return osc.tick();
 }
 
+double tick_wavetable_pwm(double osc_freq) {
+    static bassline::dsp::WavetableOscillator rising;
+    static bassline::dsp::WavetableOscillator falling;
+    static bool init = false;
+    if (!init) {
+        rising.setSampleRate(sample_rate);
+        falling.setSampleRate(sample_rate);
+        rising.setWaveform(bassline::dsp::WavetableOscillator::SAW);
+        falling.setWaveform(bassline::dsp::WavetableOscillator::SAW);
+        falling.setPhaseOffset(0.23);
+        init = true;
+    }
+    rising.setFrequency(osc_freq);
+    falling.setFrequency(osc_freq);
+    constexpr double dutyCycle = 0.23;
+    return rising.tick() - falling.tick() + (2.0 * dutyCycle - 1.0);
+}
+
+double tick_wavetable_saw_window(double osc_freq) {
+    static bassline::dsp::WavetableOscillator primary;
+    static bassline::dsp::WavetableOscillator window;
+    static bool init = false;
+    if (!init) {
+        primary.setSampleRate(sample_rate);
+        window.setSampleRate(sample_rate);
+        primary.setWaveform(bassline::dsp::WavetableOscillator::SAW);
+        window.setWaveform(bassline::dsp::WavetableOscillator::SAW);
+        window.setPhaseOffset(0.25);
+        init = true;
+    }
+    primary.setFrequency(osc_freq);
+    window.setFrequency(osc_freq);
+    return 0.5 * (primary.tick() + window.tick());
+}
+
+double tick_wavetable_sine_fold(double osc_freq) {
+    static bassline::dsp::WavetableOscillator fundamental;
+    static bassline::dsp::WavetableOscillator third;
+    static bool init = false;
+    if (!init) {
+        fundamental.setSampleRate(sample_rate);
+        third.setSampleRate(sample_rate);
+        fundamental.setWaveform(bassline::dsp::WavetableOscillator::SINE);
+        third.setWaveform(bassline::dsp::WavetableOscillator::SINE);
+        init = true;
+    }
+    fundamental.setFrequency(osc_freq);
+    third.setFrequency(osc_freq * 3.0);
+    const double thirdWeight = osc_freq * 3.0 < sample_rate * 0.5 ? 0.5 : 0.0;
+    return (fundamental.tick() + thirdWeight * third.tick()) / (1.0 + thirdWeight);
+}
+
 void render_sweep(double (*f)(double), std::string name) {
     stmlib::WavWriter pisacz(1, sample_rate,30);
 
@@ -179,6 +231,9 @@ int main() {
     render_sweep(tick_wavetable_saw, "wavetable_saw");
     render_sweep(tick_wavetable_triangle, "wavetable_triangle");
     render_sweep(tick_wavetable_square, "wavetable_square");
+    render_sweep(tick_wavetable_pwm, "wavetable_pwm_23");
+    render_sweep(tick_wavetable_saw_window, "wavetable_saw_window");
+    render_sweep(tick_wavetable_sine_fold, "wavetable_sine_fold");
 
     return 0;
 }

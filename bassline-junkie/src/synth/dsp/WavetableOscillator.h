@@ -27,6 +27,7 @@ public:
     void setFrequency(double frequency);
     void setSampleRate(double sampleRate);
     void setWaveform(Waveform waveform);
+    void setPhaseOffset(double phaseOffset);
     double tick();
 
     static const std::size_t kTableSize = 4096;
@@ -63,6 +64,7 @@ private:
     double frequency_;
     double sampleRate_;
     double phase_;
+    double phaseOffset_;
     double phaseIncrement_;
     double phaseIncrementInv_;
     std::size_t primaryTableIndex_;
