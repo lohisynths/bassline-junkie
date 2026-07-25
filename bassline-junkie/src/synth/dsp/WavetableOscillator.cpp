@@ -108,6 +108,10 @@ void WavetableOscillator::setFrequency(double frequency) {
     frequency_ = frequency;
     updatePhaseIncrement();
     updateTableIndex();
+    // A frequency change may select or blend different mip levels.  Keep the
+    // differentiated integrated-table state on the newly selected table to
+    // avoid a one-sample transient from subtracting values from two banks.
+    syncIntegratedState();
 }
 
 void WavetableOscillator::setSampleRate(double sampleRate) {

@@ -69,11 +69,12 @@ double Osc::tick()
 	// A pulse is exactly the difference of two equal band-limited saws.
 	// Keeping both reads in the same mip level makes a moving duty cycle
 	// retain the wavetable oscillator's Nyquist harmonic limit.
-	// The saw difference is a zero-mean pulse with levels -2*width and
-	// 2*(1-width).  Restore the conventional bipolar pulse's DC component
-	// so its two plateaus remain exactly -1 and +1 at every duty cycle.
-	const double pulse =
-		m_square.tick() - m_pulseEdge.tick() + (2.0 * m_pulseWidth - 1.0);
+	// The raw saw difference has levels -2*width and 2*(1-width).
+	// Normalize its larger plateau to unity.  Keeping it DC-free avoids a
+	// large offset and also bounds sparse high-frequency mip levels.
+	const double pulsePeak =
+		2.0 * (m_pulseWidth > 0.5 ? m_pulseWidth : 1.0 - m_pulseWidth);
+	const double pulse = (m_square.tick() - m_pulseEdge.tick()) / pulsePeak;
 	output += pulse * m_osc_ctrl.sqr_level;
 	output += m_noise.tick() * m_osc_ctrl.rnd_level * 0.5;
 

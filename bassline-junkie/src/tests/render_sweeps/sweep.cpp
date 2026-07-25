@@ -159,7 +159,8 @@ double tick_wavetable_pwm(double osc_freq) {
     rising.setFrequency(osc_freq);
     falling.setFrequency(osc_freq);
     constexpr double dutyCycle = 0.23;
-    return rising.tick() - falling.tick() + (2.0 * dutyCycle - 1.0);
+    constexpr double pulsePeak = 2.0 * (1.0 - dutyCycle);
+    return (rising.tick() - falling.tick()) / pulsePeak;
 }
 
 double tick_wavetable_saw_window(double osc_freq) {
